@@ -4,10 +4,21 @@ import bcrypt from 'bcryptjs';
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, password, displayName } = await req.json();
+    const { username, password, displayName, email, phone } = await req.json();
 
     if (!username || !password) {
       return NextResponse.json({ error: 'Username dan password wajib diisi.' }, { status: 400 });
+    }
+
+    const trimmedEmail = email?.trim()?.toLowerCase() || null;
+    const trimmedPhone = phone?.trim() || null;
+
+    // MANDATORY CONTACT REQUIREMENT: Must have either WhatsApp number or Email
+    if (!trimmedEmail && !trimmedPhone) {
+      return NextResponse.json(
+        { error: 'Pendaftaran wajib menyertakan nomor WhatsApp atau alamat Email aktif untuk keamanan akun.' },
+        { status: 400 }
+      );
     }
 
     const trimmedUser = username.trim().toLowerCase();
@@ -34,12 +45,12 @@ export async function POST(req: NextRequest) {
     const newId = `usr-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const finalDisplayName = displayName?.trim() || username.trim();
 
-    // All new registrations are strictly CLIENT
+    // All new registrations are strictly User (client)
     const insertRes = await query(
-      `INSERT INTO users (id, username, display_name, password_hash, role, status)
-       VALUES ($1, $2, $3, $4, 'client', 'active')
-       RETURNING id, username, display_name, role, status, created_at`,
-      [newId, trimmedUser, finalDisplayName, passwordHash]
+      `INSERT INTO users (id, username, display_name, email, phone, password_hash, role, status)
+       VALUES ($1, $2, $3, $4, $5, $6, 'client', 'active')
+       RETURNING id, username, display_name, email, phone, role, status, created_at`,
+      [newId, trimmedUser, finalDisplayName, trimmedEmail, trimmedPhone, passwordHash]
     );
 
     const newUser = insertRes.rows[0];
@@ -50,6 +61,8 @@ export async function POST(req: NextRequest) {
         id: newUser.id,
         username: newUser.username,
         displayName: newUser.display_name,
+        email: newUser.email,
+        phone: newUser.phone,
         role: newUser.role,
         status: newUser.status,
         createdAt: newUser.created_at,

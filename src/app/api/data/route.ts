@@ -96,6 +96,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Payload protection: Check file/photo upload size (Anti data flood)
+    if (data && data.photoUrl && typeof data.photoUrl === 'string' && data.photoUrl.startsWith('data:') && data.photoUrl.length > 4.5 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Ukuran file foto melebihi batas 3 MB.' }, { status: 400 });
+    }
+
     if (action === 'CREATE_PERSON') {
       await query(
         `INSERT INTO people (
@@ -209,6 +214,16 @@ export async function POST(req: NextRequest) {
       // data: { userId, personId }
       await query('UPDATE users SET linked_person_id = $1 WHERE id = $2', [data.personId, data.userId]);
       await query('UPDATE people SET linked_user_id = $1 WHERE id = $2', [data.userId, data.personId]);
+    } else if (action === 'DELETE_AUDIT_LOG') {
+      if (actor.role !== 'superadmin') {
+        return NextResponse.json({ error: 'Hanya Superadmin yang berwenang menghapus riwayat log.' }, { status: 403 });
+      }
+      await query('DELETE FROM audit_logs WHERE id = $1', [data.id]);
+    } else if (action === 'CLEAR_AUDIT_LOGS') {
+      if (actor.role !== 'superadmin') {
+        return NextResponse.json({ error: 'Hanya Superadmin yang berwenang mengosongkan seluruh riwayat log.' }, { status: 403 });
+      }
+      await query('DELETE FROM audit_logs');
     }
 
     // Insert audit log

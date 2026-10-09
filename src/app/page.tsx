@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FamilyStoreProvider, useFamilyStore } from '@/lib/store';
 import { Navbar } from '@/components/Navbar';
 import { TreeCanvas } from '@/components/TreeCanvas';
@@ -14,7 +14,12 @@ import { AuthModal } from '@/components/AuthModal';
 import { SidebarMembers } from '@/components/SidebarMembers';
 import { QuickConnectModal } from '@/components/QuickConnectModal';
 import { WorkspaceSettingsModal } from '@/components/WorkspaceSettingsModal';
-import { ThemeCustomizerModal } from '@/components/ThemeCustomizerModal';
+import { ThemeCustomizerModal, applyThemeColors } from '@/components/ThemeCustomizerModal';
+import { ResetPasswordModal } from '@/components/ResetPasswordModal';
+import { PasswordResetAdminModal } from '@/components/PasswordResetAdminModal';
+import { AIChatDrawer } from '@/components/AIChatDrawer';
+import { UserProfileModal } from '@/components/UserProfileModal';
+import { CommunityChatDrawer } from '@/components/CommunityChatDrawer';
 import {
   Lock,
   User,
@@ -25,6 +30,10 @@ import {
   Plus,
   AlertTriangle,
   CheckCircle,
+  Users,
+  Phone,
+  Mail,
+  KeyRound,
 } from 'lucide-react';
 
 /**
@@ -36,6 +45,9 @@ function FullScreenAuthPortal() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [isResetOpen, setIsResetOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -72,19 +84,31 @@ function FullScreenAuthPortal() {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
+
+    if (!email.trim() && !phone.trim()) {
+      setErrorMsg('Pendaftaran akun wajib menyertakan nomor WhatsApp atau alamat Email aktif.');
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, displayName, password }),
+        body: JSON.stringify({
+          username,
+          displayName,
+          password,
+          email: email.trim() || undefined,
+          phone: phone.trim() || undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
         setErrorMsg(data.error || 'Gagal mendaftar akun baru.');
       } else {
-        setSuccessMsg('Akun Client berhasil dibuat! Mengalihkan ke sistem...');
+        setSuccessMsg('Akun User berhasil dibuat! Mengalihkan ke sistem...');
         setTimeout(() => {
           onLoginSuccess(data.user);
         }, 800);
@@ -374,7 +398,81 @@ function FullScreenAuthPortal() {
             </div>
           )}
 
-          <div style={{ marginBottom: 22 }}>
+          {/* Additional fields for register: WhatsApp & Email */}
+          {tab === 'register' && (
+            <>
+              <div style={{ marginBottom: 14 }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    color: '#CBD5E1',
+                    marginBottom: 6,
+                  }}
+                >
+                  Nomor WhatsApp
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Phone size={15} color="#64748B" style={{ position: 'absolute', left: 12, top: 11 }} />
+                  <input
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="cth: 08123456789"
+                    style={{
+                      width: '100%',
+                      padding: '9px 12px 9px 36px',
+                      borderRadius: 8,
+                      background: '#0D1322',
+                      border: '1px solid #1E293B',
+                      color: '#F8FAFC',
+                      fontSize: 13,
+                      outline: 'none',
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 14 }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    color: '#CBD5E1',
+                    marginBottom: 6,
+                  }}
+                >
+                  Alamat Email (Token Verifikasi Otomatis)
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Mail size={15} color="#64748B" style={{ position: 'absolute', left: 12, top: 11 }} />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="cth: nama@keluarga.com"
+                    style={{
+                      width: '100%',
+                      padding: '9px 12px 9px 36px',
+                      borderRadius: 8,
+                      background: '#0D1322',
+                      border: '1px solid #1E293B',
+                      color: '#F8FAFC',
+                      fontSize: 13,
+                      outline: 'none',
+                    }}
+                  />
+                </div>
+                <span style={{ fontSize: 10.5, color: '#64748B', display: 'block', marginTop: 4 }}>
+                  *Wajib mengisi salah satu atau keduanya (WhatsApp / Email).
+                </span>
+              </div>
+            </>
+          )}
+
+          <div style={{ marginBottom: tab === 'login' ? 8 : 20 }}>
             <label
               style={{
                 display: 'block',
@@ -408,6 +506,26 @@ function FullScreenAuthPortal() {
             </div>
           </div>
 
+          {tab === 'login' && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>
+              <button
+                type="button"
+                onClick={() => setIsResetOpen(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#F59E0B',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                  padding: 0,
+                  fontWeight: 500,
+                }}
+              >
+                Lupa kata sandi?
+              </button>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -429,10 +547,54 @@ function FullScreenAuthPortal() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            <span>{loading ? 'Memproses...' : tab === 'login' ? 'Masuk ke Silsilah' : 'Buat Akun Klien'}</span>
+            <span>{loading ? 'Memproses...' : tab === 'login' ? 'Masuk ke Silsilah' : 'Daftar Akun User'}</span>
             <ArrowRight size={15} />
           </button>
+
+          {/* Quick toggle link */}
+          <div style={{ textAlign: 'center', marginTop: 14 }}>
+            {tab === 'login' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setTab('register');
+                  setErrorMsg('');
+                  setSuccessMsg('');
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#94A3B8',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                Belum punya akun? <span style={{ color: '#10B981', fontWeight: 600 }}>Daftar Akun Baru</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setTab('login');
+                  setErrorMsg('');
+                  setSuccessMsg('');
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#94A3B8',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                Sudah punya akun? <span style={{ color: '#10B981', fontWeight: 600 }}>Masuk ke Silsilah</span>
+              </button>
+            )}
+          </div>
         </form>
+
+        {/* Reset Password Modal */}
+        <ResetPasswordModal isOpen={isResetOpen} onClose={() => setIsResetOpen(false)} />
 
         {/* Security badge */}
         <div
@@ -458,7 +620,7 @@ function FullScreenAuthPortal() {
  * Main Interactive Silsilah Dashboard
  */
 function SilsilahDashboard() {
-  const { isAuthenticated, people, logout } = useFamilyStore();
+  const { isAuthenticated, people, logout, currentUser, updateCurrentUser } = useFamilyStore();
 
   const [viewMode, setViewMode] = useState<'canvas' | 'list'>('canvas');
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
@@ -479,6 +641,9 @@ function SilsilahDashboard() {
 
   const [isAuditLogOpen, setIsAuditLogOpen] = useState(false);
   const [isAccountMgmtOpen, setIsAccountMgmtOpen] = useState(false);
+  const [isResetAdminOpen, setIsResetAdminOpen] = useState(false);
+  const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+  const [isCommunityChatOpen, setIsCommunityChatOpen] = useState(false);
   const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
 
@@ -529,6 +694,9 @@ function SilsilahDashboard() {
         onOpenAddMember={handleOpenAddMember}
         onOpenAuditLog={() => setIsAuditLogOpen(true)}
         onOpenAccountMgmt={() => setIsAccountMgmtOpen(true)}
+        onOpenResetAdmin={() => setIsResetAdminOpen(true)}
+        onOpenUserProfile={() => setIsUserProfileOpen(true)}
+        onOpenCommunityChat={() => setIsCommunityChatOpen(true)}
         onOpenProfile={(id) => setSelectedProfileId(id)}
         onOpenAuth={handleOpenAuth}
         onOpenWorkspaceSettings={() => setIsWorkspaceModalOpen(true)}
@@ -567,6 +735,39 @@ function SilsilahDashboard() {
 
         {/* Canvas or List view */}
         <div style={{ flex: 1, height: '100%', position: 'relative' }}>
+          {/* Floating Unhide Button when sidebar is hidden */}
+          {!isSidebarOpen && (
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              title="Buka Daftar Anggota Silsilah"
+              style={{
+                position: 'absolute',
+                top: 14,
+                left: 14,
+                zIndex: 35,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 7,
+                background: 'rgba(19, 27, 46, 0.92)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid #1E293B',
+                color: '#F8FAFC',
+                padding: '7px 13px',
+                borderRadius: 8,
+                fontSize: 12,
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#10B981')}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#1E293B')}
+            >
+              <Users size={14} color="#10B981" />
+              <span>Daftar Anggota</span>
+            </button>
+          )}
+
           {viewMode === 'canvas' ? (
             <TreeCanvas
               onOpenProfile={(id) => setSelectedProfileId(id)}
@@ -716,11 +917,50 @@ function SilsilahDashboard() {
         initialMode={authMode}
         onClose={() => setIsAuthModalOpen(false)}
       />
+
+      {/* Password Reset Requests Admin Modal (WhatsApp & Email with PDF download/print) */}
+      <PasswordResetAdminModal
+        isOpen={isResetAdminOpen}
+        onClose={() => setIsResetAdminOpen(false)}
+      />
+
+      {/* Floating AI Chatbot Assistant (Gemini / OpenAI / Built-in Engine) */}
+      <AIChatDrawer />
+
+      {/* Community Chat Drawer */}
+      {currentUser && (
+        <CommunityChatDrawer
+          isOpen={isCommunityChatOpen}
+          onClose={() => setIsCommunityChatOpen(false)}
+          currentUser={currentUser}
+        />
+      )}
+
+      {/* User Profile & Photo Avatar Modal */}
+      {isUserProfileOpen && currentUser && (
+        <UserProfileModal
+          currentUser={currentUser}
+          onClose={() => setIsUserProfileOpen(false)}
+          onUserUpdated={(updatedUser) => {
+            updateCurrentUser(updatedUser);
+          }}
+        />
+      )}
     </div>
   );
 }
 
 export default function HomePage() {
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('silsilah_custom_theme_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        applyThemeColors(parsed);
+      }
+    } catch {}
+  }, []);
+
   return (
     <FamilyStoreProvider>
       <SilsilahDashboard />

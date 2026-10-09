@@ -547,3 +547,110 @@ export const INDONESIAN_CITIES: string[] = [
   'Sorong, Papua Barat Daya',
   'Luar Negeri (Internasional)',
 ];
+
+export interface LocationSuggestion {
+  title: string;
+  subtitle: string;
+  fullText: string;
+}
+
+export const INDONESIAN_LOCATION_SAMPLES: LocationSuggestion[] = [
+  { title: 'Ketabang', subtitle: 'Kec. Genteng, Kota Surabaya, Jawa Timur', fullText: 'Kelurahan Ketabang, Kec. Genteng, Kota Surabaya, Jawa Timur' },
+  { title: 'Gubeng', subtitle: 'Kec. Gubeng, Kota Surabaya, Jawa Timur', fullText: 'Kelurahan Gubeng, Kec. Gubeng, Kota Surabaya, Jawa Timur' },
+  { title: 'Wonokromo', subtitle: 'Kec. Wonokromo, Kota Surabaya, Jawa Timur', fullText: 'Kelurahan Wonokromo, Kec. Wonokromo, Kota Surabaya, Jawa Timur' },
+  { title: 'Rungkut Kidul', subtitle: 'Kec. Rungkut, Kota Surabaya, Jawa Timur', fullText: 'Kelurahan Rungkut Kidul, Kec. Rungkut, Kota Surabaya, Jawa Timur' },
+  { title: 'Klojen', subtitle: 'Kec. Klojen, Kota Malang, Jawa Timur', fullText: 'Kelurahan Klojen, Kec. Klojen, Kota Malang, Jawa Timur' },
+  { title: 'Lowokwaru', subtitle: 'Kec. Lowokwaru, Kota Malang, Jawa Timur', fullText: 'Kelurahan Lowokwaru, Kec. Lowokwaru, Kota Malang, Jawa Timur' },
+  { title: 'Puri', subtitle: 'Kec. Puri, Kab. Mojokerto, Jawa Timur', fullText: 'Desa Puri, Kec. Puri, Kab. Mojokerto, Jawa Timur' },
+  { title: 'Candi', subtitle: 'Kec. Candi, Kab. Sidoarjo, Jawa Timur', fullText: 'Desa Candi, Kec. Candi, Kab. Sidoarjo, Jawa Timur' },
+  { title: 'Menteng', subtitle: 'Kec. Menteng, Jakarta Pusat, DKI Jakarta', fullText: 'Kelurahan Menteng, Kec. Menteng, Jakarta Pusat, DKI Jakarta' },
+  { title: 'Kebayoran Baru', subtitle: 'Kec. Kebayoran Baru, Jakarta Selatan, DKI Jakarta', fullText: 'Kelurahan Kebayoran Baru, Kec. Kebayoran Baru, Jakarta Selatan, DKI Jakarta' },
+  { title: 'Tebet', subtitle: 'Kec. Tebet, Jakarta Selatan, DKI Jakarta', fullText: 'Kelurahan Tebet Barat, Kec. Tebet, Jakarta Selatan, DKI Jakarta' },
+  { title: 'Cilandak', subtitle: 'Kec. Cilandak, Jakarta Selatan, DKI Jakarta', fullText: 'Kelurahan Cilandak Barat, Kec. Cilandak, Jakarta Selatan, DKI Jakarta' },
+  { title: 'Kelapa Gading', subtitle: 'Kec. Kelapa Gading, Jakarta Utara, DKI Jakarta', fullText: 'Kelurahan Kelapa Gading Timur, Kec. Kelapa Gading, Jakarta Utara, DKI Jakarta' },
+  { title: 'Dago', subtitle: 'Kec. Coblong, Kota Bandung, Jawa Barat', fullText: 'Kelurahan Dago, Kec. Coblong, Kota Bandung, Jawa Barat' },
+  { title: 'Braga', subtitle: 'Kec. Sumur Bandung, Kota Bandung, Jawa Barat', fullText: 'Kelurahan Braga, Kec. Sumur Bandung, Kota Bandung, Jawa Barat' },
+  { title: 'Cibinong', subtitle: 'Kec. Cibinong, Kab. Bogor, Jawa Barat', fullText: 'Kelurahan Cibinong, Kec. Cibinong, Kab. Bogor, Jawa Barat' },
+  { title: 'Beji', subtitle: 'Kec. Beji, Kota Depok, Jawa Barat', fullText: 'Kelurahan Beji, Kec. Beji, Kota Depok, Jawa Barat' },
+  { title: 'Bumi Serpong Damai (BSD)', subtitle: 'Kec. Serpong, Kota Tangerang Selatan, Banten', fullText: 'BSD City, Kec. Serpong, Kota Tangerang Selatan, Banten' },
+  { title: 'Banjarsari', subtitle: 'Kec. Banjarsari, Kota Surakarta (Solo), Jawa Tengah', fullText: 'Kelurahan Banjarsari, Kec. Banjarsari, Kota Surakarta (Solo), Jawa Tengah' },
+  { title: 'Candisari', subtitle: 'Kec. Candisari, Kota Semarang, Jawa Tengah', fullText: 'Kelurahan Candisari, Kec. Candisari, Kota Semarang, Jawa Tengah' },
+  { title: 'Malioboro', subtitle: 'Kec. Danurejan, Kota Yogyakarta, DI Yogyakarta', fullText: 'Kawasan Malioboro, Kec. Danurejan, Kota Yogyakarta, DI Yogyakarta' },
+  { title: 'Kuta', subtitle: 'Kec. Kuta, Kab. Badung, Bali', fullText: 'Kelurahan Kuta, Kec. Kuta, Kab. Badung, Bali' },
+  { title: 'Sanur', subtitle: 'Kec. Denpasar Selatan, Kota Denpasar, Bali', fullText: 'Kelurahan Sanur, Kec. Denpasar Selatan, Kota Denpasar, Bali' },
+  { title: 'Ubud', subtitle: 'Kec. Ubud, Kab. Gianyar, Bali', fullText: 'Desa Ubud, Kec. Ubud, Kab. Gianyar, Bali' },
+  { title: 'Medan Baru', subtitle: 'Kec. Medan Baru, Kota Medan, Sumatera Utara', fullText: 'Kec. Medan Baru, Kota Medan, Sumatera Utara' },
+  { title: 'Ilir Barat', subtitle: 'Kec. Ilir Barat I, Kota Palembang, Sumatera Selatan', fullText: 'Kec. Ilir Barat I, Kota Palembang, Sumatera Selatan' },
+  { title: 'Panakkukang', subtitle: 'Kec. Panakkukang, Kota Makassar, Sulawesi Selatan', fullText: 'Kec. Panakkukang, Kota Makassar, Sulawesi Selatan' },
+  { title: 'Balikpapan Selatan', subtitle: 'Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur', fullText: 'Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur' },
+];
+
+export async function searchIndonesianLocations(queryStr: string): Promise<LocationSuggestion[]> {
+  const q = queryStr.trim().toLowerCase();
+  if (!q || q.length < 2) return [];
+
+  const results: LocationSuggestion[] = [];
+  const seen = new Set<string>();
+
+  // 1. Check local dataset first for instant responsiveness
+  INDONESIAN_LOCATION_SAMPLES.forEach((loc) => {
+    if (
+      loc.title.toLowerCase().includes(q) ||
+      loc.subtitle.toLowerCase().includes(q) ||
+      loc.fullText.toLowerCase().includes(q)
+    ) {
+      if (!seen.has(loc.fullText)) {
+        seen.add(loc.fullText);
+        results.push(loc);
+      }
+    }
+  });
+
+  // Also match cities from INDONESIAN_CITIES
+  INDONESIAN_CITIES.forEach((c) => {
+    if (c.toLowerCase().includes(q)) {
+      if (!seen.has(c)) {
+        seen.add(c);
+        results.push({
+          title: c.split(',')[0],
+          subtitle: c.includes(',') ? c.slice(c.indexOf(',') + 1).trim() : 'Indonesia',
+          fullText: c,
+        });
+      }
+    }
+  });
+
+  // 2. Fetch Nominatim if online (with 1.5s timeout)
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 1500);
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&countrycodes=id&addressdetails=1&q=${encodeURIComponent(queryStr)}&limit=6`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        data.forEach((item: any) => {
+          const addr = item.address || {};
+          const village = addr.village || addr.suburb || addr.neighbourhood || addr.hamlet || item.name;
+          const district = addr.county || addr.city_district || addr.municipality || '';
+          const state = addr.state || '';
+          const fullDisplayName = item.display_name.split(', Indonesia')[0];
+          
+          if (!seen.has(fullDisplayName)) {
+            seen.add(fullDisplayName);
+            results.push({
+              title: village || item.name,
+              subtitle: [district, state].filter(Boolean).join(', ') || item.display_name,
+              fullText: fullDisplayName,
+            });
+          }
+        });
+      }
+    }
+  } catch {}
+
+  return results.slice(0, 8);
+}

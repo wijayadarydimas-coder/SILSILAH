@@ -3,54 +3,64 @@ import bcrypt from 'bcryptjs';
 
 const { Client } = pg;
 
-const host = process.env.PGHOST || 'localhost';
-const port = parseInt(process.env.PGPORT || '5432', 10);
-const user = process.env.PGUSER || 'postgres';
+const databaseUrl = process.env.DATABASE_URL;
+const host = process.env.PGHOST;
+const port = parseInt(process.env.PGPORT, 10);
+const user = process.env.PGUSER;
 const password = process.env.PGPASSWORD;
-const dbName = process.env.PGDATABASE || 'silsilah_db';
+const dbName = process.env.PGDATABASE;
+const ssl = process.env.DATABASE_SSL === 'false' ? false : (databaseUrl || process.env.PGSSL === 'true' ? { rejectUnauthorized: false } : undefined);
 
 const superadminUsername = (process.env.SUPERADMIN_USERNAME || 'silsilah').trim().toLowerCase();
 const superadminPassword = process.env.SUPERADMIN_PASSWORD || 'silsilah123';
 const superadminDisplayName = process.env.SUPERADMIN_DISPLAY_NAME || 'Superadmin SILSILAH';
 
-if (!password) {
-  console.error('❌ Error: Variabel PGPASSWORD tidak ditemukan dalam .env.local!');
-  console.error('Harap pastikan file .env.local sudah berisi PGPASSWORD=password_postgresql_anda');
+if (!databaseUrl && !password) {
+  console.error('❌ Error: Variabel PGPASSWORD atau DATABASE_URL tidak ditemukan!');
+  console.error('Harap pastikan file .env.local sudah berisi PGPASSWORD atau DATABASE_URL.');
   process.exit(1);
 }
 
 async function init() {
   console.log('==================================================');
-  console.log('🚀 INISIALISASI DATABASE SILSILAH DARI .ENV.LOCAL');
+  console.log('🚀 INISIALISASI DATABASE SILSILAH');
   console.log('==================================================');
-  console.log(`Host: ${host}:${port}`);
-  console.log(`User: ${user}`);
-  console.log(`Database: ${dbName}`);
+  if (databaseUrl) {
+    console.log(`Database URL: Terkonfigurasi (Cloud / Hosting)`);
+  } else {
+    console.log(`Host: ${host}:${port}`);
+    console.log(`User: ${user}`);
+    console.log(`Database: ${dbName}`);
+  }
   console.log(`Superadmin: ${superadminUsername}`);
   console.log('--------------------------------------------------');
 
-  // 1. Pastikan database ada di server PostgreSQL
-  const rootClient = new Client({ host, port, user, password, database: 'postgres' });
-  try {
-    await rootClient.connect();
-    const checkRes = await rootClient.query('SELECT 1 FROM pg_database WHERE datname = $1', [dbName]);
-    if (checkRes.rows.length === 0) {
-      console.log(`[1/3] Membuat database baru "${dbName}"...`);
-      await rootClient.query(`CREATE DATABASE "${dbName}"`);
-      console.log(`✓ Database "${dbName}" berhasil dibuat!`);
-    } else {
-      console.log(`✓ Database "${dbName}" sudah tersedia.`);
-    }
-  } catch (err) {
-    console.warn(`[Info] Root check note: ${err.message}`);
-  } finally {
+  // 1. Jika localhost (tanpa DATABASE_URL), pastikan database ada di server PostgreSQL
+  if (!databaseUrl) {
+    const rootClient = new Client({ host, port, user, password, database: 'postgres', ssl });
     try {
-      await rootClient.end();
-    } catch {}
+      await rootClient.connect();
+      const checkRes = await rootClient.query('SELECT 1 FROM pg_database WHERE datname = $1', [dbName]);
+      if (checkRes.rows.length === 0) {
+        console.log(`[1/3] Membuat database baru "${dbName}"...`);
+        await rootClient.query(`CREATE DATABASE "${dbName}"`);
+        console.log(`✓ Database "${dbName}" berhasil dibuat!`);
+      } else {
+        console.log(`✓ Database "${dbName}" sudah tersedia.`);
+      }
+    } catch (err) {
+      console.warn(`[Info] Root check note: ${err.message}`);
+    } finally {
+      try {
+        await rootClient.end();
+      } catch {}
+    }
   }
 
   // 2. Hubungkan ke database aplikasi & buat tabel-tabel
-  const appClient = new Client({ host, port, user, password, database: dbName });
+  const appClient = databaseUrl
+    ? new Client({ connectionString: databaseUrl, ssl })
+    : new Client({ host, port, user, password, database: dbName, ssl });
   await appClient.connect();
 
   try {
@@ -134,6 +144,32 @@ async function init() {
         timestamp TIMESTAMPTZ DEFAULT NOW(),
         summary TEXT NOT NULL
       );
+
+      CREATE TABLE IF NOT EXISTS password_reset_requests (
+        id VARCHAR(100) PRIMARY KEY,
+        user_id VARCHAR(100) REFERENCES users(id) ON DELETE CASCADE,
+        username VARCHAR(100) NOT NULL,
+        display_name VARCHAR(255),
+        contact_type VARCHAR(50) NOT NULL,
+        contact_value VARCHAR(255) NOT NULL,
+        token VARCHAR(100),
+        status VARCHAR(50) DEFAULT 'pending',
+        notes TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        resolved_at TIMESTAMPTZ
+      );
+
+      CREATE TABLE IF NOT EXISTS community_messages (
+        id VARCHAR(100) PRIMARY KEY,
+        user_id VARCHAR(100) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        username VARCHAR(100) NOT NULL,
+        display_name VARCHAR(255) NOT NULL,
+        avatar_url TEXT,
+        user_role VARCHAR(50) NOT NULL DEFAULT 'client',
+        message TEXT NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ
+      );
     `);
 
     // Pastikan kolom baru ter-alter bila tabel sudah ada dari versi sebelumnya
@@ -143,6 +179,9 @@ async function init() {
       ALTER TABLE people ADD COLUMN IF NOT EXISTS photo_offset_y NUMERIC DEFAULT 0;
       ALTER TABLE people ADD COLUMN IF NOT EXISTS linked_user_id VARCHAR(100) REFERENCES users(id) ON DELETE SET NULL;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS linked_person_id VARCHAR(100);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(100);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;
     `);
 
     console.log('✓ Struktur tabel PostgreSQL lengkap & siap.');

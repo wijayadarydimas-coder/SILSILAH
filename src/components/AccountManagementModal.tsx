@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useFamilyStore } from '@/lib/store';
 import { UserRole } from '@/types';
-import { X, Shield, UserPlus, Power, AlertTriangle, CheckCircle, Mail } from 'lucide-react';
+import { X, Shield, UserPlus, Power, AlertTriangle, CheckCircle, Mail, Trash2 } from 'lucide-react';
 
 interface AccountManagementModalProps {
   isOpen: boolean;
@@ -18,6 +18,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
     updateUserRole,
     toggleUserStatus,
     inviteUser,
+    deleteUser,
   } = useFamilyStore();
 
   const [inviteEmail, setInviteEmail] = useState('');
@@ -27,6 +28,18 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
   const [successMsg, setSuccessMsg] = useState('');
 
   if (!isOpen) return null;
+
+  const handleDeleteUser = async (userId: string, name: string) => {
+    if (!window.confirm(`Apakah Anda yakin ingin menghapus akun "${name}"? Akun ini akan dihapus secara permanen dari sistem.`)) return;
+    setErrorMsg('');
+    const res = await deleteUser(userId);
+    if (!res.success) {
+      setErrorMsg(res.error || 'Gagal menghapus akun.');
+    } else {
+      setSuccessMsg(`Akun "${name}" berhasil dihapus.`);
+      setTimeout(() => setSuccessMsg(''), 2500);
+    }
+  };
 
   const handleRoleChange = async (userId: string, newRole: UserRole) => {
     setErrorMsg('');
@@ -224,7 +237,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                         </span>
                       ) : (
                         <>
-                          {/* Role Selector between Admin and Client */}
+                          {/* Role Selector between Admin and User */}
                           <select
                             value={u.role}
                             onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
@@ -239,7 +252,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             }}
                           >
                             <option value="admin">Admin (Kelola Data)</option>
-                            <option value="client">Client (Baca Saja)</option>
+                            <option value="client">User (Baca Saja)</option>
                           </select>
 
                           {/* Deactivate/Activate button */}
@@ -260,6 +273,29 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             <Power size={13} />
                             {isDeactivated ? 'Aktifkan' : 'Nonaktif'}
                           </button>
+
+                          {/* Delete Account button (Superadmin only) */}
+                          {currentRole === 'superadmin' && !isSelf && (
+                            <button
+                              onClick={() => handleDeleteUser(u.id, u.displayName)}
+                              title="Hapus akun secara permanen"
+                              style={{
+                                padding: '6px 8px',
+                                borderRadius: 6,
+                                background: 'rgba(239, 68, 68, 0.15)',
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                color: '#F87171',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                fontSize: 11.5,
+                                cursor: 'pointer',
+                              }}
+                            >
+                              <Trash2 size={13} />
+                              Hapus
+                            </button>
+                          )}
                         </>
                       )}
                     </div>
@@ -321,7 +357,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                     fontSize: 12.5,
                   }}
                 >
-                  <option value="client">Client (Baca saja)</option>
+                  <option value="client">User (Baca saja)</option>
                   <option value="admin">Admin (Editor)</option>
                   <option value="superadmin">Superadmin</option>
                 </select>

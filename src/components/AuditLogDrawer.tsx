@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useFamilyStore } from '@/lib/store';
-import { X, History, Clock, User, Shield, Activity } from 'lucide-react';
+import { X, History, Clock, User, Shield, Activity, Trash2 } from 'lucide-react';
 
 interface AuditLogDrawerProps {
   isOpen: boolean;
@@ -10,9 +10,22 @@ interface AuditLogDrawerProps {
 }
 
 export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
-  const { auditLogs } = useFamilyStore();
+  const { auditLogs, currentRole, deleteAuditLog, clearAuditLogs } = useFamilyStore();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   if (!isOpen) return null;
+
+  const handleClearAll = async () => {
+    if (!window.confirm('Apakah Anda yakin ingin menghapus SEMUA catatan audit log? Tindakan ini tidak dapat dibatalkan.')) return;
+    setIsDeleting(true);
+    await clearAuditLogs();
+    setIsDeleting(false);
+  };
+
+  const handleDeleteSingle = async (logId: string) => {
+    if (!window.confirm('Hapus log aktivitas ini?')) return;
+    await deleteAuditLog(logId);
+  };
 
   const getActionBadge = (action: string) => {
     if (action.startsWith('CREATE')) {
@@ -64,9 +77,34 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
             Audit Log Riwayat Perubahan Silsilah
           </h2>
         </div>
-        <button onClick={onClose} style={{ color: '#94A3B8' }}>
-          <X size={20} />
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {currentRole === 'superadmin' && auditLogs.length > 0 && (
+            <button
+              onClick={handleClearAll}
+              disabled={isDeleting}
+              title="Bersihkan Semua Log (Superadmin)"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#F87171',
+                padding: '5px 10px',
+                borderRadius: 6,
+                fontSize: 12,
+                cursor: 'pointer',
+                fontWeight: 500,
+              }}
+            >
+              <Trash2 size={13} />
+              <span>{isDeleting ? 'Membersihkan...' : 'Bersihkan Semua'}</span>
+            </button>
+          )}
+          <button onClick={onClose} style={{ color: '#94A3B8', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', padding: 4 }}>
+            <X size={20} />
+          </button>
+        </div>
       </div>
 
       {/* Body */}
@@ -123,10 +161,33 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
                   >
                     {badge.label}
                   </span>
-                  <span style={{ fontSize: 11, color: '#64748B', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Clock size={11} />
-                    {dateStr}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 11, color: '#64748B', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Clock size={11} />
+                      {dateStr}
+                    </span>
+                    {currentRole === 'superadmin' && (
+                      <button
+                        onClick={() => handleDeleteSingle(log.id)}
+                        title="Hapus riwayat log ini"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#64748B',
+                          cursor: 'pointer',
+                          padding: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          borderRadius: 4,
+                          transition: 'color 0.15s ease',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = '#F87171')}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = '#64748B')}
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div style={{ fontSize: 13, color: '#F1F5F9', fontWeight: 500, lineHeight: 1.4 }}>

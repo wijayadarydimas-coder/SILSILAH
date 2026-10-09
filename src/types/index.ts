@@ -2,7 +2,8 @@ export type UserRole = 'superadmin' | 'admin' | 'client';
 
 export interface UserAccount {
   id: string;
-  email: string;
+  email?: string;
+  phone?: string;
   username?: string;
   displayName: string;
   role: UserRole;
@@ -11,6 +12,33 @@ export interface UserAccount {
   avatarUrl?: string;
   createdAt: string;
 }
+
+export interface PasswordResetRequest {
+  id: string;
+  userId?: string;
+  username: string;
+  displayName?: string;
+  contactType: 'email' | 'whatsapp';
+  contactValue: string;
+  token?: string;
+  status: 'pending' | 'resolved' | 'cancelled';
+  notes?: string;
+  createdAt: string;
+  resolvedAt?: string;
+}
+
+export interface CommunityMessage {
+  id: string;
+  userId: string;
+  username: string;
+  displayName: string;
+  avatarUrl?: string;
+  userRole: UserRole;
+  message: string;
+  createdAt: string;
+  deletedAt?: string;
+}
+
 
 export interface Workspace {
   id: string;
@@ -94,8 +122,10 @@ export interface AuditLog {
     | 'TOGGLE_USER_STATUS'
     | 'INVITE_USER'
     | 'UPDATE_WORKSPACE'
-    | 'LINK_CLIENT';
-  targetType: 'person' | 'relationship' | 'user' | 'workspace';
+    | 'LINK_CLIENT'
+    | 'DELETE_USER'
+    | 'DELETE_LOG';
+  targetType: 'person' | 'relationship' | 'user' | 'workspace' | 'audit_log';
   targetId: string;
   timestamp: string;
   summary: string;

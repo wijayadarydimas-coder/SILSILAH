@@ -17,8 +17,9 @@ import {
   MapPin,
   Share2,
   Calendar,
+  Loader2,
 } from 'lucide-react';
-import { COUNTRY_CODES, INDONESIAN_CITIES } from '@/lib/familyLogic';
+import { COUNTRY_CODES, INDONESIAN_CITIES, searchIndonesianLocations, LocationSuggestion } from '@/lib/familyLogic';
 
 interface MemberModalProps {
   isOpen: boolean;
@@ -55,6 +56,11 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
   const [countryCode, setCountryCode] = useState('+62');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
+  const [locationSuggestions, setLocationSuggestions] = useState<LocationSuggestion[]>([]);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [isSearchingLocation, setIsSearchingLocation] = useState(false);
+  const locationSearchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [email, setEmail] = useState('');
   const [instagram, setInstagram] = useState('');
   const [verificationStatus, setVerificationStatus] = useState<'verified' | 'unconfirmed'>('verified');
@@ -126,6 +132,8 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
       setBiography('');
       setAddress('');
       setSelectedCity('');
+      setLocationSuggestions([]);
+      setShowLocationDropdown(false);
       setPhone('');
       setCountryCode('+62');
       setPhoneNumber('');
@@ -138,12 +146,53 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
 
   if (!isOpen) return null;
 
+  const handleAddressChange = (val: string) => {
+    setAddress(val);
+    if (!INDONESIAN_CITIES.includes(val)) {
+      setSelectedCity('');
+    }
+
+    if (locationSearchTimeoutRef.current) {
+      clearTimeout(locationSearchTimeoutRef.current);
+    }
+
+    if (val.trim().length >= 2) {
+      setIsSearchingLocation(true);
+      setShowLocationDropdown(true);
+      locationSearchTimeoutRef.current = setTimeout(async () => {
+        try {
+          const results = await searchIndonesianLocations(val);
+          setLocationSuggestions(results);
+        } catch {
+          setLocationSuggestions([]);
+        } finally {
+          setIsSearchingLocation(false);
+        }
+      }, 250);
+    } else {
+      setLocationSuggestions([]);
+      setShowLocationDropdown(false);
+      setIsSearchingLocation(false);
+    }
+  };
+
+  const handleSelectLocation = (loc: LocationSuggestion) => {
+    setAddress(loc.fullText);
+    setSelectedCity('');
+    setShowLocationDropdown(false);
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      setErrorMsg('Ukuran file foto maksimal 5 MB.');
+    if (!file.type.startsWith('image/')) {
+      setErrorMsg('Format file tidak didukung. Harap upload gambar (JPG, PNG, WEBP).');
+      return;
+    }
+
+    if (file.size > 3 * 1024 * 1024) {
+      setErrorMsg('Ukuran file foto melebihi batas 3 MB.');
       return;
     }
 
@@ -551,16 +600,16 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
               </div>
             </div>
 
-            {/* TAUTKAN DENGAN AKUN CLIENT */}
+            {/* TAUTKAN DENGAN AKUN PENGGUNA */}
             <div style={{ background: '#131B2E', padding: 14, borderRadius: 10, border: '1px solid #1E293B' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <Link size={15} color="#3B82F6" />
                 <span style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8' }}>
-                  TAUTKAN KE AKUN PENGGUNA CLIENT
+                  TAUTKAN KE AKUN PENGGUNA (USER)
                 </span>
               </div>
               <p style={{ fontSize: 11.5, color: '#64748B', marginBottom: 8 }}>
-                Pilih akun pengguna (Client) yang merupakan representasi dari anggota keluarga ini.
+                Pilih akun pengguna (User) yang merupakan representasi dari anggota keluarga ini.
               </p>
               <select
                 value={linkedUserId}
@@ -578,17 +627,17 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 <option value="">-- Tidak ditautkan ke akun pengguna --</option>
                 {users.map((u) => (
                   <option key={u.id} value={u.id}>
-                    {u.displayName} ({u.username || u.email}) - Role: {u.role.toUpperCase()}
+                    {u.displayName} ({u.username || u.email}) - Role: {u.role === 'client' ? 'USER' : u.role.toUpperCase()}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Tanggal Lahir & Wafat (Date Picker) */}
+            {/* Tanggal Lahir & Wafat */}
             <div style={{ background: '#131B2E', padding: 14, borderRadius: 10, border: '1px solid #1E293B' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Calendar size={14} color="#10B981" /> TANGGAL KEHIDUPAN (DATE PICKER)
+                  <Calendar size={14} color="#10B981" /> TANGGAL KEHIDUPAN
                 </span>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#CBD5E1', cursor: 'pointer' }}>
                   <input
@@ -603,7 +652,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
               <div style={{ display: 'grid', gridTemplateColumns: isDeceased ? '1fr 1fr' : '1fr', gap: 12 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
-                    Pilih Tanggal Lahir
+                    Tanggal Lahir
                   </label>
                   <input
                     type="date"
@@ -625,7 +674,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 {isDeceased && (
                   <div>
                     <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
-                      Pilih Tanggal Wafat
+                      Tanggal Wafat
                     </label>
                     <input
                       type="date"
@@ -670,18 +719,19 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
               />
             </div>
 
-            {/* Kontak, Domisili & Sosmed */}
+            {/* Kontak & Domisili */}
             <div style={{ background: '#131B2E', padding: 14, borderRadius: 10, border: '1px solid #1E293B' }}>
               <span style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 12 }}>
-                KONTAK, DOMISILI &amp; MEDIA SOSIAL (Dapat Diakses Semua Anggota)
+                KONTAK &amp; DOMISILI
               </span>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {/* Domisili / Alamat */}
-                <div>
+                {/* Domisili / Alamat dengan Rekomendasi Hierarki Otomatis */}
+                <div style={{ position: 'relative' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
                     <MapPin size={13} color="#EC4899" />
-                    Domisili / Lokasi (Otomatis Tertaut Google Maps)
+                    Domisili / Alamat
+                    {isSearchingLocation && <Loader2 size={12} className="animate-spin" color="#EC4899" />}
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                     <select
@@ -691,6 +741,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                         setSelectedCity(val);
                         if (val) {
                           setAddress(val);
+                          setShowLocationDropdown(false);
                         }
                       }}
                       style={{
@@ -707,25 +758,75 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                         <option key={c} value={c}>{c}</option>
                       ))}
                     </select>
-                    <input
-                      type="text"
-                      value={address}
-                      onChange={(e) => {
-                        setAddress(e.target.value);
-                        if (!INDONESIAN_CITIES.includes(e.target.value)) {
-                          setSelectedCity('');
-                        }
-                      }}
-                      placeholder="Ketik alamat / detail domisili..."
-                      style={{
-                        padding: '8px 12px',
-                        borderRadius: 8,
-                        background: '#162035',
-                        border: '1px solid #1E293B',
-                        color: '#F8FAFC',
-                        fontSize: 12.5,
-                      }}
-                    />
+
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => handleAddressChange(e.target.value)}
+                        onFocus={() => {
+                          if (locationSuggestions.length > 0) setShowLocationDropdown(true);
+                        }}
+                        placeholder="Ketik desa/kelurahan, kec, kota..."
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          borderRadius: 8,
+                          background: '#162035',
+                          border: '1px solid #1E293B',
+                          color: '#F8FAFC',
+                          fontSize: 12.5,
+                        }}
+                      />
+
+                      {/* Dropdown Rekomendasi Lokasi Hierarki */}
+                      {showLocationDropdown && locationSuggestions.length > 0 && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: 0,
+                            right: 0,
+                            background: '#0F1626',
+                            border: '1px solid #334155',
+                            borderRadius: 8,
+                            boxShadow: '0 12px 30px rgba(0,0,0,0.85)',
+                            zIndex: 60,
+                            marginTop: 4,
+                            maxHeight: 220,
+                            overflowY: 'auto',
+                          }}
+                        >
+                          {locationSuggestions.map((loc, idx) => (
+                            <div
+                              key={idx}
+                              onClick={() => handleSelectLocation(loc)}
+                              style={{
+                                padding: '8px 12px',
+                                borderBottom: idx < locationSuggestions.length - 1 ? '1px solid #1E293B' : 'none',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: 8,
+                                transition: 'background 0.15s',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = '#1E293B')}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                            >
+                              <MapPin size={13} color="#EC4899" style={{ marginTop: 2, flexShrink: 0 }} />
+                              <div>
+                                <div style={{ fontSize: 12.5, fontWeight: 600, color: '#F8FAFC' }}>
+                                  {loc.title}
+                                </div>
+                                <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 1 }}>
+                                  {loc.subtitle}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -733,7 +834,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 <div>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
                     <Phone size={13} color="#10B981" />
-                    Nomor WhatsApp / Telepon (Tautan Langsung WA)
+                    Nomor WhatsApp / Telepon
                   </label>
                   <div style={{ display: 'flex', gap: 8 }}>
                     <select

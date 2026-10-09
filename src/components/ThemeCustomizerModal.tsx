@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { X, Palette, Sparkles, Check, RotateCcw } from 'lucide-react';
 
-interface ThemeColors {
+export interface ThemeColors {
   primary: string;
   bgPrimary: string;
+  bgNavbar: string;
+  bgMenu: string;
   bgSurface: string;
   accentGold: string;
 }
@@ -16,6 +18,8 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
     colors: {
       primary: '#10B981',
       bgPrimary: '#0A0E17',
+      bgNavbar: '#0D1322',
+      bgMenu: '#0F1626',
       bgSurface: '#131B2E',
       accentGold: '#F59E0B',
     },
@@ -25,6 +29,8 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
     colors: {
       primary: '#F59E0B',
       bgPrimary: '#0D0D0E',
+      bgNavbar: '#141416',
+      bgMenu: '#17171A',
       bgSurface: '#1C1917',
       accentGold: '#EAB308',
     },
@@ -34,6 +40,8 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
     colors: {
       primary: '#3B82F6',
       bgPrimary: '#080E1A',
+      bgNavbar: '#0B132B',
+      bgMenu: '#0E1738',
       bgSurface: '#0F172A',
       accentGold: '#38BDF8',
     },
@@ -43,6 +51,8 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
     colors: {
       primary: '#8B5CF6',
       bgPrimary: '#0E081A',
+      bgNavbar: '#140D26',
+      bgMenu: '#1A1033',
       bgSurface: '#19112E',
       accentGold: '#EC4899',
     },
@@ -52,6 +62,8 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
     colors: {
       primary: '#D97706',
       bgPrimary: '#14100C',
+      bgNavbar: '#1D1712',
+      bgMenu: '#231B15',
       bgSurface: '#241D17',
       accentGold: '#F59E0B',
     },
@@ -66,6 +78,8 @@ export function applyThemeColors(colors: ThemeColors) {
   root.style.setProperty('--primary', colors.primary);
   root.style.setProperty('--primary-hover', colors.primary);
   root.style.setProperty('--bg-primary', colors.bgPrimary);
+  root.style.setProperty('--bg-navbar', colors.bgNavbar || '#0D1322');
+  root.style.setProperty('--bg-menu', colors.bgMenu || '#0F1626');
   root.style.setProperty('--bg-surface', colors.bgSurface);
   root.style.setProperty('--bg-surface-elevated', colors.bgSurface);
   root.style.setProperty('--bg-card', colors.bgSurface);
@@ -86,8 +100,8 @@ export function ThemeCustomizerModal({ isOpen, onClose }: ThemeCustomizerModalPr
       const saved = localStorage.getItem(THEME_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        setColors(parsed);
-        applyThemeColors(parsed);
+        setColors({ ...PRESET_THEMES[0].colors, ...parsed });
+        applyThemeColors({ ...PRESET_THEMES[0].colors, ...parsed });
       }
     } catch {}
   }, []);
@@ -201,8 +215,8 @@ export function ThemeCustomizerModal({ isOpen, onClose }: ThemeCustomizerModalPr
                   <span>{preset.name}</span>
                   <div style={{ display: 'flex', gap: 4 }}>
                     <span style={{ width: 14, height: 14, borderRadius: '50%', background: preset.colors.primary }} />
+                    <span style={{ width: 14, height: 14, borderRadius: '50%', background: preset.colors.bgNavbar, border: '1px solid #334155' }} />
                     <span style={{ width: 14, height: 14, borderRadius: '50%', background: preset.colors.bgPrimary, border: '1px solid #334155' }} />
-                    <span style={{ width: 14, height: 14, borderRadius: '50%', background: preset.colors.accentGold }} />
                   </div>
                 </button>
               ))}
@@ -214,6 +228,48 @@ export function ThemeCustomizerModal({ isOpen, onClose }: ThemeCustomizerModalPr
             <span style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8' }}>
               PENGATURAN WARNA KOMPONEN KHUSUS:
             </span>
+
+            {/* Background Primary */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Latar Belakang (Canvas):</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="color"
+                  value={colors.bgPrimary}
+                  onChange={(e) => handleColorChange('bgPrimary', e.target.value)}
+                  style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
+                />
+                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.bgPrimary}</span>
+              </div>
+            </div>
+
+            {/* Navbar Background */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Navbar (Header Atas):</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="color"
+                  value={colors.bgNavbar || '#0D1322'}
+                  onChange={(e) => handleColorChange('bgNavbar', e.target.value)}
+                  style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
+                />
+                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.bgNavbar || '#0D1322'}</span>
+              </div>
+            </div>
+
+            {/* Menu / Sidebar Background */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Menu (Panel Anggota):</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="color"
+                  value={colors.bgMenu || '#0F1626'}
+                  onChange={(e) => handleColorChange('bgMenu', e.target.value)}
+                  style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
+                />
+                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.bgMenu || '#0F1626'}</span>
+              </div>
+            </div>
 
             {/* Primary Accent */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -229,23 +285,9 @@ export function ThemeCustomizerModal({ isOpen, onClose }: ThemeCustomizerModalPr
               </div>
             </div>
 
-            {/* Background Primary */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Latar Belakang Layar:</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <input
-                  type="color"
-                  value={colors.bgPrimary}
-                  onChange={(e) => handleColorChange('bgPrimary', e.target.value)}
-                  style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
-                />
-                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.bgPrimary}</span>
-              </div>
-            </div>
-
             {/* Card & Surface */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Kartu &amp; Panel Menu:</span>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Kartu &amp; Modal:</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input
                   type="color"

@@ -2,6 +2,8 @@
 
 :root {
   --bg-primary: #0A0E17;
+  --bg-navbar: #0D1322;
+  --bg-menu: #0F1626;
   --bg-surface: #111827;
   --bg-surface-elevated: #162032;
   --bg-card: #192438;

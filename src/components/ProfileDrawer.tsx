@@ -372,7 +372,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
           }}
         >
           <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 10 }}>
-            TANGGAL PENTING &amp; PENGHITUNG USIA
+            TANGGAL PENTING
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
@@ -400,12 +400,12 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               </div>
             )}
             <div style={{ fontSize: 11.5, color: '#64748B', marginTop: 2, paddingLeft: 23 }}>
-              Status Riwayat: <span style={{ color: '#E2E8F0', fontWeight: 500 }}>{ageInfo.formattedLifeSpan}</span>
+              Masa Hidup: <span style={{ color: '#E2E8F0', fontWeight: 500 }}>{ageInfo.formattedLifeSpan}</span>
             </div>
           </div>
         </div>
 
-        {/* Contact Info (Accessible to Everyone + Direct Interactive Social Links) */}
+        {/* Contact Info */}
         <div
           style={{
             background: '#131B2E',
@@ -423,22 +423,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             }}
           >
             <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8' }}>
-              INFORMASI KONTAK, DOMISILI &amp; SOSIAL MEDIA
+              INFORMASI KONTAK &amp; ALAMAT
             </h3>
-            <span
-              style={{
-                fontSize: 10.5,
-                color: '#34D399',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                background: 'rgba(16, 185, 129, 0.1)',
-                padding: '2px 6px',
-                borderRadius: 4,
-              }}
-            >
-              🌐 Akses Terbuka
-            </span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

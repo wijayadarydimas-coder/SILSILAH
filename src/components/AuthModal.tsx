@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useFamilyStore } from '@/lib/store';
-import { X, Lock, User, UserPlus, KeyRound, AlertTriangle, CheckCircle, Shield } from 'lucide-react';
+import { X, Lock, User, UserPlus, KeyRound, AlertTriangle, CheckCircle, Shield, Mail, Phone } from 'lucide-react';
+import { ResetPasswordModal } from '@/components/ResetPasswordModal';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -11,12 +12,15 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalProps) {
-  const { currentUser, onLoginSuccess } = useFamilyStore();
+  const { currentUser, onLoginSuccess, isAuthenticated, refreshUsers } = useFamilyStore();
 
   const [mode, setMode] = useState<'login' | 'register' | 'change_password'>(initialMode);
   const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [isResetOpen, setIsResetOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -67,23 +71,45 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
+
+    if (!email.trim() && !phone.trim()) {
+      setErrorMsg('Pendaftaran akun wajib menyertakan nomor WhatsApp atau alamat Email.');
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, displayName, password }),
+        body: JSON.stringify({
+          username,
+          displayName,
+          password,
+          email: email.trim() || undefined,
+          phone: phone.trim() || undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
         setErrorMsg(data.error || 'Gagal mendaftar.');
       } else {
-        setSuccessMsg('Akun Client berhasil dibuat! Anda otomatis masuk.');
-        onLoginSuccess(data.user);
-        setTimeout(() => {
-          onClose();
-        }, 1200);
+        if (isAuthenticated) {
+          setSuccessMsg(`✓ Akun "${data.user.displayName}" berhasil didaftarkan! Anda tetap berada pada akun Anda saat ini.`);
+          refreshUsers();
+          setUsername('');
+          setPassword('');
+          setDisplayName('');
+          setEmail('');
+          setPhone('');
+        } else {
+          setSuccessMsg('Akun User berhasil dibuat! Anda otomatis masuk.');
+          onLoginSuccess(data.user);
+          setTimeout(() => {
+            onClose();
+          }, 1200);
+        }
       }
     } catch {
       setErrorMsg('Koneksi ke PostgreSQL gagal.');
@@ -185,7 +211,7 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
             {mode === 'change_password' && <KeyRound size={18} color="#F59E0B" />}
             <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
               {mode === 'login' && 'Masuk ke Sistem SILSILAH'}
-              {mode === 'register' && 'Daftar Akun Baru (Client)'}
+              {mode === 'register' && 'Daftar Akun Baru'}
               {mode === 'change_password' && 'Ganti Kata Sandi Akun'}
             </h2>
           </div>
@@ -319,6 +345,24 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                 />
               </div>
 
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: -4 }}>
+                <button
+                  type="button"
+                  onClick={() => setIsResetOpen(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#F59E0B',
+                    fontSize: 12,
+                    cursor: 'pointer',
+                    padding: 0,
+                    fontWeight: 500,
+                  }}
+                >
+                  Lupa kata sandi?
+                </button>
+              </div>
+
               <button
                 type="submit"
                 disabled={loading}
@@ -377,6 +421,52 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                 />
               </div>
 
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
+                    Nomor WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="08123456789"
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      borderRadius: 8,
+                      background: '#162035',
+                      border: '1px solid #1E293B',
+                      color: '#F8FAFC',
+                      fontSize: 13,
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
+                    Alamat Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="email@keluarga.com"
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      borderRadius: 8,
+                      background: '#162035',
+                      border: '1px solid #1E293B',
+                      color: '#F8FAFC',
+                      fontSize: 13,
+                    }}
+                  />
+                </div>
+              </div>
+              <span style={{ fontSize: 11, color: '#64748B', marginTop: -6 }}>
+                *Wajib mengisi salah satu atau keduanya (WhatsApp / Email) untuk keamanan akun.
+              </span>
+
               <div>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
                   Password
@@ -409,7 +499,7 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                   color: '#93C5FD',
                 }}
               >
-                ℹ️ Status awal pendaftar adalah <b>Client (Read-Only)</b>. Superadmin berwenang menaikkan role menjadi Admin di menu Kelola Akun.
+                ℹ️ Status awal pendaftar adalah <b>User (Read-Only)</b>. Superadmin berwenang menaikkan role menjadi Admin di menu Kelola Akun.
               </div>
 
               <button
@@ -508,6 +598,9 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           )}
         </div>
       </div>
+
+      {/* Reset Password Modal */}
+      <ResetPasswordModal isOpen={isResetOpen} onClose={() => setIsResetOpen(false)} />
     </div>
   );
 }

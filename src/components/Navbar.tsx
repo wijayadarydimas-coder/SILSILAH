@@ -18,8 +18,11 @@ import {
   Lock,
   Palette,
   Users,
-  LogOut,
   Edit3,
+  KeyRound,
+  MessageSquare,
+  Camera,
+  LogOut,
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -33,6 +36,9 @@ interface NavbarProps {
   onOpenWorkspaceSettings?: () => void;
   onOpenThemeCustomizer?: () => void;
   onToggleSidebarMembers?: () => void;
+  onOpenResetAdmin?: () => void;
+  onOpenUserProfile?: () => void;
+  onOpenCommunityChat?: () => void;
   isSidebarOpen?: boolean;
   onLogout?: () => void;
 }
@@ -48,6 +54,9 @@ export function Navbar({
   onOpenWorkspaceSettings,
   onOpenThemeCustomizer,
   onToggleSidebarMembers,
+  onOpenResetAdmin,
+  onOpenUserProfile,
+  onOpenCommunityChat,
   isSidebarOpen,
   onLogout,
 }: NavbarProps) {
@@ -98,7 +107,7 @@ export function Navbar({
   const getRoleBadge = (role: UserRole) => {
     if (role === 'superadmin') return { label: 'Superadmin', bg: 'rgba(245, 158, 11, 0.2)', text: '#FBBF24' };
     if (role === 'admin') return { label: 'Admin', bg: 'rgba(59, 130, 246, 0.2)', text: '#60A5FA' };
-    return { label: 'Client (Read-only)', bg: 'rgba(148, 163, 184, 0.2)', text: '#94A3B8' };
+    return { label: 'User (Read-only)', bg: 'rgba(148, 163, 184, 0.2)', text: '#94A3B8' };
   };
 
   const roleBadge = getRoleBadge(currentRole);
@@ -108,7 +117,7 @@ export function Navbar({
   return (
     <header
       style={{
-        background: '#0D1322',
+        background: 'var(--bg-navbar, #0D1322)',
         borderBottom: '1px solid #1E293B',
         padding: '10px 20px',
         display: 'flex',
@@ -417,6 +426,51 @@ export function Navbar({
           </button>
         )}
 
+        {/* Password Reset Requests (Admin & Superadmin) */}
+        {canEdit && onOpenResetAdmin && (
+          <button
+            onClick={onOpenResetAdmin}
+            title="Daftar Permintaan Lupa Kata Sandi (Unduh / Cetak PDF)"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '7px 12px',
+              borderRadius: 8,
+              background: '#162035',
+              color: '#F59E0B',
+              border: '1px solid #1E293B',
+              fontSize: 12,
+              fontWeight: 500,
+            }}
+          >
+            <KeyRound size={14} />
+            Lupa Password
+          </button>
+        )}
+
+        {/* Chat Komunitas Button */}
+        <button
+          onClick={onOpenCommunityChat}
+          className="btn-secondary"
+          title="Buka Obrolan Komunitas Keluarga"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '7px 12px',
+            borderRadius: 8,
+            background: '#162035',
+            color: '#38BDF8',
+            border: '1px solid #1E293B',
+            fontSize: 12,
+            fontWeight: 500,
+          }}
+        >
+          <MessageSquare size={14} />
+          Chat Komunitas
+        </button>
+
         {/* Add Member Button (Admin / Superadmin only) */}
         {canEdit ? (
           <button
@@ -429,7 +483,7 @@ export function Navbar({
           </button>
         ) : (
           <div
-            title="Akun Client hanya memiliki hak baca (Read-only)"
+            title="Akun User hanya memiliki hak baca (Read-only)"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -521,6 +575,26 @@ export function Navbar({
                 <button
                   onClick={() => {
                     setIsUserMenuOpen(false);
+                    onOpenUserProfile?.();
+                  }}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '7px 10px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    color: '#38BDF8',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <Camera size={14} /> 👤 Edit Profil & Foto Akun
+                </button>
+                <button
+                  onClick={() => {
+                    setIsUserMenuOpen(false);
                     onOpenAuth('change_password');
                   }}
                   style={{
@@ -576,7 +650,7 @@ export function Navbar({
                     gap: 6,
                   }}
                 >
-                  ✨ Daftar Akun Baru (Client)
+                  ✨ Daftar Akun Baru (User)
                 </button>
                 {onLogout && (
                   <button

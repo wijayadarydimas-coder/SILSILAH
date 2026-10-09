@@ -71,7 +71,7 @@ export function SidebarMembers({
         zIndex: 40,
         display: 'flex',
         transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+        transform: isOpen ? 'translateX(0)' : 'translateX(-310px)',
       }}
     >
       {/* Main Panel Content */}
@@ -79,7 +79,7 @@ export function SidebarMembers({
         style={{
           width: 310,
           height: '100%',
-          background: 'rgba(15, 22, 38, 0.95)',
+          background: 'var(--bg-menu, rgba(15, 22, 38, 0.95))',
           backdropFilter: 'blur(12px)',
           borderRight: '1px solid #1E293B',
           boxShadow: '10px 0 30px rgba(0, 0, 0, 0.6)',
@@ -92,7 +92,7 @@ export function SidebarMembers({
           style={{
             padding: '16px',
             borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            background: 'var(--bg-menu, #131B2E)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -147,7 +147,7 @@ export function SidebarMembers({
                 color: filterMode === 'clients' ? 'white' : '#94A3B8',
               }}
             >
-              Akun Klien
+              Akun User
             </button>
           </div>
 
@@ -322,7 +322,7 @@ export function SidebarMembers({
                             gap: 2,
                           }}
                         >
-                          <Link size={9} /> Klien
+                          <Link size={9} /> User
                         </span>
                       )}
                     </div>
@@ -357,27 +357,37 @@ export function SidebarMembers({
         </div>
       </aside>
 
-      {/* Toggle Handle Button */}
+      {/* Toggle Handle Button (Always visible on left edge) */}
       <button
         onClick={onToggle}
-        title={isOpen ? 'Tutup Panel Anggota' : 'Buka Panel Anggota & Drag Relasi'}
+        title={isOpen ? 'Tutup Panel Anggota' : 'Buka Panel Daftar Anggota'}
         style={{
-          width: 24,
-          height: 60,
-          background: '#131B2E',
+          width: isOpen ? 24 : 32,
+          height: isOpen ? 60 : 76,
+          background: isOpen ? '#131B2E' : '#10B981',
           border: '1px solid #1E293B',
           borderLeft: 'none',
           borderRadius: '0 8px 8px 0',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#10B981',
+          gap: 3,
+          color: isOpen ? '#10B981' : '#0A0E17',
           alignSelf: 'center',
           cursor: 'pointer',
-          boxShadow: '4px 0 10px rgba(0,0,0,0.4)',
+          boxShadow: '4px 0 12px rgba(0,0,0,0.5)',
+          transition: 'all 0.2s ease',
         }}
       >
-        {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+        {isOpen ? (
+          <ChevronLeft size={16} />
+        ) : (
+          <>
+            <Users size={15} />
+            <ChevronRight size={13} />
+          </>
+        )}
       </button>
     </div>
   );

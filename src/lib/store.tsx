@@ -34,6 +34,7 @@ interface FamilyStoreContextType {
   
   // Auth Actions
   onLoginSuccess: (user: UserAccount) => void;
+  updateCurrentUser: (user: UserAccount) => void;
   logout: () => void;
   refreshUsers: () => Promise<void>;
   
@@ -59,6 +60,11 @@ interface FamilyStoreContextType {
   updateUserRole: (userId: string, role: UserRole) => Promise<{ success: boolean; error?: string }>;
   toggleUserStatus: (userId: string) => Promise<{ success: boolean; error?: string }>;
   inviteUser: (email: string, role: UserRole, displayName: string) => { success: boolean; error?: string };
+  deleteUser: (userId: string) => Promise<{ success: boolean; error?: string }>;
+
+  // Audit Log Management (Superadmin)
+  deleteAuditLog: (logId: string) => Promise<{ success: boolean; error?: string }>;
+  clearAuditLogs: () => Promise<{ success: boolean; error?: string }>;
 
   // System
   resetToDefaultData: () => void;
@@ -140,6 +146,14 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
   const onLoginSuccess = (user: UserAccount) => {
     setCurrentUser(user);
     setIsAuthenticated(true);
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    } catch {}
+    refreshUsers();
+  };
+
+  const updateCurrentUser = (user: UserAccount) => {
+    setCurrentUser(user);
     try {
       localStorage.setItem(SESSION_KEY, JSON.stringify(user));
     } catch {}
@@ -509,7 +523,7 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
 
   const linkClientToPerson = async (personId: string, userId: string) => {
     if (currentRole !== 'superadmin' && currentRole !== 'admin') {
-      return { success: false, error: 'Akses ditolak: Hanya Admin/Superadmin yang dapat menautkan akun klien.' };
+      return { success: false, error: 'Akses ditolak: Hanya Admin/Superadmin yang dapat menautkan akun user.' };
     }
     const person = people.find((p) => p.id === personId);
     const user = users.find((u) => u.id === userId);
@@ -517,8 +531,51 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
 
     updatePerson(personId, { linkedUserId: userId || undefined });
 
-    const log = logAction('LINK_CLIENT', 'person', personId, `Menautkan akun klien ${user?.displayName || userId} ke anggota ${person.fullName}`);
+    const log = logAction('LINK_CLIENT', 'person', personId, `Menautkan akun user ${user?.displayName || userId} ke anggota ${person.fullName}`);
     await syncBackendMutation('LINK_CLIENT', { personId, userId }, log);
+    return { success: true };
+  };
+
+  const deleteUser = async (userId: string) => {
+    if (currentRole !== 'superadmin') {
+      return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang menghapus akun.' };
+    }
+    if (currentUser?.id === userId) {
+      return { success: false, error: 'Anda tidak dapat menghapus akun Anda sendiri saat sedang aktif.' };
+    }
+
+    try {
+      const res = await fetch(`/api/users?id=${encodeURIComponent(userId)}&actorUserId=${encodeURIComponent(currentUser?.id || 'usr-superadmin')}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Gagal menghapus akun.' };
+      }
+      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      setPeople((prev) => prev.map((p) => p.linkedUserId === userId ? { ...p, linkedUserId: undefined } : p));
+      logAction('DELETE_USER', 'user', userId, `Menghapus akun pengguna (${userId}) dari sistem.`);
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Koneksi ke server database gagal.' };
+    }
+  };
+
+  const deleteAuditLog = async (logId: string) => {
+    if (currentRole !== 'superadmin') {
+      return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang menghapus log audit.' };
+    }
+    setAuditLogs((prev) => prev.filter((l) => l.id !== logId));
+    await syncBackendMutation('DELETE_AUDIT_LOG', { logId });
+    return { success: true };
+  };
+
+  const clearAuditLogs = async () => {
+    if (currentRole !== 'superadmin') {
+      return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang membersihkan riwayat log audit.' };
+    }
+    setAuditLogs([]);
+    await syncBackendMutation('CLEAR_AUDIT_LOGS', {});
     return { success: true };
   };
 
@@ -546,6 +603,7 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
         focusPersonId,
         collapsedNodes,
         onLoginSuccess,
+        updateCurrentUser,
         logout,
         refreshUsers,
         switchUser,
@@ -563,6 +621,9 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
         updateUserRole,
         toggleUserStatus,
         inviteUser,
+        deleteUser,
+        deleteAuditLog,
+        clearAuditLogs,
         resetToDefaultData,
       }}
     >
