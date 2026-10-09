@@ -149,9 +149,10 @@ Script ini akan langsung membuat semua tabel yang dibutuhkan dan akun superadmin
 
 ## 🤖 Integrasi Asisten Chatbot AI Silsilah
 
-Aplikasi dilengkapi tombol mengambang interaktif **`✨ Tanya AI Silsilah`** di pojok kanan bawah. Pengguna dapat menanyakan silsilah keluarga dalam bahasa alami (misalnya: *"Siapa kakek dari Budi?"*, *"Berapa jumlah total keturunan saat ini?"*, *"Siapa saja yang berdomisili di Yogyakarta?"*).
+Aplikasi dilengkapi tombol mengambang interaktif **`✨ Tanya AI Silsilah`** di pojok kanan bawah. Pengguna dapat menanyakan silsilah keluarga dalam bahasa alami (misalnya: _"Siapa kakek dari Budi?"_, _"Berapa jumlah total keturunan saat ini?"_, _"Siapa saja yang berdomisili di Yogyakarta?"_).
 
 ### Fitur Tampilan AI:
+
 - **Nama Asisten Kustom**: Nama asisten dapat diubah bebas di file `.env.local` melalui variabel `AI_NAME` (contoh: `AI_NAME=Mbah Sastro` atau `AI_NAME=Asisten Silsilah`).
 - **Format Teks Markdown Rapi**: Teks cetak tebal (`**bold**`), miring, dan daftar poin otomatis diformat indah tanpa menampilkan tanda bintang mentah.
 - **Tampilan Bersih & Rahasia**: Informasi penyedia model (Gemini/OpenAI/Lokal) dirahasiakan sepenuhnya dari antarmuka obrolan demi estetika bersih dan profesional.
@@ -159,7 +160,9 @@ Aplikasi dilengkapi tombol mengambang interaktif **`✨ Tanya AI Silsilah`** di 
 ### Konfigurasi Penyedia Model AI:
 
 #### 1. Menggunakan Google Gemini (Rekomendasi & Gratis)
+
 Google menyediakan akses API Gemini secara gratis dengan kuota melimpah:
+
 1. Buka [Google AI Studio](https://aistudio.google.com).
 2. Masuk menggunakan akun Google Anda dan klik **Get API Key** -> **Create API Key**.
 3. Buka file `.env.local` pada proyek Anda, lalu masukkan:
@@ -171,7 +174,9 @@ Google menyediakan akses API Gemini secara gratis dengan kuota melimpah:
 4. Restart server pengembangan (`npm run dev`). Chatbot akan otomatis ditenagai oleh Google Gemini!
 
 #### 2. Menggunakan OpenAI (ChatGPT)
+
 Jika Anda lebih menyukai OpenAI:
+
 1. Kunjungi [OpenAI Platform](https://platform.openai.com/api-keys).
 2. Buat API key baru (`sk-proj-...`).
 3. Tambahkan ke file `.env.local`:
@@ -182,6 +187,7 @@ Jika Anda lebih menyukai OpenAI:
    ```
 
 #### 3. Mesin AI Lokal Cerdas Bawaan (Tanpa API Key)
+
 Jika `GEMINI_API_KEY` dan `OPENAI_API_KEY` dikosongkan, sistem tetap aktif dan otomatis menggunakan **Built-in Safe Engine** yang membaca database relasi secara lokal tanpa memerlukan koneksi internet ke penyedia AI luar.
 
 ---
@@ -189,10 +195,11 @@ Jika `GEMINI_API_KEY` dan `OPENAI_API_KEY` dikosongkan, sistem tetap aktif dan o
 ## 💬 Obrolan Komunitas Keluarga (Community Chat)
 
 Terdapat fitur ruang obrolan komunitas internal keluarga (**`[💬 Chat Komunitas]`**) di bagian atas navbar:
+
 - **Semua Dalam Satu Lingkup**: Semua anggota keluarga dapat saling berdiskusi, menyapa, dan membagikan informasi.
 - **Hak Tarik & Hapus Pesan Berjenjang (Hierarchical RBAC)**:
-  - **User Biasa**: Dapat menarik / menghapus pesan yang dikirimnya sendiri (*Unsend*).
-  - **Admin**: Dapat menghapus pesan sendiri dan pesan milik anggota biasa (*User*).
+  - **User Biasa**: Dapat menarik / menghapus pesan yang dikirimnya sendiri (_Unsend_).
+  - **Admin**: Dapat menghapus pesan sendiri dan pesan milik anggota biasa (_User_).
   - **Superadmin**: Memiliki wewenang tertinggi untuk menghapus pesan dari siapa pun (pesan User, Admin, maupun Superadmin).
 
 ---
@@ -200,6 +207,7 @@ Terdapat fitur ruang obrolan komunitas internal keluarga (**`[💬 Chat Komunita
 ## 👤 Foto Profil & Pengaturan Akun Pengguna
 
 Setiap pengguna (Superadmin, Admin, maupun User) dapat memasang dan mengganti foto profil masing-masing:
+
 - Klik menu profil di kanan atas -> pilih **`👤 Edit Profil & Foto Akun`**.
 - Pengguna dapat mengunggah foto profil dari komputer/HP (maksimal 3MB).
 - Foto profil akan langsung tampil di navbar, kartu pesan komunitas, dan kartu anggota silsilah terkait.
@@ -216,13 +224,14 @@ Setiap pengguna (Superadmin, Admin, maupun User) dapat memasang dan mengganti fo
      ```env
      SMTP_HOST=smtp.gmail.com
      SMTP_PORT=587
-     SMTP_SECURE=false
+     SMTP_SECURE=jenis_keamanan
      SMTP_USER=email_admin_anda@gmail.com
      SMTP_PASS=app_password_gmail_16_karakter
      SMTP_FROM="SILSILAH Keluarga <email_admin_anda@gmail.com>"
      ```
-     > **Tips Gmail**: Aktifkan 2-Step Verification pada akun Google Admin, lalu buka menu *Security* -> *App Passwords* untuk membuat 16 karakter kata sandi aplikasi.
+     > **Tips Gmail**: Aktifkan 2-Step Verification pada akun Google Admin, lalu buka menu _Security_ -> _App Passwords_ untuk membuat 16 karakter kata sandi aplikasi.
    - Jika kredensial SMTP belum diisi pengembang di `.env.local`, sistem akan menampilkan token di layar untuk kemudahan pengujian lokal.
+   - Untuk keamanan bisa diisi fake,tls,ssl
 3. **Pemulihan via WhatsApp & Rekap PDF untuk Admin**:
    - Permintaan pemulihan dengan nomor WhatsApp otomatis dicatat ke database (`password_reset_requests`).
    - Admin dan Superadmin memiliki menu navigasi **`[🔑 Lupa Password]`** untuk melihat seluruh daftar antrean dan mencetak lembar rekap format **PDF**.
