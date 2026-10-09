@@ -18,13 +18,14 @@ import { Sparkles, Maximize2, ZoomIn, ZoomOut, Compass, Info } from 'lucide-reac
 interface TreeCanvasProps {
   onOpenProfile: (id: string) => void;
   onAddRelation: (id: string) => void;
+  onNodeDrop?: (sourcePersonId: string, targetPersonId: string) => void;
 }
 
 const nodeTypes = {
   personNode: PersonNode,
 };
 
-function InnerTreeCanvas({ onOpenProfile, onAddRelation }: TreeCanvasProps) {
+function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanvasProps) {
   const {
     people,
     parentChildRelations,
@@ -32,8 +33,10 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation }: TreeCanvasProps) {
     focusPersonId,
     collapsedNodes,
     setFocusPersonId,
+    toggleCollapseNode,
   } = useFamilyStore();
 
+  const [nuclearFamilyOnly, setNuclearFamilyOnly] = React.useState(false);
   const { fitView, setCenter } = useReactFlow();
 
   const handleSelectFocus = useCallback(
@@ -50,8 +53,11 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation }: TreeCanvasProps) {
       partnerships,
       focusPersonId,
       collapsedNodes,
+      nuclearFamilyOnly,
       onSelectFocus: handleSelectFocus,
       onOpenProfile,
+      onToggleCollapse: toggleCollapseNode,
+      onNodeDrop,
       onAddRelative: onAddRelation,
     });
   }, [
@@ -60,8 +66,11 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation }: TreeCanvasProps) {
     partnerships,
     focusPersonId,
     collapsedNodes,
+    nuclearFamilyOnly,
     handleSelectFocus,
     onOpenProfile,
+    toggleCollapseNode,
+    onNodeDrop,
     onAddRelation,
   ]);
 
@@ -145,6 +154,29 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation }: TreeCanvasProps) {
         >
           <Sparkles size={13} />
           Pusatkan ke Fokus
+        </button>
+
+        <button
+          onClick={() => {
+            setNuclearFamilyOnly(!nuclearFamilyOnly);
+            setTimeout(() => fitView({ padding: 0.2, duration: 600 }), 100);
+          }}
+          title={nuclearFamilyOnly ? 'Klik untuk menampilkan seluruh silsilah keluarga besar' : 'Klik untuk fokus hanya pada keluarga inti (orang tua, pasangan, anak) dari titik fokus'}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 5,
+            background: nuclearFamilyOnly ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : '#162035',
+            color: nuclearFamilyOnly ? '#FFFFFF' : '#F8FAFC',
+            padding: '5px 12px',
+            borderRadius: 999,
+            fontSize: 12,
+            fontWeight: 600,
+            border: nuclearFamilyOnly ? 'none' : '1px solid #334155',
+            boxShadow: nuclearFamilyOnly ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none',
+          }}
+        >
+          <span>{nuclearFamilyOnly ? '🌐 Tampilkan Semua Silsilah' : '🏠 Fokus ke Keluarga Inti'}</span>
         </button>
 
         <button

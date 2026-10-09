@@ -52,7 +52,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
     }
   };
 
-  const handleAddParentChild = (e: React.FormEvent) => {
+  const handleAddParentChild = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
@@ -62,7 +62,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
       return;
     }
 
-    const res = addParentChild({
+    const res = await addParentChild({
       parentPersonId: parentId,
       childPersonId: childId,
       parentRole,
@@ -78,7 +78,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
     }
   };
 
-  const handleAddPartnership = (e: React.FormEvent) => {
+  const handleAddPartnership = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
@@ -88,7 +88,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
       return;
     }
 
-    const res = addPartnership({
+    const res = await addPartnership({
       personAId: partnerAId,
       personBId: partnerBId,
       relationshipType: 'married',
@@ -493,7 +493,9 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                           {isParent ? `Anak: ${other?.fullName}` : `Orang Tua: ${other?.fullName} (${r.parentRole})`}
                         </span>
                         <button
-                          onClick={() => deleteParentChild(r.id)}
+                          onClick={async () => {
+                            await deleteParentChild(r.id);
+                          }}
                           title="Hapus relasi ini"
                           style={{ color: '#F87171', padding: 4 }}
                         >

@@ -16,6 +16,8 @@ export interface PersonNodeData {
   isCollapsed: boolean;
   onSelectFocus: (id: string) => void;
   onOpenProfile: (id: string) => void;
+  onToggleCollapse: (id: string) => void;
+  onNodeDrop?: (sourcePersonId: string, targetPersonId: string) => void;
   onAddRelative?: (id: string) => void;
   [key: string]: unknown;
 }
@@ -26,8 +28,11 @@ export function buildTreeLayout({
   partnerships,
   focusPersonId,
   collapsedNodes,
+  nuclearFamilyOnly = false,
   onSelectFocus,
   onOpenProfile,
+  onToggleCollapse,
+  onNodeDrop,
   onAddRelative,
 }: {
   people: Person[];
@@ -35,15 +40,18 @@ export function buildTreeLayout({
   partnerships: PartnershipRelationship[];
   focusPersonId: string;
   collapsedNodes: Set<string>;
+  nuclearFamilyOnly?: boolean;
   onSelectFocus: (id: string) => void;
   onOpenProfile: (id: string) => void;
+  onToggleCollapse: (id: string) => void;
+  onNodeDrop?: (sourcePersonId: string, targetPersonId: string) => void;
   onAddRelative?: (id: string) => void;
 }): { nodes: Node<PersonNodeData>[]; edges: Edge[] } {
   const peopleMap = new Map<string, Person>();
   people.forEach((p) => peopleMap.set(p.id, p));
 
   // Determine hidden nodes based on collapsed state:
-  // If a node is collapsed, its descendants should be hidden (unless reachable from another uncollapsed branch)
+  // If a node is collapsed, its descendants are hidden
   const hiddenNodeIds = new Set<string>();
 
   const getDescendants = (parentId: string, visited = new Set<string>()): string[] => {
@@ -65,7 +73,34 @@ export function buildTreeLayout({
     descendants.forEach((d) => hiddenNodeIds.add(d));
   });
 
-  const visiblePeople = people.filter((p) => !hiddenNodeIds.has(p.id));
+  let visiblePeople = people.filter((p) => !hiddenNodeIds.has(p.id));
+
+  // If nuclearFamilyOnly is enabled:
+  // Keep only focus person, their parents, their partners, and their direct children!
+  if (nuclearFamilyOnly && focusPersonId) {
+    const nuclearSet = new Set<string>();
+    nuclearSet.add(focusPersonId);
+
+    // Parents
+    parentChildRelations
+      .filter((r) => r.childPersonId === focusPersonId)
+      .forEach((r) => nuclearSet.add(r.parentPersonId));
+
+    // Children
+    parentChildRelations
+      .filter((r) => r.parentPersonId === focusPersonId)
+      .forEach((r) => nuclearSet.add(r.childPersonId));
+
+    // Partners
+    partnerships
+      .filter((p) => p.personAId === focusPersonId || p.personBId === focusPersonId)
+      .forEach((p) => {
+        nuclearSet.add(p.personAId === focusPersonId ? p.personBId : p.personAId);
+      });
+
+    visiblePeople = visiblePeople.filter((p) => nuclearSet.has(p.id));
+  }
+
   const visiblePersonIds = new Set(visiblePeople.map((p) => p.id));
 
   // Calculate generational levels
@@ -162,6 +197,8 @@ export function buildTreeLayout({
         isCollapsed: collapsedNodes.has(person.id),
         onSelectFocus,
         onOpenProfile,
+        onToggleCollapse,
+        onNodeDrop,
         onAddRelative,
       },
     };

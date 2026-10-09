@@ -12,7 +12,6 @@ import {
 } from '@/types';
 import {
   INITIAL_WORKSPACE,
-  INITIAL_USERS,
   INITIAL_PEOPLE,
   INITIAL_PARTNERSHIPS,
   INITIAL_PARENT_CHILD,
@@ -23,8 +22,9 @@ import { validateParentChildCycle } from './familyLogic';
 interface FamilyStoreContextType {
   workspace: Workspace;
   users: UserAccount[];
-  currentUser: UserAccount;
+  currentUser: UserAccount | null;
   currentRole: UserRole;
+  isAuthenticated: boolean;
   people: Person[];
   parentChildRelations: ParentChildRelationship[];
   partnerships: PartnershipRelationship[];
@@ -32,25 +32,32 @@ interface FamilyStoreContextType {
   focusPersonId: string;
   collapsedNodes: Set<string>;
   
-  // Actions
+  // Auth Actions
+  onLoginSuccess: (user: UserAccount) => void;
+  logout: () => void;
+  refreshUsers: () => Promise<void>;
+  
+  // Canvas Actions
   switchUser: (userId: string) => void;
   setFocusPersonId: (id: string) => void;
   toggleCollapseNode: (id: string) => void;
   
   // Member CRUD
-  addPerson: (data: Omit<Person, 'id' | 'workspaceId'>) => { success: boolean; id?: string; error?: string };
-  updatePerson: (id: string, data: Partial<Person>) => { success: boolean; error?: string };
-  deletePerson: (id: string) => { success: boolean; error?: string };
+  addPerson: (data: Omit<Person, 'id' | 'workspaceId'>) => Promise<{ success: boolean; id?: string; error?: string }>;
+  updatePerson: (id: string, data: Partial<Person>) => Promise<{ success: boolean; error?: string }>;
+  deletePerson: (id: string) => Promise<{ success: boolean; error?: string }>;
   
   // Relations CRUD
-  addParentChild: (data: Omit<ParentChildRelationship, 'id' | 'workspaceId'>) => { success: boolean; error?: string };
-  deleteParentChild: (id: string) => { success: boolean; error?: string };
-  addPartnership: (data: Omit<PartnershipRelationship, 'id' | 'workspaceId'>) => { success: boolean; error?: string };
-  deletePartnership: (id: string) => { success: boolean; error?: string };
+  addParentChild: (data: Omit<ParentChildRelationship, 'id' | 'workspaceId'>) => Promise<{ success: boolean; error?: string }>;
+  deleteParentChild: (id: string) => Promise<{ success: boolean; error?: string }>;
+  addPartnership: (data: Omit<PartnershipRelationship, 'id' | 'workspaceId'>) => Promise<{ success: boolean; error?: string }>;
+  deletePartnership: (id: string) => Promise<{ success: boolean; error?: string }>;
 
-  // Account Management (Superadmin only)
-  updateUserRole: (userId: string, role: UserRole) => { success: boolean; error?: string };
-  toggleUserStatus: (userId: string) => { success: boolean; error?: string };
+  // Account Management & Workspace
+  updateWorkspace: (name: string, description?: string) => Promise<{ success: boolean; error?: string }>;
+  linkClientToPerson: (personId: string, userId: string) => Promise<{ success: boolean; error?: string }>;
+  updateUserRole: (userId: string, role: UserRole) => Promise<{ success: boolean; error?: string }>;
+  toggleUserStatus: (userId: string) => Promise<{ success: boolean; error?: string }>;
   inviteUser: (email: string, role: UserRole, displayName: string) => { success: boolean; error?: string };
 
   // System
@@ -59,76 +66,147 @@ interface FamilyStoreContextType {
 
 const FamilyStoreContext = createContext<FamilyStoreContextType | null>(null);
 
-const STORAGE_KEY = 'silsilah_app_state_v1';
+const SESSION_KEY = 'silsilah_auth_user_session';
+const STATE_KEY = 'silsilah_app_local_cache';
 
 export function FamilyStoreProvider({ children }: { children: React.ReactNode }) {
-  const [workspace] = useState<Workspace>(INITIAL_WORKSPACE);
-  const [users, setUsers] = useState<UserAccount[]>(INITIAL_USERS);
-  const [currentUserId, setCurrentUserId] = useState<string>(INITIAL_USERS[0].id); // Superadmin by default
-  const [people, setPeople] = useState<Person[]>(INITIAL_PEOPLE);
-  const [parentChildRelations, setParentChildRelations] = useState<ParentChildRelationship[]>(INITIAL_PARENT_CHILD);
-  const [partnerships, setPartnerships] = useState<PartnershipRelationship[]>(INITIAL_PARTNERSHIPS);
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(INITIAL_AUDIT_LOGS);
-  const [focusPersonId, setFocusPersonId] = useState<string>('p-dary');
+  const [workspace, setWorkspace] = useState<Workspace>(INITIAL_WORKSPACE);
+  const [users, setUsers] = useState<UserAccount[]>([]);
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [people, setPeople] = useState<Person[]>([]);
+  const [parentChildRelations, setParentChildRelations] = useState<ParentChildRelationship[]>([]);
+  const [partnerships, setPartnerships] = useState<PartnershipRelationship[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [focusPersonId, setFocusPersonId] = useState<string>('');
   const [collapsedNodes, setCollapsedNodes] = useState<Set<string>>(new Set());
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  // Load from LocalStorage
+  // Load session & sync PostgreSQL on mount
   useEffect(() => {
+    // 1. Check local session
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.people) setPeople(parsed.people);
-        if (parsed.parentChildRelations) setParentChildRelations(parsed.parentChildRelations);
-        if (parsed.partnerships) setPartnerships(parsed.partnerships);
-        if (parsed.users) setUsers(parsed.users);
-        if (parsed.auditLogs) setAuditLogs(parsed.auditLogs);
-        if (parsed.focusPersonId) setFocusPersonId(parsed.focusPersonId);
-        if (parsed.currentUserId) setCurrentUserId(parsed.currentUserId);
+      const savedUser = localStorage.getItem(SESSION_KEY);
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser);
+        if (parsed.id) {
+          setCurrentUser(parsed);
+          setIsAuthenticated(true);
+        }
       }
-    } catch (e) {
-      console.warn('Failed to parse saved state:', e);
+    } catch {}
+
+    // 2. Fetch PostgreSQL data
+    async function loadData() {
+      try {
+        const res = await fetch('/api/data');
+        if (res.ok) {
+          const d = await res.json();
+          if (d.workspace) setWorkspace(d.workspace);
+          setPeople(Array.isArray(d.people) ? d.people : []);
+          setParentChildRelations(Array.isArray(d.parentChildRelations) ? d.parentChildRelations : []);
+          setPartnerships(Array.isArray(d.partnerships) ? d.partnerships : []);
+          if (Array.isArray(d.auditLogs)) setAuditLogs(d.auditLogs);
+          if (Array.isArray(d.people) && d.people.length > 0) {
+            setFocusPersonId((prev) => (d.people.some((p: any) => p.id === prev) ? prev : d.people[0].id));
+          } else {
+            setFocusPersonId('');
+          }
+        }
+      } catch (e) {
+        console.warn('Could not sync data from PostgreSQL:', e);
+      }
     }
-    setIsLoaded(true);
+
+    async function loadUsers() {
+      try {
+        const res = await fetch('/api/users');
+        if (res.ok) {
+          const d = await res.json();
+          if (d.users && d.users.length > 0) {
+            setUsers(d.users);
+          }
+        }
+      } catch (e) {
+        console.warn('Could not sync users from PostgreSQL:', e);
+      }
+    }
+
+    loadData();
+    loadUsers();
   }, []);
 
-  // Save to LocalStorage
-  useEffect(() => {
-    if (!isLoaded) return;
-    try {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          people,
-          parentChildRelations,
-          partnerships,
-          users,
-          auditLogs,
-          focusPersonId,
-          currentUserId,
-        })
-      );
-    } catch (e) {
-      console.warn('Failed to save state:', e);
-    }
-  }, [people, parentChildRelations, partnerships, users, auditLogs, focusPersonId, currentUserId, isLoaded]);
+  const currentRole: UserRole = currentUser ? currentUser.role : 'client';
 
-  const currentUser = users.find((u) => u.id === currentUserId) || users[0];
-  const currentRole = currentUser.role;
+  const onLoginSuccess = (user: UserAccount) => {
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    } catch {}
+    refreshUsers();
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+    try {
+      localStorage.removeItem(SESSION_KEY);
+    } catch {}
+  };
+
+  const refreshUsers = async () => {
+    try {
+      const res = await fetch('/api/users');
+      if (res.ok) {
+        const d = await res.json();
+        if (d.users) setUsers(d.users);
+      }
+    } catch {}
+  };
+
+  const syncBackendMutation = async (action: string, data: any, auditLog?: AuditLog) => {
+    try {
+      let actor = currentUser;
+      if (!actor) {
+        try {
+          const saved = localStorage.getItem(SESSION_KEY);
+          if (saved) actor = JSON.parse(saved);
+        } catch {}
+      }
+      const res = await fetch('/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,
+          data,
+          auditLog,
+          actor,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        console.error('Backend sync error:', errData.error);
+        return { success: false, error: errData.error || 'Gagal menyimpan ke database PostgreSQL.' };
+      }
+      return { success: true };
+    } catch (e) {
+      console.warn('Backend mutation sync warning:', e);
+      return { success: false, error: 'Koneksi ke database gagal.' };
+    }
+  };
 
   const logAction = (
     action: AuditLog['action'],
     targetType: AuditLog['targetType'],
     targetId: string,
     summary: string
-  ) => {
+  ): AuditLog => {
     const newLog: AuditLog = {
       id: `log-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       workspaceId: workspace.id,
-      actorUserId: currentUser.id,
-      actorName: currentUser.displayName,
-      actorRole: currentUser.role,
+      actorUserId: currentUser?.id || 'usr-system',
+      actorName: currentUser?.displayName || 'Pengguna',
+      actorRole: currentUser?.role || 'client',
       action,
       targetType,
       targetId,
@@ -136,12 +214,13 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
       summary,
     };
     setAuditLogs((prev) => [newLog, ...prev]);
+    return newLog;
   };
 
   const switchUser = (userId: string) => {
     const target = users.find((u) => u.id === userId);
     if (target) {
-      setCurrentUserId(userId);
+      onLoginSuccess(target);
     }
   };
 
@@ -158,7 +237,7 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
   };
 
   // --- MEMBER CRUD WITH RBAC ---
-  const addPerson = (data: Omit<Person, 'id' | 'workspaceId'>) => {
+  const addPerson = async (data: Omit<Person, 'id' | 'workspaceId'>) => {
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client hanya memiliki hak baca (Read-only).' };
     }
@@ -168,37 +247,47 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
       id: newId,
       workspaceId: workspace.id,
     };
+    const log = logAction('CREATE_PERSON', 'person', newId, `Menambahkan anggota silsilah: ${newPerson.fullName}`);
+    const syncRes = await syncBackendMutation('CREATE_PERSON', newPerson, log);
+    if (!syncRes.success) {
+      return { success: false, error: syncRes.error };
+    }
     setPeople((prev) => [...prev, newPerson]);
-    logAction('CREATE_PERSON', 'person', newId, `Menambahkan anggota silsilah: ${newPerson.fullName}`);
+    if (!focusPersonId) {
+      setFocusPersonId(newId);
+    }
     return { success: true, id: newId };
   };
 
-  const updatePerson = (id: string, data: Partial<Person>) => {
+  const updatePerson = async (id: string, data: Partial<Person>) => {
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client tidak diizinkan mengubah data.' };
     }
-    setPeople((prev) =>
-      prev.map((p) => {
-        if (p.id === id) {
-          const updated = { ...p, ...data };
-          return updated;
-        }
-        return p;
-      })
-    );
-    const person = people.find((p) => p.id === id);
-    logAction('UPDATE_PERSON', 'person', id, `Memperbarui data profil: ${person?.fullName || id}`);
+    const existing = people.find((p) => p.id === id);
+    if (!existing) return { success: false, error: 'Anggota tidak ditemukan.' };
+    const updatedPerson: Person = { ...existing, ...data };
+    const log = logAction('UPDATE_PERSON', 'person', id, `Memperbarui data profil: ${updatedPerson.fullName}`);
+    const syncRes = await syncBackendMutation('UPDATE_PERSON', updatedPerson, log);
+    if (!syncRes.success) {
+      return { success: false, error: syncRes.error };
+    }
+    setPeople((prev) => prev.map((p) => (p.id === id ? updatedPerson : p)));
     return { success: true };
   };
 
-  const deletePerson = (id: string) => {
+  const deletePerson = async (id: string) => {
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client tidak diizinkan menghapus data.' };
     }
     const target = people.find((p) => p.id === id);
     if (!target) return { success: false, error: 'Anggota tidak ditemukan.' };
 
-    // Remove relationships connected to this person
+    const log = logAction('DELETE_PERSON', 'person', id, `Menghapus anggota silsilah: ${target.fullName}`);
+    const syncRes = await syncBackendMutation('DELETE_PERSON', { id }, log);
+    if (!syncRes.success) {
+      return { success: false, error: syncRes.error };
+    }
+
     setParentChildRelations((prev) =>
       prev.filter((r) => r.parentPersonId !== id && r.childPersonId !== id)
     );
@@ -209,22 +298,18 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
 
     if (focusPersonId === id) {
       const remaining = people.filter((p) => p.id !== id);
-      if (remaining.length > 0) {
-        setFocusPersonId(remaining[0].id);
-      }
+      setFocusPersonId(remaining.length > 0 ? remaining[0].id : '');
     }
 
-    logAction('DELETE_PERSON', 'person', id, `Menghapus anggota silsilah: ${target.fullName}`);
     return { success: true };
   };
 
   // --- RELATIONS CRUD WITH CYCLE VALIDATION ---
-  const addParentChild = (data: Omit<ParentChildRelationship, 'id' | 'workspaceId'>) => {
+  const addParentChild = async (data: Omit<ParentChildRelationship, 'id' | 'workspaceId'>) => {
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client tidak diizinkan menambah relasi.' };
     }
 
-    // Validate cycle
     const cycleCheck = validateParentChildCycle(
       data.parentPersonId,
       data.childPersonId,
@@ -234,7 +319,6 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
       return { success: false, error: cycleCheck.error };
     }
 
-    // Check duplicate
     const exists = parentChildRelations.some(
       (r) => r.parentPersonId === data.parentPersonId && r.childPersonId === data.childPersonId
     );
@@ -248,29 +332,37 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
       id: newId,
       workspaceId: workspace.id,
     };
-    setParentChildRelations((prev) => [...prev, newRel]);
 
     const parent = people.find((p) => p.id === data.parentPersonId);
     const child = people.find((p) => p.id === data.childPersonId);
-    logAction(
+    const log = logAction(
       'CREATE_PARENT_CHILD',
       'relationship',
       newId,
       `Menghubungkan orang tua-anak: ${parent?.displayName || parent?.fullName} -> ${child?.displayName || child?.fullName}`
     );
+    const syncRes = await syncBackendMutation('CREATE_PARENT_CHILD', newRel, log);
+    if (!syncRes.success) {
+      return { success: false, error: syncRes.error };
+    }
+    setParentChildRelations((prev) => [...prev, newRel]);
     return { success: true };
   };
 
-  const deleteParentChild = (id: string) => {
+  const deleteParentChild = async (id: string) => {
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client tidak diizinkan menghapus relasi.' };
     }
+    const log = logAction('DELETE_PARENT_CHILD', 'relationship', id, `Menghapus relasi orang tua-anak ID: ${id}`);
+    const syncRes = await syncBackendMutation('DELETE_PARENT_CHILD', { id }, log);
+    if (!syncRes.success) {
+      return { success: false, error: syncRes.error };
+    }
     setParentChildRelations((prev) => prev.filter((r) => r.id !== id));
-    logAction('DELETE_PARENT_CHILD', 'relationship', id, `Menghapus relasi orang tua-anak ID: ${id}`);
     return { success: true };
   };
 
-  const addPartnership = (data: Omit<PartnershipRelationship, 'id' | 'workspaceId'>) => {
+  const addPartnership = async (data: Omit<PartnershipRelationship, 'id' | 'workspaceId'>) => {
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client tidak diizinkan menambah relasi.' };
     }
@@ -278,7 +370,6 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
       return { success: false, error: 'Seseorang tidak dapat bermitra/menikah dengan diri sendiri.' };
     }
 
-    // Check duplicate
     const exists = partnerships.some(
       (p) =>
         (p.personAId === data.personAId && p.personBId === data.personBId) ||
@@ -294,97 +385,98 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
       id: newId,
       workspaceId: workspace.id,
     };
-    setPartnerships((prev) => [...prev, newPart]);
 
     const a = people.find((p) => p.id === data.personAId);
     const b = people.find((p) => p.id === data.personBId);
-    logAction(
+    const log = logAction(
       'CREATE_PARTNERSHIP',
       'relationship',
       newId,
       `Menghubungkan pasangan: ${a?.displayName || a?.fullName} & ${b?.displayName || b?.fullName}`
     );
+    const syncRes = await syncBackendMutation('CREATE_PARTNERSHIP', newPart, log);
+    if (!syncRes.success) {
+      return { success: false, error: syncRes.error };
+    }
+    setPartnerships((prev) => [...prev, newPart]);
     return { success: true };
   };
 
-  const deletePartnership = (id: string) => {
+  const deletePartnership = async (id: string) => {
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client tidak diizinkan menghapus relasi.' };
     }
-    setPartnerships((prev) => prev.filter((p) => p.id !== id));
-    logAction('DELETE_PARTNERSHIP', 'relationship', id, `Menghapus relasi pasangan ID: ${id}`);
+    const log = logAction('DELETE_PARTNERSHIP', 'relationship', id, `Menghapus relasi pasangan ID: ${id}`);
+    const syncRes = await syncBackendMutation('DELETE_PARTNERSHIP', { id }, log);
+    if (!syncRes.success) {
+      return { success: false, error: syncRes.error };
+    }
+    setPartnerships((prev) => prev.filter((r) => r.id !== id));
     return { success: true };
   };
 
   // --- ACCOUNT MANAGEMENT (SUPERADMIN ONLY) ---
-  const updateUserRole = (userId: string, newRole: UserRole) => {
+  const updateUserRole = async (userId: string, newRole: UserRole) => {
     if (currentRole !== 'superadmin') {
       return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang mengubah role pengguna.' };
     }
 
-    // Prevent demoting the last active superadmin
-    if (newRole !== 'superadmin') {
-      const activeSuperadmins = users.filter((u) => u.role === 'superadmin' && u.status === 'active');
-      if (activeSuperadmins.length === 1 && activeSuperadmins[0].id === userId) {
-        return {
-          success: false,
-          error: 'Aturan sistem: Tidak dapat menurunkan role satu-satunya Superadmin yang aktif.',
-        };
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actorUserId: currentUser?.id || 'usr-superadmin',
+          targetUserId: userId,
+          newRole,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Gagal mengubah role.' };
       }
+      await refreshUsers();
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Koneksi ke server database gagal.' };
     }
-
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
-    );
-
-    const targetUser = users.find((u) => u.id === userId);
-    logAction(
-      'CHANGE_ROLE',
-      'user',
-      userId,
-      `Mengubah role akun ${targetUser?.email || userId} menjadi: ${newRole.toUpperCase()}`
-    );
-    return { success: true };
   };
 
-  const toggleUserStatus = (userId: string) => {
+  const toggleUserStatus = async (userId: string) => {
     if (currentRole !== 'superadmin') {
       return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang mengubah status akun.' };
     }
 
     const targetUser = users.find((u) => u.id === userId);
     if (!targetUser) return { success: false, error: 'Akun tidak ditemukan.' };
-
     const newStatus = targetUser.status === 'active' ? 'deactivated' : 'active';
 
-    if (newStatus === 'deactivated' && targetUser.role === 'superadmin') {
-      const activeSuperadmins = users.filter((u) => u.role === 'superadmin' && u.status === 'active');
-      if (activeSuperadmins.length <= 1) {
-        return {
-          success: false,
-          error: 'Aturan sistem: Tidak dapat menonaktifkan satu-satunya Superadmin yang aktif.',
-        };
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actorUserId: currentUser?.id || 'usr-superadmin',
+          targetUserId: userId,
+          newStatus,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Gagal mengubah status.' };
       }
+      await refreshUsers();
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Koneksi ke server database gagal.' };
     }
-
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, status: newStatus } : u))
-    );
-
-    logAction(
-      'TOGGLE_USER_STATUS',
-      'user',
-      userId,
-      `${newStatus === 'active' ? 'Mengaktifkan' : 'Menonaktifkan'} akses akun: ${targetUser.email}`
-    );
-    return { success: true };
   };
 
   const inviteUser = (email: string, role: UserRole, displayName: string) => {
     if (currentRole !== 'superadmin') {
       return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang mengundang pengguna.' };
     }
-    const exists = users.some((u) => u.email.toLowerCase() === email.toLowerCase());
+    const exists = users.some((u) => u.email?.toLowerCase() === email.toLowerCase());
     if (exists) {
       return { success: false, error: 'Email ini sudah terdaftar dalam workspace.' };
     }
@@ -403,20 +495,40 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
     return { success: true };
   };
 
-  const resetToDefaultData = () => {
-    setPeople(INITIAL_PEOPLE);
-    setParentChildRelations(INITIAL_PARENT_CHILD);
-    setPartnerships(INITIAL_PARTNERSHIPS);
-    setUsers(INITIAL_USERS);
-    setAuditLogs(INITIAL_AUDIT_LOGS);
-    setFocusPersonId('p-dary');
-    setCurrentUserId(INITIAL_USERS[0].id);
-    setCollapsedNodes(new Set());
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // ignore
+  const updateWorkspace = async (name: string, description?: string) => {
+    if (currentRole !== 'superadmin') {
+      return { success: false, error: 'Hanya Superadmin yang berwenang mengubah nama ruang keluarga.' };
     }
+    const updated = { ...workspace, name, description: description ?? workspace.description };
+    setWorkspace(updated);
+
+    const log = logAction('UPDATE_WORKSPACE', 'workspace', workspace.id, `Mengubah judul silsilah keluarga menjadi: "${name}"`);
+    await syncBackendMutation('UPDATE_WORKSPACE', { name, description }, log);
+    return { success: true };
+  };
+
+  const linkClientToPerson = async (personId: string, userId: string) => {
+    if (currentRole !== 'superadmin' && currentRole !== 'admin') {
+      return { success: false, error: 'Akses ditolak: Hanya Admin/Superadmin yang dapat menautkan akun klien.' };
+    }
+    const person = people.find((p) => p.id === personId);
+    const user = users.find((u) => u.id === userId);
+    if (!person) return { success: false, error: 'Anggota keluarga tidak ditemukan.' };
+
+    updatePerson(personId, { linkedUserId: userId || undefined });
+
+    const log = logAction('LINK_CLIENT', 'person', personId, `Menautkan akun klien ${user?.displayName || userId} ke anggota ${person.fullName}`);
+    await syncBackendMutation('LINK_CLIENT', { personId, userId }, log);
+    return { success: true };
+  };
+
+  const resetToDefaultData = () => {
+    setPeople([]);
+    setParentChildRelations([]);
+    setPartnerships([]);
+    setAuditLogs([]);
+    setFocusPersonId('');
+    setCollapsedNodes(new Set());
   };
 
   return (
@@ -426,12 +538,16 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
         users,
         currentUser,
         currentRole,
+        isAuthenticated,
         people,
         parentChildRelations,
         partnerships,
         auditLogs,
         focusPersonId,
         collapsedNodes,
+        onLoginSuccess,
+        logout,
+        refreshUsers,
         switchUser,
         setFocusPersonId,
         toggleCollapseNode,
@@ -442,6 +558,8 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
         deleteParentChild,
         addPartnership,
         deletePartnership,
+        updateWorkspace,
+        linkClientToPerson,
         updateUserRole,
         toggleUserStatus,
         inviteUser,

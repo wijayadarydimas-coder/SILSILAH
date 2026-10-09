@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useFamilyStore } from '@/lib/store';
-import { calculateGenerations, getRelativeRelationship } from '@/lib/familyLogic';
+import { calculateGenerations, getRelativeRelationship, calculateAge } from '@/lib/familyLogic';
 import { Search, Sparkles, Eye, ShieldCheck, User, Users } from 'lucide-react';
 
 interface FamilyListViewProps {
@@ -47,17 +47,29 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
   return (
     <div
       style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '24px 20px',
-        maxWidth: 960,
-        margin: '0 auto',
         width: '100%',
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        WebkitOverflowScrolling: 'touch',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '24px 20px 80px 20px',
       }}
     >
-      {/* Header & Search */}
       <div
         style={{
+          width: '100%',
+          maxWidth: 960,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 20,
+        }}
+      >
+        {/* Header & Search */}
+        <div
+          style={{
           display: 'flex',
           flexDirection: 'column',
           gap: 12,
@@ -208,7 +220,7 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
                               {isFocus ? '⭐ TITIK FOKUS' : relInfo.label}
                             </span>
                             <span style={{ fontSize: 11.5, color: '#94A3B8' }}>
-                              {p.birthDate ? p.birthDate.split('-')[0] : '?'} – {p.isDeceased ? (p.deathDate ? p.deathDate.split('-')[0] : 'Wafat') : 'sekarang'}
+                              {calculateAge(p.birthDate, p.deathDate, p.isDeceased).formattedLifeSpan}
                             </span>
                           </div>
                         </div>
@@ -262,5 +274,6 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
         })}
       </div>
     </div>
+  </div>
   );
 }

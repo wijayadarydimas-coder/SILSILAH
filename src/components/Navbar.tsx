@@ -16,6 +16,10 @@ import {
   UserCheck,
   Sparkles,
   Lock,
+  Palette,
+  Users,
+  LogOut,
+  Edit3,
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -25,6 +29,12 @@ interface NavbarProps {
   onOpenAuditLog: () => void;
   onOpenAccountMgmt: () => void;
   onOpenProfile: (id: string) => void;
+  onOpenAuth: (mode: 'login' | 'register' | 'change_password') => void;
+  onOpenWorkspaceSettings?: () => void;
+  onOpenThemeCustomizer?: () => void;
+  onToggleSidebarMembers?: () => void;
+  isSidebarOpen?: boolean;
+  onLogout?: () => void;
 }
 
 export function Navbar({
@@ -34,6 +44,12 @@ export function Navbar({
   onOpenAuditLog,
   onOpenAccountMgmt,
   onOpenProfile,
+  onOpenAuth,
+  onOpenWorkspaceSettings,
+  onOpenThemeCustomizer,
+  onToggleSidebarMembers,
+  isSidebarOpen,
+  onLogout,
 }: NavbarProps) {
   const {
     workspace,
@@ -108,17 +124,19 @@ export function Navbar({
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div
             style={{
-              width: 36,
-              height: 36,
+              width: 38,
+              height: 38,
               borderRadius: 10,
-              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 15px rgba(16, 185, 129, 0.4)',
+              padding: 4,
             }}
           >
-            <GitMerge size={20} color="white" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/logo.svg" alt="Silsilah Logo" style={{ width: '100%', height: '100%' }} />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -135,11 +153,33 @@ export function Navbar({
                   fontWeight: 700,
                 }}
               >
-                v0.1 MVP
+                v1.0 Pro
               </span>
             </div>
             <div style={{ fontSize: 11.5, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span>{workspace.name}</span>
+              <span style={{ fontWeight: 500, color: '#E2E8F0' }}>{workspace.name}</span>
+              {isSuperadmin && onOpenWorkspaceSettings && (
+                <button
+                  onClick={onOpenWorkspaceSettings}
+                  title="Ubah Nama Keluarga / Ruang Silsilah (Superadmin)"
+                  style={{
+                    background: 'rgba(245, 158, 11, 0.15)',
+                    border: '1px solid rgba(245, 158, 11, 0.3)',
+                    color: '#FBBF24',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    fontSize: 10.5,
+                    padding: '1px 6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 3,
+                    fontWeight: 600,
+                  }}
+                >
+                  <Edit3 size={10} />
+                  Edit Judul
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -285,26 +325,53 @@ export function Navbar({
         )}
       </div>
 
-      {/* Right Controls: Add Member, Audit, Role Switcher Simulator */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        {/* Reset Data Button */}
-        <button
-          onClick={() => {
-            if (confirm('Reset ulang data pohon ke konfigurasi contoh awal?')) {
-              resetToDefaultData();
-            }
-          }}
-          title="Reset ke data silsilah contoh awal"
-          style={{
-            padding: 7,
-            borderRadius: 8,
-            background: '#162035',
-            color: '#94A3B8',
-            border: '1px solid #1E293B',
-          }}
-        >
-          <RotateCcw size={15} />
-        </button>
+      {/* Right Controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Toggle Sidebar Members */}
+        {onToggleSidebarMembers && (
+          <button
+            onClick={onToggleSidebarMembers}
+            title="Buka/Tutup Panel Anggota (Drag & Drop Relasi)"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '7px 12px',
+              borderRadius: 8,
+              background: isSidebarOpen ? 'rgba(16, 185, 129, 0.2)' : '#162035',
+              color: isSidebarOpen ? '#34D399' : '#94A3B8',
+              border: isSidebarOpen ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid #1E293B',
+              fontSize: 12,
+              fontWeight: 600,
+            }}
+          >
+            <Users size={14} />
+            <span>Panel Anggota</span>
+          </button>
+        )}
+
+        {/* Theme Customizer RGB */}
+        {onOpenThemeCustomizer && (
+          <button
+            onClick={onOpenThemeCustomizer}
+            title="Kustom Tema Warna RGB Komponen"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '7px 12px',
+              borderRadius: 8,
+              background: '#162035',
+              color: '#38BDF8',
+              border: '1px solid #1E293B',
+              fontSize: 12,
+              fontWeight: 600,
+            }}
+          >
+            <Palette size={14} />
+            <span>Tema RGB</span>
+          </button>
+        )}
 
         {/* Audit Log Button */}
         <button
@@ -403,7 +470,7 @@ export function Navbar({
                 background: '#334155',
               }}
             >
-              {currentUser.avatarUrl ? (
+              {currentUser?.avatarUrl ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={currentUser.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
@@ -415,7 +482,7 @@ export function Navbar({
                 {roleBadge.label}
               </div>
               <div style={{ fontSize: 10, color: '#64748B' }}>
-                {currentUser.displayName.split(' ')[0]}
+                {currentUser ? currentUser.displayName.split(' ')[0] : 'Tamu'}
               </div>
             </div>
             <ChevronDown size={13} color="#94A3B8" />
@@ -437,38 +504,104 @@ export function Navbar({
                 zIndex: 100,
               }}
             >
-              <div style={{ padding: '6px 10px', fontSize: 11, color: '#64748B', fontWeight: 600 }}>
-                SIMULASI PERAN PENGGUNA (RBAC):
+              {/* Profile summary */}
+              <div style={{ padding: '8px 10px', borderBottom: '1px solid #1E293B', marginBottom: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#F8FAFC' }}>
+                  {currentUser?.displayName || 'Pengguna'}
+                </div>
+                <div style={{ fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                  <span>{currentUser?.email || (currentUser?.username ? `@${currentUser.username}` : '')}</span>
+                  <span style={{ fontSize: 10, padding: '1px 5px', borderRadius: 4, background: roleBadge.bg, color: roleBadge.text, fontWeight: 700 }}>
+                    {roleBadge.label}
+                  </span>
+                </div>
               </div>
-              {users.map((u) => {
-                const isActive = u.id === currentUser.id;
-                return (
-                  <div
-                    key={u.id}
+
+              <div>
+                <button
+                  onClick={() => {
+                    setIsUserMenuOpen(false);
+                    onOpenAuth('change_password');
+                  }}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '7px 10px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    color: '#FBBF24',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  🔑 Ganti Kata Sandi (Password)
+                </button>
+                <button
+                  onClick={() => {
+                    setIsUserMenuOpen(false);
+                    onOpenAuth('login');
+                  }}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '7px 10px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    color: '#34D399',
+                    fontWeight: 500,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  🔐 Masuk / Ganti Akun
+                </button>
+                <button
+                  onClick={() => {
+                    setIsUserMenuOpen(false);
+                    onOpenAuth('register');
+                  }}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '7px 10px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    color: '#60A5FA',
+                    fontWeight: 500,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  ✨ Daftar Akun Baru (Client)
+                </button>
+                {onLogout && (
+                  <button
                     onClick={() => {
-                      switchUser(u.id);
                       setIsUserMenuOpen(false);
+                      onLogout();
                     }}
                     style={{
+                      width: '100%',
+                      textAlign: 'left',
+                      padding: '7px 10px',
+                      borderRadius: 6,
+                      fontSize: 12,
+                      color: '#EF4444',
+                      fontWeight: 600,
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '8px 10px',
-                      borderRadius: 6,
-                      background: isActive ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
-                      cursor: 'pointer',
+                      gap: 6,
                     }}
                   >
-                    <div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#34D399' : '#F8FAFC' }}>
-                        {u.displayName}
-                      </div>
-                      <div style={{ fontSize: 10.5, color: '#94A3B8' }}>{u.role.toUpperCase()}</div>
-                    </div>
-                    {isActive && <span style={{ color: '#10B981', fontSize: 12 }}>✓</span>}
-                  </div>
-                );
-              })}
+                    <LogOut size={13} />
+                    Keluar (Logout)
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>

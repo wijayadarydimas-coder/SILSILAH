@@ -3,9 +3,11 @@ export type UserRole = 'superadmin' | 'admin' | 'client';
 export interface UserAccount {
   id: string;
   email: string;
+  username?: string;
   displayName: string;
   role: UserRole;
   status: 'active' | 'deactivated';
+  linkedPersonId?: string;
   avatarUrl?: string;
   createdAt: string;
 }
@@ -43,6 +45,10 @@ export interface Person {
   tiktok?: string;
   facebook?: string;
   photoUrl?: string;
+  photoZoom?: number;
+  photoOffsetX?: number;
+  photoOffsetY?: number;
+  linkedUserId?: string;
   verificationStatus: 'verified' | 'unconfirmed';
   notes?: string;
 }
@@ -86,7 +92,9 @@ export interface AuditLog {
     | 'DELETE_PARTNERSHIP'
     | 'CHANGE_ROLE'
     | 'TOGGLE_USER_STATUS'
-    | 'INVITE_USER';
+    | 'INVITE_USER'
+    | 'UPDATE_WORKSPACE'
+    | 'LINK_CLIENT';
   targetType: 'person' | 'relationship' | 'user' | 'workspace';
   targetId: string;
   timestamp: string;

@@ -1,11 +1,11 @@
-import {
+import type {
   Workspace,
   UserAccount,
   Person,
   ParentChildRelationship,
   PartnershipRelationship,
   AuditLog,
-} from '@/types';
+} from '../types/index.ts';
 
 export const INITIAL_WORKSPACE: Workspace = {
   id: 'ws-sastrohusodo-01',

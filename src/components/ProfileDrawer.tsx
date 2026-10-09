@@ -2,7 +2,13 @@
 
 import React from 'react';
 import { useFamilyStore } from '@/lib/store';
-import { getRelativeRelationship } from '@/lib/familyLogic';
+import {
+  getRelativeRelationship,
+  calculateAge,
+  formatWhatsAppUrl,
+  formatInstagramUrl,
+  formatGoogleMapsUrl,
+} from '@/lib/familyLogic';
 import {
   X,
   Sparkles,
@@ -13,13 +19,14 @@ import {
   MapPin,
   Share2,
   ShieldCheck,
-  Lock,
   Calendar,
   User,
   Heart,
   Users,
   ChevronRight,
   PlusCircle,
+  ExternalLink,
+  MessageCircle,
 } from 'lucide-react';
 
 interface ProfileDrawerProps {
@@ -54,8 +61,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
     parentChildRelations,
     partnerships
   );
+  const ageInfo = calculateAge(person.birthDate, person.deathDate, person.isDeceased);
 
-  const isClient = currentRole === 'client';
   const canEdit = currentRole === 'superadmin' || currentRole === 'admin';
 
   // Parents
@@ -191,6 +198,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               overflow: 'hidden',
               border: `3px solid ${isFocus ? '#F59E0B' : person.gender === 'male' ? '#3B82F6' : '#EC4899'}`,
               marginBottom: 12,
+              aspectRatio: '1 / 1',
+              isolation: 'isolate',
+              WebkitMaskImage: '-webkit-radial-gradient(white, black)',
+              transform: 'translateZ(0)',
               boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
             }}
           >
@@ -199,7 +210,14 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               <img
                 src={person.photoUrl}
                 alt={person.fullName}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                  transform: `scale(${Math.max(1, person.photoZoom || 1)}) translate(${person.photoOffsetX || 0}px, ${person.photoOffsetY || 0}px)`,
+                  transformOrigin: 'center center',
+                }}
               />
             ) : (
               <div
@@ -283,6 +301,22 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 🕊️ Almarhum / Almarhumah
               </span>
             )}
+
+            {ageInfo.age !== undefined && (
+              <span
+                style={{
+                  fontSize: 11,
+                  padding: '4px 10px',
+                  borderRadius: 999,
+                  background: 'rgba(245, 158, 11, 0.15)',
+                  color: '#FBBF24',
+                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  fontWeight: 600,
+                }}
+              >
+                🎂 {person.isDeceased ? `Wafat Usia ${ageInfo.age} Thn` : `Usia: ${ageInfo.age} Tahun`}
+              </span>
+            )}
           </div>
 
           {/* Quick Focus Button */}
@@ -320,7 +354,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             }}
           >
             <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
-              CATATAN BIOGRAFI & SEJARAH
+              CATATAN BIOGRAFI &amp; SEJARAH
             </h3>
             <p style={{ fontSize: 13, color: '#E2E8F0', lineHeight: 1.6 }}>
               {person.biography}
@@ -328,7 +362,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
           </div>
         )}
 
-        {/* Life Dates */}
+        {/* Life Dates & Age */}
         <div
           style={{
             background: '#131B2E',
@@ -338,23 +372,40 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
           }}
         >
           <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 10 }}>
-            TANGGAL PENTING
+            TANGGAL PENTING &amp; PENGHITUNG USIA
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
               <Calendar size={15} color="#10B981" />
-              <span>Lahir: {person.birthDate || 'Tidak tercatat'}</span>
+              <span>
+                Lahir: <b>{person.birthDate || 'Tidak tercatat'}</b>
+                {!person.isDeceased && ageInfo.age !== undefined && (
+                  <span style={{ color: '#34D399', marginLeft: 6, fontWeight: 600 }}>
+                    ({ageInfo.age} tahun sekarang)
+                  </span>
+                )}
+              </span>
             </div>
             {person.isDeceased && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
                 <Calendar size={15} color="#F43F5E" />
-                <span>Wafat: {person.deathDate || 'Tahun tidak tercatat'}</span>
+                <span>
+                  Wafat: <b>{person.deathDate || 'Tahun tidak tercatat'}</b>
+                  {ageInfo.age !== undefined && (
+                    <span style={{ color: '#FCA5A5', marginLeft: 6, fontWeight: 600 }}>
+                      (wafat usia {ageInfo.age} tahun)
+                    </span>
+                  )}
+                </span>
               </div>
             )}
+            <div style={{ fontSize: 11.5, color: '#64748B', marginTop: 2, paddingLeft: 23 }}>
+              Status Riwayat: <span style={{ color: '#E2E8F0', fontWeight: 500 }}>{ageInfo.formattedLifeSpan}</span>
+            </div>
           </div>
         </div>
 
-        {/* Contact Info (with Strict Privacy Protection for Client Role) */}
+        {/* Contact Info (Accessible to Everyone + Direct Interactive Social Links) */}
         <div
           style={{
             background: '#131B2E',
@@ -368,79 +419,246 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
             <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8' }}>
-              INFORMASI KONTAK & ALAMAT
+              INFORMASI KONTAK, DOMISILI &amp; SOSIAL MEDIA
             </h3>
-            {isClient && (
-              <span
-                style={{
-                  fontSize: 10.5,
-                  color: '#F59E0B',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  background: 'rgba(245, 158, 11, 0.1)',
-                  padding: '2px 6px',
-                  borderRadius: 4,
-                }}
-              >
-                <Lock size={11} /> Privasi Klien
-              </span>
-            )}
-          </div>
-
-          {isClient ? (
-            <div
+            <span
               style={{
-                padding: '16px 12px',
-                background: 'rgba(15, 23, 42, 0.6)',
-                borderRadius: 8,
-                border: '1px dashed #334155',
-                textAlign: 'center',
+                fontSize: 10.5,
+                color: '#34D399',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                background: 'rgba(16, 185, 129, 0.1)',
+                padding: '2px 6px',
+                borderRadius: 4,
               }}
             >
-              <Lock size={20} color="#F59E0B" style={{ margin: '0 auto 6px' }} />
-              <p style={{ fontSize: 12, color: '#94A3B8', lineHeight: 1.5 }}>
-                Sesuai kebijakan privasi PRD (UU PDP), nomor kontak, email, dan alamat hanya dapat
-                diakses oleh Admin &amp; Superadmin keluarga.
-              </p>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13 }}>
-              {person.phone ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
-                  <Phone size={15} color="#10B981" />
-                  <span>{person.phone}</span>
-                </div>
-              ) : (
-                <div style={{ color: '#64748B', fontSize: 12 }}>Nomor kontak belum ditambahkan</div>
-              )}
+              🌐 Akses Terbuka
+            </span>
+          </div>
 
-              {person.email && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
-                  <Mail size={15} color="#3B82F6" />
-                  <span>{person.email}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {/* WhatsApp & Telepon */}
+            {person.phone ? (
+              <div
+                style={{
+                  background: 'rgba(16, 185, 129, 0.08)',
+                  border: '1px solid rgba(16, 185, 129, 0.25)',
+                  borderRadius: 10,
+                  padding: '10px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                  <Phone size={16} color="#10B981" style={{ flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 11, color: '#94A3B8' }}>WhatsApp &amp; Telepon</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {person.phone}
+                    </div>
+                  </div>
                 </div>
-              )}
 
-              {person.address && (
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#CBD5E1' }}>
-                  <MapPin size={15} color="#EC4899" style={{ marginTop: 2, flexShrink: 0 }} />
-                  <span>{person.address}</span>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <a
+                    href={formatWhatsAppUrl(person.phone)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Buka WhatsApp Langsung"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      background: '#25D366',
+                      color: '#0F172A',
+                      padding: '5px 10px',
+                      borderRadius: 6,
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <MessageCircle size={13} />
+                    Chat WA
+                    <ExternalLink size={11} />
+                  </a>
+                  <a
+                    href={`tel:${person.phone}`}
+                    title="Panggil Nomor"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#F8FAFC',
+                      padding: '5px 8px',
+                      borderRadius: 6,
+                      fontSize: 11.5,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <Phone size={12} />
+                  </a>
                 </div>
-              )}
+              </div>
+            ) : null}
 
-              {person.instagram && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
-                  <Share2 size={15} color="#E1306C" />
-                  <span>Instagram: {person.instagram}</span>
+            {/* Instagram */}
+            {person.instagram ? (
+              <div
+                style={{
+                  background: 'rgba(225, 48, 108, 0.08)',
+                  border: '1px solid rgba(225, 48, 108, 0.25)',
+                  borderRadius: 10,
+                  padding: '10px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                  <Share2 size={16} color="#E1306C" style={{ flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 11, color: '#94A3B8' }}>Instagram</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {person.instagram.startsWith('@') ? person.instagram : `@${person.instagram}`}
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
-          )}
+
+                <a
+                  href={formatInstagramUrl(person.instagram)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    background: 'linear-gradient(45deg, #F58529, #DD2A7B, #8134AF)',
+                    color: '#FFFFFF',
+                    padding: '5px 10px',
+                    borderRadius: 6,
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    flexShrink: 0,
+                  }}
+                >
+                  Buka Profil IG
+                  <ExternalLink size={11} />
+                </a>
+              </div>
+            ) : null}
+
+            {/* Domisili / Google Maps */}
+            {person.address ? (
+              <div
+                style={{
+                  background: 'rgba(236, 72, 153, 0.08)',
+                  border: '1px solid rgba(236, 72, 153, 0.25)',
+                  borderRadius: 10,
+                  padding: '10px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
+                  <MapPin size={16} color="#EC4899" style={{ marginTop: 2, flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 11, color: '#94A3B8' }}>Domisili / Lokasi</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#F8FAFC', lineHeight: 1.4 }}>
+                      {person.address}
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href={formatGoogleMapsUrl(person.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    background: 'rgba(236, 72, 153, 0.2)',
+                    color: '#F472B6',
+                    border: '1px solid rgba(236, 72, 153, 0.4)',
+                    padding: '5px 10px',
+                    borderRadius: 6,
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    flexShrink: 0,
+                  }}
+                >
+                  Google Maps
+                  <ExternalLink size={11} />
+                </a>
+              </div>
+            ) : null}
+
+            {/* Email */}
+            {person.email ? (
+              <div
+                style={{
+                  background: 'rgba(59, 130, 246, 0.08)',
+                  border: '1px solid rgba(59, 130, 246, 0.25)',
+                  borderRadius: 10,
+                  padding: '10px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                  <Mail size={16} color="#3B82F6" style={{ flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 11, color: '#94A3B8' }}>Email</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {person.email}
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href={`mailto:${person.email}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    background: 'rgba(59, 130, 246, 0.2)',
+                    color: '#93C5FD',
+                    border: '1px solid rgba(59, 130, 246, 0.4)',
+                    padding: '5px 10px',
+                    borderRadius: 6,
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    flexShrink: 0,
+                  }}
+                >
+                  Kirim Email
+                  <ExternalLink size={11} />
+                </a>
+              </div>
+            ) : null}
+
+            {!person.phone && !person.email && !person.address && !person.instagram && (
+              <div style={{ color: '#64748B', fontSize: 12.5, textAlign: 'center', padding: '10px 0' }}>
+                Belum ada informasi kontak atau domisili yang ditambahkan.
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Immediate Family Relations Section */}

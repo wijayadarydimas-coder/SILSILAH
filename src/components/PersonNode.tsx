@@ -3,6 +3,7 @@
 import React, { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { PersonNodeData } from '@/lib/treeLayout';
+import { calculateAge } from '@/lib/familyLogic';
 import { Sparkles, Eye, ChevronDown, ChevronUp, ShieldCheck, Heart, User } from 'lucide-react';
 
 const PersonNodeComponent = ({ data }: NodeProps) => {
@@ -18,11 +19,8 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
   } = nodeData;
 
   const isDeceased = person.isDeceased;
-  const birthYear = person.birthDate ? person.birthDate.split('-')[0] : '?';
-  const deathYear = person.deathDate ? person.deathDate.split('-')[0] : '';
-  const yearString = isDeceased
-    ? `${birthYear} – ${deathYear || 'Wafat'}`
-    : `${birthYear} – sekarang`;
+  const ageInfo = calculateAge(person.birthDate, person.deathDate, person.isDeceased);
+  const yearString = ageInfo.formattedLifeSpan;
 
   const getGenderColor = () => {
     if (person.gender === 'male') return '#3B82F6';
@@ -77,6 +75,22 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
         transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         cursor: 'default',
         backdropFilter: 'blur(8px)',
+      }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        try {
+          const raw = e.dataTransfer.getData('application/json');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed.personId && parsed.personId !== person.id && nodeData.onNodeDrop) {
+              nodeData.onNodeDrop(parsed.personId, person.id);
+            }
+          }
+        } catch {}
       }}
     >
       {/* Handles for Flow Connections */}
@@ -182,6 +196,10 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
             border: `2px solid ${isFocus ? '#F59E0B' : getGenderColor()}`,
             flexShrink: 0,
             background: '#1E293B',
+            aspectRatio: '1 / 1',
+            isolation: 'isolate',
+            WebkitMaskImage: '-webkit-radial-gradient(white, black)',
+            transform: 'translateZ(0)',
           }}
         >
           {person.photoUrl ? (
@@ -193,6 +211,9 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
+                display: 'block',
+                transform: `scale(${Math.max(1, person.photoZoom || 1)}) translate(${person.photoOffsetX || 0}px, ${person.photoOffsetY || 0}px)`,
+                transformOrigin: 'center center',
                 filter: isDeceased ? 'grayscale(40%)' : 'none',
               }}
             />
@@ -327,23 +348,33 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              nodeData.onSelectFocus && nodeData.onSelectFocus(person.id);
+              nodeData.onToggleCollapse && nodeData.onToggleCollapse(person.id);
             }}
-            title={isCollapsed ? 'Buka cabang keturunan' : 'Tutup cabang keturunan'}
+            title={isCollapsed ? 'Klik untuk tampilkan kembali cabang keturunan di bawah' : 'Klik untuk menyembunyikan (hide) cabang keturunan di bawah'}
             style={{
-              background: isCollapsed ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.12)',
+              background: isCollapsed ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.15)',
               color: isCollapsed ? '#F87171' : '#34D399',
-              padding: '3px 7px',
+              border: isCollapsed ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.3)',
+              padding: '3px 8px',
               borderRadius: 6,
               fontSize: 10,
               fontWeight: 600,
               display: 'flex',
               alignItems: 'center',
-              gap: 3,
+              gap: 4,
             }}
           >
-            {childCount} Anak
-            {isCollapsed ? <ChevronDown size={11} /> : <ChevronUp size={11} />}
+            {isCollapsed ? (
+              <>
+                <span>🙈 +{childCount} Buka</span>
+                <ChevronDown size={12} />
+              </>
+            ) : (
+              <>
+                <span>👁️ {childCount} Hide</span>
+                <ChevronUp size={12} />
+              </>
+            )}
           </button>
         )}
       </div>

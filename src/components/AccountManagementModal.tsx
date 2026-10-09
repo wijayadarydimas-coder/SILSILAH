@@ -28,24 +28,24 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
 
   if (!isOpen) return null;
 
-  const handleRoleChange = (userId: string, newRole: UserRole) => {
+  const handleRoleChange = async (userId: string, newRole: UserRole) => {
     setErrorMsg('');
-    const res = updateUserRole(userId, newRole);
+    const res = await updateUserRole(userId, newRole);
     if (!res.success) {
       setErrorMsg(res.error || 'Gagal mengubah role.');
     } else {
-      setSuccessMsg('Role akun berhasil diperbarui!');
+      setSuccessMsg('Role akun berhasil diperbarui di PostgreSQL!');
       setTimeout(() => setSuccessMsg(''), 2500);
     }
   };
 
-  const handleToggleStatus = (userId: string) => {
+  const handleToggleStatus = async (userId: string) => {
     setErrorMsg('');
-    const res = toggleUserStatus(userId);
+    const res = await toggleUserStatus(userId);
     if (!res.success) {
       setErrorMsg(res.error || 'Gagal mengubah status akun.');
     } else {
-      setSuccessMsg('Status akun berhasil diubah!');
+      setSuccessMsg('Status akun berhasil diubah di PostgreSQL!');
       setTimeout(() => setSuccessMsg(''), 2500);
     }
   };
@@ -171,7 +171,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {users.map((u) => {
-                const isSelf = u.id === currentUser.id;
+                const isSelf = currentUser ? u.id === currentUser.id : false;
                 const isDeactivated = u.status === 'deactivated';
 
                 return (
@@ -208,44 +208,60 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      {/* Role Selector */}
-                      <select
-                        value={u.role}
-                        onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                        disabled={currentRole !== 'superadmin'}
-                        style={{
-                          padding: '6px 10px',
-                          borderRadius: 6,
-                          background: '#0F1626',
-                          border: '1px solid #334155',
-                          color: '#F8FAFC',
-                          fontSize: 12,
-                          fontWeight: 600,
-                        }}
-                      >
-                        <option value="superadmin">Superadmin</option>
-                        <option value="admin">Admin</option>
-                        <option value="client">Client (Read Only)</option>
-                      </select>
+                      {u.role === 'superadmin' || u.username === 'silsilah' ? (
+                        <span
+                          style={{
+                            padding: '6px 12px',
+                            borderRadius: 6,
+                            background: 'rgba(245, 158, 11, 0.15)',
+                            color: '#FBBF24',
+                            border: '1px solid rgba(245, 158, 11, 0.3)',
+                            fontSize: 12,
+                            fontWeight: 700,
+                          }}
+                        >
+                          👑 Superadmin Statis (Tetap)
+                        </span>
+                      ) : (
+                        <>
+                          {/* Role Selector between Admin and Client */}
+                          <select
+                            value={u.role}
+                            onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
+                            style={{
+                              padding: '6px 10px',
+                              borderRadius: 6,
+                              background: '#0F1626',
+                              border: '1px solid #334155',
+                              color: '#F8FAFC',
+                              fontSize: 12,
+                              fontWeight: 600,
+                            }}
+                          >
+                            <option value="admin">Admin (Kelola Data)</option>
+                            <option value="client">Client (Baca Saja)</option>
+                          </select>
 
-                      {/* Deactivate/Activate button */}
-                      <button
-                        onClick={() => handleToggleStatus(u.id)}
-                        title={isDeactivated ? 'Aktifkan kembali akses' : 'Nonaktifkan akses akun'}
-                        style={{
-                          padding: '6px 8px',
-                          borderRadius: 6,
-                          background: isDeactivated ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
-                          color: isDeactivated ? '#34D399' : '#F87171',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          fontSize: 11.5,
-                        }}
-                      >
-                        <Power size={13} />
-                        {isDeactivated ? 'Aktifkan' : 'Nonaktif'}
-                      </button>
+                          {/* Deactivate/Activate button */}
+                          <button
+                            onClick={() => handleToggleStatus(u.id)}
+                            title={isDeactivated ? 'Aktifkan kembali akses' : 'Nonaktifkan akses akun'}
+                            style={{
+                              padding: '6px 8px',
+                              borderRadius: 6,
+                              background: isDeactivated ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
+                              color: isDeactivated ? '#34D399' : '#F87171',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 4,
+                              fontSize: 11.5,
+                            }}
+                          >
+                            <Power size={13} />
+                            {isDeactivated ? 'Aktifkan' : 'Nonaktif'}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 );

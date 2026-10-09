@@ -317,3 +317,233 @@ export function calculateGenerations(
 
   return levels;
 }
+
+export interface AgeCalculationResult {
+  birthYear: string;
+  deathYear: string;
+  age?: number;
+  ageText: string;
+  formattedLifeSpan: string;
+}
+
+/**
+ * Calculates accurate age and formatted life span string (e.g. "2001 – sekarang (25 thn)")
+ */
+export function calculateAge(
+  birthDate?: string,
+  deathDate?: string,
+  isDeceased?: boolean
+): AgeCalculationResult {
+  const isDec = Boolean(isDeceased);
+
+  if (!birthDate || !birthDate.trim()) {
+    const dYear = deathDate ? deathDate.trim().split(/[-/]/)[0] : '';
+    const endStr = dYear || (isDec ? 'Wafat' : 'sekarang');
+    return {
+      birthYear: '?',
+      deathYear: dYear || (isDec ? 'Wafat' : ''),
+      ageText: '',
+      formattedLifeSpan: isDec ? `? – ${endStr}` : '? – sekarang',
+    };
+  }
+
+  const birthParts = birthDate.trim().split(/[-/]/);
+  const bYear = parseInt(birthParts[0], 10);
+  if (isNaN(bYear)) {
+    const dYear = deathDate ? deathDate.trim().split(/[-/]/)[0] : '';
+    return {
+      birthYear: '?',
+      deathYear: dYear || (isDec ? 'Wafat' : ''),
+      ageText: '',
+      formattedLifeSpan: isDec ? `? – ${dYear || 'Wafat'}` : '? – sekarang',
+    };
+  }
+
+  const bMonth = birthParts.length > 1 ? parseInt(birthParts[1], 10) : undefined;
+  const bDay = birthParts.length > 2 ? parseInt(birthParts[2], 10) : undefined;
+
+  let targetYear: number;
+  let targetMonth: number | undefined;
+  let targetDay: number | undefined;
+  let dYearStr = '';
+
+  if (isDec) {
+    if (deathDate && deathDate.trim()) {
+      const dParts = deathDate.trim().split(/[-/]/);
+      targetYear = parseInt(dParts[0], 10);
+      dYearStr = isNaN(targetYear) ? 'Wafat' : String(targetYear);
+      targetMonth = dParts.length > 1 ? parseInt(dParts[1], 10) : undefined;
+      targetDay = dParts.length > 2 ? parseInt(dParts[2], 10) : undefined;
+    } else {
+      targetYear = bYear;
+      dYearStr = 'Wafat';
+    }
+  } else {
+    const now = new Date();
+    targetYear = now.getFullYear();
+    targetMonth = now.getMonth() + 1;
+    targetDay = now.getDate();
+  }
+
+  let age: number | undefined = undefined;
+  if (!isNaN(targetYear) && targetYear >= bYear) {
+    age = targetYear - bYear;
+    if (bMonth && bDay && targetMonth && targetDay) {
+      if (targetMonth < bMonth || (targetMonth === bMonth && targetDay < bDay)) {
+        age = Math.max(0, age - 1);
+      }
+    }
+  }
+
+  const birthYearStr = String(bYear);
+
+  if (isDec) {
+    const endStr = dYearStr || 'Wafat';
+    const ageText = age !== undefined ? `(wafat usia ${age} thn)` : '';
+    const formattedLifeSpan = `${birthYearStr} – ${endStr}${ageText ? ' ' + ageText : ''}`;
+    return {
+      birthYear: birthYearStr,
+      deathYear: endStr,
+      age,
+      ageText,
+      formattedLifeSpan,
+    };
+  } else {
+    const ageText = age !== undefined ? `(${age} thn)` : '';
+    const formattedLifeSpan = `${birthYearStr} – sekarang${ageText ? ' ' + ageText : ''}`;
+    return {
+      birthYear: birthYearStr,
+      deathYear: '',
+      age,
+      ageText,
+      formattedLifeSpan,
+    };
+  }
+}
+
+/**
+ * Format phone to direct WhatsApp link (wa.me)
+ */
+export function formatWhatsAppUrl(phone?: string, defaultCountryCode: string = '+62'): string {
+  if (!phone) return '';
+  const trimmed = phone.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  let cleaned = trimmed.replace(/[^0-9+]/g, '');
+  if (!cleaned) return '';
+
+  const countryDial = defaultCountryCode.replace(/[^0-9]/g, '') || '62';
+
+  if (cleaned.startsWith('+')) {
+    cleaned = cleaned.slice(1);
+  } else if (cleaned.startsWith('0')) {
+    cleaned = countryDial + cleaned.slice(1);
+  } else if (!cleaned.startsWith(countryDial)) {
+    cleaned = countryDial + cleaned;
+  }
+
+  return `https://wa.me/${cleaned}`;
+}
+
+/**
+ * Format Instagram handle/URL to full clickable link
+ */
+export function formatInstagramUrl(handle?: string): string {
+  if (!handle) return '';
+  const trimmed = handle.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  const cleanHandle = trimmed.replace(/^@+/, '');
+  return `https://instagram.com/${cleanHandle}`;
+}
+
+/**
+ * Format address/location to Google Maps search link
+ */
+export function formatGoogleMapsUrl(location?: string): string {
+  if (!location) return '';
+  const trimmed = location.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`;
+}
+
+export interface CountryCodeItem {
+  code: string;
+  country: string;
+  flag: string;
+}
+
+export const COUNTRY_CODES: CountryCodeItem[] = [
+  { code: '+62', country: 'Indonesia', flag: '🇮🇩' },
+  { code: '+60', country: 'Malaysia', flag: '🇲🇾' },
+  { code: '+65', country: 'Singapura', flag: '🇸🇬' },
+  { code: '+966', country: 'Arab Saudi', flag: '🇸🇦' },
+  { code: '+1', country: 'Amerika Serikat / Kanada', flag: '🇺🇸' },
+  { code: '+44', country: 'Inggris', flag: '🇬🇧' },
+  { code: '+61', country: 'Australia', flag: '🇦🇺' },
+  { code: '+81', country: 'Jepang', flag: '🇯🇵' },
+  { code: '+82', country: 'Korea Selatan', flag: '🇰🇷' },
+  { code: '+971', country: 'Uni Emirat Arab', flag: '🇦🇪' },
+  { code: '+20', country: 'Mesir', flag: '🇪🇬' },
+  { code: '+90', country: 'Turki', flag: '🇹🇷' },
+  { code: '+49', country: 'Jerman', flag: '🇩🇪' },
+  { code: '+31', country: 'Belanda', flag: '🇳🇱' },
+  { code: '+33', country: 'Prancis', flag: '🇫🇷' },
+  { code: '+86', country: 'Tiongkok', flag: '🇨🇳' },
+  { code: '+64', country: 'Selandia Baru', flag: '🇳🇿' },
+];
+
+export const INDONESIAN_CITIES: string[] = [
+  'DKI Jakarta',
+  'Jakarta Selatan, DKI Jakarta',
+  'Jakarta Timur, DKI Jakarta',
+  'Jakarta Barat, DKI Jakarta',
+  'Jakarta Utara, DKI Jakarta',
+  'Jakarta Pusat, DKI Jakarta',
+  'Surabaya, Jawa Timur',
+  'Bandung, Jawa Barat',
+  'Medan, Sumatera Utara',
+  'Semarang, Jawa Tengah',
+  'Makassar, Sulawesi Selatan',
+  'Palembang, Sumatera Selatan',
+  'Tangerang, Banten',
+  'Tangerang Selatan, Banten',
+  'Depok, Jawa Barat',
+  'Bekasi, Jawa Barat',
+  'Bogor, Jawa Barat',
+  'Yogyakarta, DI Yogyakarta',
+  'Sleman, DI Yogyakarta',
+  'Bantul, DI Yogyakarta',
+  'Surakarta (Solo), Jawa Tengah',
+  'Malang, Jawa Timur',
+  'Sidoarjo, Jawa Timur',
+  'Denpasar, Bali',
+  'Badung, Bali',
+  'Padang, Sumatera Barat',
+  'Pekanbaru, Riau',
+  'Batam, Kepulauan Riau',
+  'Bandar Lampung, Lampung',
+  'Banjarmasin, Kalimantan Selatan',
+  'Balikpapan, Kalimantan Timur',
+  'Samarinda, Kalimantan Timur',
+  'Pontianak, Kalimantan Barat',
+  'Manado, Sulawesi Utara',
+  'Mataram, Nusa Tenggara Barat',
+  'Kupang, Nusa Tenggara Timur',
+  'Ambon, Maluku',
+  'Jayapura, Papua',
+  'Banda Aceh, Aceh',
+  'Jambi, Jambi',
+  'Bengkulu, Bengkulu',
+  'Pangkalpinang, Bangka Belitung',
+  'Palu, Sulawesi Tengah',
+  'Kendari, Sulawesi Tenggara',
+  'Gorontalo, Gorontalo',
+  'Mamuju, Sulawesi Barat',
+  'Sorong, Papua Barat Daya',
+  'Luar Negeri (Internasional)',
+];
