@@ -20,6 +20,7 @@ import { PasswordResetAdminModal } from '@/components/PasswordResetAdminModal';
 import { AIChatDrawer } from '@/components/AIChatDrawer';
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { CommunityChatDrawer } from '@/components/CommunityChatDrawer';
+import { PhoneCountryInput } from '@/components/PhoneCountryInput';
 import {
   Lock,
   User,
@@ -382,7 +383,7 @@ function FullScreenAuthPortal() {
                   required
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="cth: Dimas Wijaya"
+                  placeholder="cth: Nama Anda"
                   style={{
                     width: '100%',
                     padding: '9px 12px 9px 36px',
@@ -402,36 +403,13 @@ function FullScreenAuthPortal() {
           {tab === 'register' && (
             <>
               <div style={{ marginBottom: 14 }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    color: '#CBD5E1',
-                    marginBottom: 6,
-                  }}
-                >
-                  Nomor WhatsApp
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <Phone size={15} color="#64748B" style={{ position: 'absolute', left: 12, top: 11 }} />
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="cth: 08123456789"
-                    style={{
-                      width: '100%',
-                      padding: '9px 12px 9px 36px',
-                      borderRadius: 8,
-                      background: '#0D1322',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
-                      fontSize: 13,
-                      outline: 'none',
-                    }}
-                  />
-                </div>
+                <PhoneCountryInput
+                  label="Nomor WhatsApp"
+                  value={phone}
+                  onChange={(val) => setPhone(val)}
+                  placeholder="81234567890"
+                  showWhatsAppPreview={true}
+                />
               </div>
 
               <div style={{ marginBottom: 14 }}>
@@ -452,7 +430,7 @@ function FullScreenAuthPortal() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="cth: nama@keluarga.com"
+                    placeholder="cth: nama@email.com"
                     style={{
                       width: '100%',
                       padding: '9px 12px 9px 36px',
@@ -735,39 +713,6 @@ function SilsilahDashboard() {
 
         {/* Canvas or List view */}
         <div style={{ flex: 1, height: '100%', position: 'relative' }}>
-          {/* Floating Unhide Button when sidebar is hidden */}
-          {!isSidebarOpen && (
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              title="Buka Daftar Anggota Silsilah"
-              style={{
-                position: 'absolute',
-                top: 14,
-                left: 14,
-                zIndex: 35,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 7,
-                background: 'rgba(19, 27, 46, 0.92)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid #1E293B',
-                color: '#F8FAFC',
-                padding: '7px 13px',
-                borderRadius: 8,
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
-                transition: 'all 0.15s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#10B981')}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#1E293B')}
-            >
-              <Users size={14} color="#10B981" />
-              <span>Daftar Anggota</span>
-            </button>
-          )}
-
           {viewMode === 'canvas' ? (
             <TreeCanvas
               onOpenProfile={(id) => setSelectedProfileId(id)}
@@ -789,14 +734,14 @@ function SilsilahDashboard() {
                 top: '50%',
                 left: isSidebarOpen ? 'calc(50% + 155px)' : '50%',
                 transform: 'translate(-50%, -50%)',
-                background: 'rgba(15, 23, 42, 0.92)',
+                background: 'var(--bg-card, rgba(15, 23, 42, 0.95))',
                 backdropFilter: 'blur(16px)',
-                border: '1px solid #1E293B',
+                border: '1px solid var(--border-subtle, #1E293B)',
                 borderRadius: 16,
                 padding: '32px 36px',
                 textAlign: 'center',
                 maxWidth: 440,
-                boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
                 zIndex: 20,
               }}
             >
@@ -805,20 +750,20 @@ function SilsilahDashboard() {
                   width: 54,
                   height: 54,
                   borderRadius: '50%',
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  background: 'var(--primary-glow, rgba(16, 185, 129, 0.15))',
+                  border: '1px solid var(--primary, rgba(16, 185, 129, 0.3))',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 16px auto',
                 }}
               >
-                <Sparkles size={24} color="#34D399" />
+                <Sparkles size={24} color="var(--primary, #34D399)" />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: '#F8FAFC', marginBottom: 8 }}>
-                Pohon Silsilah Bersih & Siap Digunakan
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)', marginBottom: 8 }}>
+                Pohon Silsilah Bersih &amp; Siap Digunakan
               </h3>
-              <p style={{ fontSize: 13, color: '#94A3B8', lineHeight: 1.5, marginBottom: 20 }}>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary, #94A3B8)', lineHeight: 1.5, marginBottom: 20 }}>
                 Data contoh lama telah dibersihkan sepenuhnya. Mulai bangun silsilah keluarga Anda dengan menambahkan anggota pertama.
               </p>
               <button

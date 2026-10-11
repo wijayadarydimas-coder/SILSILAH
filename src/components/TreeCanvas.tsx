@@ -128,12 +128,12 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
           display: 'flex',
           alignItems: 'center',
           gap: 8,
-          background: 'rgba(17, 24, 39, 0.85)',
+          background: 'var(--bg-card, rgba(17, 24, 39, 0.85))',
           backdropFilter: 'blur(10px)',
           padding: '6px 12px',
           borderRadius: 999,
-          border: '1px solid #1E293B',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)',
+          border: '1px solid var(--border-subtle, #1E293B)',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.25)',
           zIndex: 10,
         }}
       >
@@ -166,14 +166,14 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             display: 'flex',
             alignItems: 'center',
             gap: 5,
-            background: nuclearFamilyOnly ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)' : '#162035',
-            color: nuclearFamilyOnly ? '#FFFFFF' : '#F8FAFC',
+            background: nuclearFamilyOnly ? 'var(--primary, #10B981)' : 'var(--bg-menu, #162035)',
+            color: nuclearFamilyOnly ? '#FFFFFF' : 'var(--text-primary, #F8FAFC)',
             padding: '5px 12px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 600,
-            border: nuclearFamilyOnly ? 'none' : '1px solid #334155',
-            boxShadow: nuclearFamilyOnly ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none',
+            border: nuclearFamilyOnly ? 'none' : '1px solid var(--border-subtle, #334155)',
+            boxShadow: nuclearFamilyOnly ? '0 2px 8px var(--primary-glow, rgba(16, 185, 129, 0.4))' : 'none',
           }}
         >
           <span>{nuclearFamilyOnly ? '🌐 Tampilkan Semua Silsilah' : '🏠 Fokus ke Keluarga Inti'}</span>
@@ -185,13 +185,13 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             display: 'flex',
             alignItems: 'center',
             gap: 5,
-            background: '#162035',
-            color: '#F8FAFC',
+            background: 'var(--bg-menu, #162035)',
+            color: 'var(--text-primary, #F8FAFC)',
             padding: '5px 10px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 500,
-            border: '1px solid #334155',
+            border: '1px solid var(--border-subtle, #334155)',
           }}
         >
           <Maximize2 size={13} />
@@ -205,17 +205,18 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
           position: 'absolute',
           top: 16,
           left: 16,
-          background: 'rgba(17, 24, 39, 0.85)',
+          background: 'var(--bg-card, rgba(17, 24, 39, 0.85))',
           backdropFilter: 'blur(8px)',
           padding: '8px 12px',
           borderRadius: 10,
-          border: '1px solid #1E293B',
+          border: '1px solid var(--border-subtle, #1E293B)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           gap: 6,
           fontSize: 11,
-          color: '#94A3B8',
+          color: 'var(--text-secondary, #94A3B8)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

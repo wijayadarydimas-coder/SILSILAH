@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { askFamilyAI, ChatMessage } from '@/lib/ai/assistant';
+import { askFamilyAI, checkAndRegisterAiSession, ChatMessage } from '@/lib/ai/assistant';
 
 export async function GET() {
   const aiName = process.env.AI_NAME?.trim() || 'Asisten Silsilah';
@@ -8,7 +8,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, history } = await req.json();
+    const { prompt, history, userId } = await req.json();
 
     if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
       return NextResponse.json({ error: 'Pertanyaan tidak boleh kosong.' }, { status: 400 });
@@ -19,6 +19,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Pertanyaan terlalu panjang (maksimal 2000 karakter).' }, { status: 400 });
     }
 
+    // Concurrent user session check (max 10 active accounts)
+    const sessionCheck = checkAndRegisterAiSession(userId || '');
+    if (!sessionCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: sessionCheck.message || 'Kapasitas Asisten AI saat ini sedang penuh (maksimal 10 akun aktif).',
+          isOverloaded: true,
+        },
+        { status: 429 }
+      );
+    }
+
     const cleanHistory: ChatMessage[] = Array.isArray(history)
       ? history.slice(-10).map((h) => ({
           role: h.role === 'user' ? 'user' : 'assistant',
@@ -26,7 +38,7 @@ export async function POST(req: NextRequest) {
         }))
       : [];
 
-    const result = await askFamilyAI(prompt.trim(), cleanHistory);
+    const result = await askFamilyAI(prompt.trim(), cleanHistory, userId);
 
     return NextResponse.json({
       success: true,
@@ -39,4 +51,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Gagal memproses pertanyaan asisten AI.' }, { status: 500 });
   }
 }
+
 

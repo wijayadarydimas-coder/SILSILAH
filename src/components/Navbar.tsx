@@ -23,7 +23,10 @@ import {
   MessageSquare,
   Camera,
   LogOut,
+  Sun,
+  Moon,
 } from 'lucide-react';
+import { PRESET_THEMES, applyThemeColors, THEME_STORAGE_KEY } from '@/components/ThemeCustomizerModal';
 
 interface NavbarProps {
   viewMode: 'canvas' | 'list';
@@ -74,7 +77,43 @@ export function Navbar({
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isLightMode, setIsLightMode] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Sync theme mode on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (
+          parsed.bgPrimary === '#F8FAFC' ||
+          parsed.bgPrimary === '#FFFFFF' ||
+          parsed.bgPrimary?.toLowerCase() === '#f8fafc'
+        ) {
+          setIsLightMode(true);
+        }
+      }
+    } catch {}
+  }, []);
+
+  const toggleThemeMode = () => {
+    if (isLightMode) {
+      const dark = PRESET_THEMES[0].colors;
+      applyThemeColors(dark);
+      setIsLightMode(false);
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(dark));
+      } catch {}
+    } else {
+      const light = PRESET_THEMES[1].colors;
+      applyThemeColors(light);
+      setIsLightMode(true);
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(light));
+      } catch {}
+    }
+  };
 
   // Close search dropdown on click outside
   useEffect(() => {
@@ -118,7 +157,7 @@ export function Navbar({
     <header
       style={{
         background: 'var(--bg-navbar, #0D1322)',
-        borderBottom: '1px solid #1E293B',
+        borderBottom: '1px solid var(--border-subtle, #1E293B)',
         padding: '10px 20px',
         display: 'flex',
         alignItems: 'center',
@@ -136,8 +175,8 @@ export function Navbar({
               width: 38,
               height: 38,
               borderRadius: 10,
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
+              background: 'var(--primary-glow, rgba(16, 185, 129, 0.1))',
+              border: '1px solid var(--primary, rgba(16, 185, 129, 0.3))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -149,14 +188,14 @@ export function Navbar({
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '0.05em', color: '#F8FAFC' }}>
+              <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '0.05em', color: 'var(--text-primary, #F8FAFC)' }}>
                 SILSILAH
               </span>
               <span
                 style={{
                   fontSize: 10,
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  color: '#34D399',
+                  background: 'var(--primary-glow, rgba(16, 185, 129, 0.15))',
+                  color: 'var(--primary, #34D399)',
                   padding: '2px 6px',
                   borderRadius: 4,
                   fontWeight: 700,
@@ -165,8 +204,8 @@ export function Navbar({
                 v1.0 Pro
               </span>
             </div>
-            <div style={{ fontSize: 11.5, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontWeight: 500, color: '#E2E8F0' }}>{workspace.name}</span>
+            <div style={{ fontSize: 11.5, color: 'var(--text-secondary, #94A3B8)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontWeight: 500, color: 'var(--text-secondary, #E2E8F0)' }}>{workspace.name}</span>
               {isSuperadmin && onOpenWorkspaceSettings && (
                 <button
                   onClick={onOpenWorkspaceSettings}
@@ -197,10 +236,10 @@ export function Navbar({
         <div
           style={{
             display: 'flex',
-            background: '#162035',
+            background: 'var(--bg-menu, #162035)',
             padding: 3,
             borderRadius: 8,
-            border: '1px solid #1E293B',
+            border: '1px solid var(--border-subtle, #1E293B)',
           }}
         >
           <button
@@ -214,8 +253,8 @@ export function Navbar({
               borderRadius: 6,
               fontSize: 12,
               fontWeight: 600,
-              background: viewMode === 'canvas' ? '#10B981' : 'transparent',
-              color: viewMode === 'canvas' ? 'white' : '#94A3B8',
+              background: viewMode === 'canvas' ? 'var(--primary, #10B981)' : 'transparent',
+              color: viewMode === 'canvas' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
               transition: 'all 0.15s ease',
             }}
           >
@@ -233,8 +272,8 @@ export function Navbar({
               borderRadius: 6,
               fontSize: 12,
               fontWeight: 600,
-              background: viewMode === 'list' ? '#10B981' : 'transparent',
-              color: viewMode === 'list' ? 'white' : '#94A3B8',
+              background: viewMode === 'list' ? 'var(--primary, #10B981)' : 'transparent',
+              color: viewMode === 'list' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
               transition: 'all 0.15s ease',
             }}
           >
@@ -247,7 +286,7 @@ export function Navbar({
       {/* Global Member Search Bar */}
       <div ref={searchRef} style={{ position: 'relative', width: 280 }}>
         <div style={{ position: 'relative' }}>
-          <Search size={15} color="#94A3B8" style={{ position: 'absolute', left: 10, top: 10 }} />
+          <Search size={15} color="var(--text-secondary, #94A3B8)" style={{ position: 'absolute', left: 10, top: 10 }} />
           <input
             type="text"
             value={searchQuery}
@@ -261,9 +300,9 @@ export function Navbar({
               width: '100%',
               padding: '7px 12px 7px 32px',
               borderRadius: 8,
-              background: '#162035',
-              border: '1px solid #1E293B',
-              color: '#F8FAFC',
+              background: 'var(--bg-menu, #162035)',
+              border: '1px solid var(--border-subtle, #1E293B)',
+              color: 'var(--text-primary, #F8FAFC)',
               fontSize: 12.5,
               outline: 'none',
             }}
@@ -279,10 +318,10 @@ export function Navbar({
               left: 0,
               right: 0,
               marginTop: 6,
-              background: '#131B2E',
-              border: '1px solid #1E293B',
+              background: 'var(--bg-card, #131B2E)',
+              border: '1px solid var(--border-subtle, #1E293B)',
               borderRadius: 10,
-              boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
               overflow: 'hidden',
               zIndex: 100,
             }}
@@ -297,10 +336,10 @@ export function Navbar({
                   gap: 10,
                   padding: '8px 12px',
                   cursor: 'pointer',
-                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  borderBottom: '1px solid var(--border-subtle, rgba(255,255,255,0.05))',
                   transition: 'background 0.15s',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = '#1E293B')}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-menu, #1E293B)')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
                 <div
@@ -309,7 +348,7 @@ export function Navbar({
                     height: 26,
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    background: '#334155',
+                    background: 'var(--border-medium, #334155)',
                     flexShrink: 0,
                   }}
                 >
@@ -317,14 +356,14 @@ export function Navbar({
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={p.photoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', background: '#334155' }} />
+                    <div style={{ width: '100%', height: '100%', background: 'var(--border-medium, #334155)' }} />
                   )}
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary, #F8FAFC)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {p.fullName}
                   </div>
-                  <div style={{ fontSize: 10.5, color: '#94A3B8' }}>
+                  <div style={{ fontSize: 10.5, color: 'var(--text-secondary, #94A3B8)' }}>
                     {p.displayName || (p.gender === 'male' ? 'Laki-laki' : 'Perempuan')}
                   </div>
                 </div>
@@ -347,9 +386,9 @@ export function Navbar({
               gap: 6,
               padding: '7px 12px',
               borderRadius: 8,
-              background: isSidebarOpen ? 'rgba(16, 185, 129, 0.2)' : '#162035',
-              color: isSidebarOpen ? '#34D399' : '#94A3B8',
-              border: isSidebarOpen ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid #1E293B',
+              background: isSidebarOpen ? 'var(--primary-glow, rgba(16, 185, 129, 0.2))' : 'var(--bg-menu, #162035)',
+              color: isSidebarOpen ? 'var(--primary, #34D399)' : 'var(--text-secondary, #94A3B8)',
+              border: isSidebarOpen ? '1px solid var(--primary, rgba(16, 185, 129, 0.4))' : '1px solid var(--border-subtle, #1E293B)',
               fontSize: 12,
               fontWeight: 600,
             }}
@@ -370,9 +409,9 @@ export function Navbar({
               gap: 6,
               padding: '7px 12px',
               borderRadius: 8,
-              background: '#162035',
-              color: '#38BDF8',
-              border: '1px solid #1E293B',
+              background: 'var(--bg-menu, #162035)',
+              color: 'var(--primary, #38BDF8)',
+              border: '1px solid var(--border-subtle, #1E293B)',
               fontSize: 12,
               fontWeight: 600,
             }}
@@ -381,6 +420,28 @@ export function Navbar({
             <span>Tema RGB</span>
           </button>
         )}
+
+        {/* 1-Click Dark Mode / White Mode Toggle Icon */}
+        <button
+          onClick={toggleThemeMode}
+          title={isLightMode ? 'Beralih ke Dark Mode (Emerald)' : 'Beralih ke White Mode (Clean Porcelain)'}
+          aria-label={isLightMode ? 'Beralih ke Dark Mode' : 'Beralih ke White Mode'}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: isLightMode ? '#FEF08A' : 'var(--bg-menu, #162035)',
+            color: isLightMode ? '#854D0E' : '#FBBF24',
+            border: isLightMode ? '1px solid #FDE047' : '1px solid var(--border-subtle, #1E293B)',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          {isLightMode ? <Moon size={15} /> : <Sun size={15} />}
+        </button>
 
         {/* Audit Log Button */}
         <button
@@ -392,9 +453,9 @@ export function Navbar({
             gap: 6,
             padding: '7px 12px',
             borderRadius: 8,
-            background: '#162035',
-            color: '#94A3B8',
-            border: '1px solid #1E293B',
+            background: 'var(--bg-menu, #162035)',
+            color: 'var(--text-secondary, #94A3B8)',
+            border: '1px solid var(--border-subtle, #1E293B)',
             fontSize: 12,
             fontWeight: 500,
           }}
@@ -437,9 +498,9 @@ export function Navbar({
               gap: 6,
               padding: '7px 12px',
               borderRadius: 8,
-              background: '#162035',
-              color: '#F59E0B',
-              border: '1px solid #1E293B',
+              background: 'var(--bg-menu, #162035)',
+              color: 'var(--accent-gold, #F59E0B)',
+              border: '1px solid var(--border-subtle, #1E293B)',
               fontSize: 12,
               fontWeight: 500,
             }}
@@ -449,7 +510,7 @@ export function Navbar({
           </button>
         )}
 
-        {/* Chat Komunitas Button */}
+        {/* Chat Komunitas Button (Customizable Color) */}
         <button
           onClick={onOpenCommunityChat}
           className="btn-secondary"
@@ -460,11 +521,12 @@ export function Navbar({
             gap: 6,
             padding: '7px 12px',
             borderRadius: 8,
-            background: '#162035',
-            color: '#38BDF8',
-            border: '1px solid #1E293B',
+            background: 'var(--community-btn, #162035)',
+            color: 'var(--community-btn-text, #38BDF8)',
+            border: '1px solid var(--community-btn-border, #1E293B)',
             fontSize: 12,
             fontWeight: 500,
+            transition: 'all 0.2s ease',
           }}
         >
           <MessageSquare size={14} />
@@ -490,10 +552,10 @@ export function Navbar({
               gap: 5,
               padding: '7px 12px',
               borderRadius: 8,
-              background: 'rgba(148, 163, 184, 0.1)',
-              color: '#94A3B8',
+              background: 'var(--bg-menu, rgba(148, 163, 184, 0.1))',
+              color: 'var(--text-secondary, #94A3B8)',
               fontSize: 12,
-              border: '1px solid #1E293B',
+              border: '1px solid var(--border-subtle, #1E293B)',
             }}
           >
             <Lock size={13} />
@@ -511,8 +573,8 @@ export function Navbar({
               gap: 8,
               padding: '5px 10px',
               borderRadius: 8,
-              background: '#162035',
-              border: '1px solid #1E293B',
+              background: 'var(--bg-menu, #162035)',
+              border: '1px solid var(--border-subtle, #1E293B)',
             }}
           >
             <div
@@ -521,7 +583,7 @@ export function Navbar({
                 height: 24,
                 borderRadius: '50%',
                 overflow: 'hidden',
-                background: '#334155',
+                background: 'var(--border-medium, #334155)',
               }}
             >
               {currentUser?.avatarUrl ? (
@@ -535,11 +597,11 @@ export function Navbar({
               <div style={{ fontSize: 11, fontWeight: 700, color: roleBadge.text }}>
                 {roleBadge.label}
               </div>
-              <div style={{ fontSize: 10, color: '#64748B' }}>
+              <div style={{ fontSize: 10, color: 'var(--text-muted, #64748B)' }}>
                 {currentUser ? currentUser.displayName.split(' ')[0] : 'Tamu'}
               </div>
             </div>
-            <ChevronDown size={13} color="#94A3B8" />
+            <ChevronDown size={13} color="var(--text-secondary, #94A3B8)" />
           </button>
 
           {isUserMenuOpen && (
@@ -550,20 +612,20 @@ export function Navbar({
                 right: 0,
                 marginTop: 6,
                 width: 240,
-                background: '#131B2E',
-                border: '1px solid #1E293B',
+                background: 'var(--bg-card, #131B2E)',
+                border: '1px solid var(--border-subtle, #1E293B)',
                 borderRadius: 10,
-                boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
                 padding: 6,
                 zIndex: 100,
               }}
             >
               {/* Profile summary */}
-              <div style={{ padding: '8px 10px', borderBottom: '1px solid #1E293B', marginBottom: 6 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#F8FAFC' }}>
+              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-subtle, #1E293B)', marginBottom: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
                   {currentUser?.displayName || 'Pengguna'}
                 </div>
-                <div style={{ fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-secondary, #94A3B8)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
                   <span>{currentUser?.email || (currentUser?.username ? `@${currentUser.username}` : '')}</span>
                   <span style={{ fontSize: 10, padding: '1px 5px', borderRadius: 4, background: roleBadge.bg, color: roleBadge.text, fontWeight: 700 }}>
                     {roleBadge.label}

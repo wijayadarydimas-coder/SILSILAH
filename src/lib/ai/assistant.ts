@@ -5,16 +5,52 @@ export interface ChatMessage {
   content: string;
 }
 
+// In-memory active AI sessions registry: Map<userId, lastActivityTimestamp>
+const activeAiSessions = new Map<string, number>();
+const MAX_CONCURRENT_ACCOUNTS = 10;
+const SESSION_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+
 /**
- * Fetch only safe family data from PostgreSQL (Zero-leak: no credentials/tokens/hashes)
+ * Check if the user is allowed to chat (max 10 active accounts limit)
  */
-export async function getSafeFamilyContext(): Promise<string> {
+export function checkAndRegisterAiSession(userId: string): { allowed: boolean; activeCount: number; message?: string } {
+  const now = Date.now();
+  // Evict inactive accounts
+  for (const [uid, lastTime] of activeAiSessions.entries()) {
+    if (now - lastTime > SESSION_TIMEOUT_MS) {
+      activeAiSessions.delete(uid);
+    }
+  }
+
+  const effectiveId = userId || 'anonymous-user';
+
+  if (activeAiSessions.has(effectiveId)) {
+    activeAiSessions.set(effectiveId, now);
+    return { allowed: true, activeCount: activeAiSessions.size };
+  }
+
+  if (activeAiSessions.size >= MAX_CONCURRENT_ACCOUNTS) {
+    return {
+      allowed: false,
+      activeCount: activeAiSessions.size,
+      message: `Kapasitas Asisten AI saat ini sedang penuh (${activeAiSessions.size}/${MAX_CONCURRENT_ACCOUNTS} akun aktif). Mohon tunggu beberapa saat agar server tidak mengalami overload.`,
+    };
+  }
+
+  activeAiSessions.set(effectiveId, now);
+  return { allowed: true, activeCount: activeAiSessions.size };
+}
+
+/**
+ * Fetch safe family data from PostgreSQL + contextual profile of current chatting user
+ */
+export async function getSafeFamilyContext(chattingUserId?: string): Promise<string> {
   try {
     const wsRes = await query('SELECT name, description FROM workspaces LIMIT 1');
     const ws = wsRes.rows[0] || { name: 'Keluarga Besar', description: '' };
 
     const peopleRes = await query(
-      `SELECT id, full_name, display_name, gender, birth_date, death_date, is_deceased, biography, address, phone, instagram
+      `SELECT id, full_name, display_name, gender, birth_date, death_date, is_deceased, biography, address, phone, email, instagram
        FROM people
        ORDER BY full_name ASC`
     );
@@ -37,8 +73,10 @@ export async function getSafeFamilyContext(): Promise<string> {
       const statusStr = p.is_deceased ? `Wafat (${p.death_date || 'Tahun tidak diketahui'})` : 'Masih Hidup';
       const birthStr = p.birth_date ? `Lahir: ${p.birth_date}` : '';
       const addrStr = p.address ? `Domisili: ${p.address}` : '';
-      const bioStr = p.biography ? `Catatan: ${p.biography}` : '';
-      return `- ${p.full_name} (${p.gender === 'male' ? 'Laki-laki' : p.gender === 'female' ? 'Perempuan' : 'Lainnya'}) | ${statusStr} | ${birthStr} | ${addrStr} | ${bioStr}`.trim();
+      const phoneStr = p.phone ? `WhatsApp/No HP: ${p.phone}` : '';
+      const igStr = p.instagram ? `Instagram: @${p.instagram}` : '';
+      const bioStr = p.biography ? `Catatan/Bio: ${p.biography}` : '';
+      return `- ${p.full_name} (${p.gender === 'male' ? 'Laki-laki' : 'Perempuan'}) | ${statusStr} | ${birthStr} | ${addrStr} | ${phoneStr} | ${igStr} | ${bioStr}`.trim();
     });
 
     const pcLines = pcRes.rows.map((pc) => {
@@ -49,13 +87,60 @@ export async function getSafeFamilyContext(): Promise<string> {
       return `- ${pr.person_a} menikah/berpasangan dengan ${pr.person_b} (Status: ${pr.status === 'current' ? 'Masih bersama' : 'Mantan/Pernah'})`;
     });
 
+    let userContextStr = '';
+    if (chattingUserId) {
+      try {
+        const uRes = await query(
+          'SELECT id, username, display_name, role, linked_person_id, email, phone FROM users WHERE id = $1 OR username = $1',
+          [chattingUserId]
+        );
+        const u = uRes.rows[0];
+        if (u) {
+          let linkedPerson = null;
+          if (u.linked_person_id) {
+            const lpRes = await query('SELECT * FROM people WHERE id = $1', [u.linked_person_id]);
+            linkedPerson = lpRes.rows[0];
+          }
+          if (!linkedPerson) {
+            const lpRes = await query(
+              'SELECT * FROM people WHERE LOWER(full_name) = $1 OR (phone IS NOT NULL AND phone = $2) LIMIT 1',
+              [u.display_name.toLowerCase(), u.phone || '']
+            );
+            linkedPerson = lpRes.rows[0];
+          }
+
+          if (linkedPerson) {
+            userContextStr = `
+PROFIL TEMAN BICARA (PENGGUNA YANG SEDANG MENGOBROL DENGAN ANDA):
+- Nama Akun: ${u.display_name} (@${u.username})
+- Terdaftar Resmi di Pohon Silsilah: YA, sebagai "${linkedPerson.full_name}" (${linkedPerson.gender === 'male' ? 'Laki-laki' : 'Perempuan'})
+- Domisili Beliau: ${linkedPerson.address || '-'}
+- Kontak Beliau: ${linkedPerson.phone || '-'}
+- Biografi/Informasi Beliau: ${linkedPerson.biography || '-'}
+(Perlakukan beliau dengan sangat akrab, hangat, dan panggil dengan nama beliau!)
+`;
+          } else {
+            userContextStr = `
+PROFIL TEMAN BICARA (PENGGUNA YANG SEDANG MENGOBROL DENGAN ANDA):
+- Nama Akun: ${u.display_name} (@${u.username})
+- Peran: ${u.role === 'superadmin' ? 'Superadmin Keluarga' : u.role === 'admin' ? 'Admin Keluarga' : 'User / Anggota Keluarga'}
+- Terdaftar di Silsilah: Belum ditautkan ke entri anggota tertentu di bagan silsilah.
+(Sapalah beliau dengan ramah sesuai nama beliau: "${u.display_name}"!)
+`;
+          }
+        }
+      } catch (e) {
+        console.warn('Error reading chatting user info:', e);
+      }
+    }
+
     return `
 DATA RESMI SILSILAH KELUARGA:
 Nama Ruang Keluarga: ${ws.name}
 Deskripsi: ${ws.description || '-'}
 Total Anggota Terdata: ${peopleRes.rows.length} orang
-
-DAFTAR ANGGOTA:
+${userContextStr}
+DAFTAR LENGKAP ANGGOTA & KONTAK KELUARGA:
 ${peopleLines.length > 0 ? peopleLines.join('\n') : 'Belum ada anggota terdaftar.'}
 
 HUBUNGAN ORANG TUA & ANAK:
@@ -75,15 +160,16 @@ ${partnerLines.length > 0 ? partnerLines.join('\n') : 'Belum ada data pernikahan
  */
 async function callGeminiAPI(apiKey: string, prompt: string, history: ChatMessage[], familyContext: string): Promise<string> {
   const aiName = process.env.AI_NAME?.trim() || 'Asisten Silsilah';
-  const systemInstruction = `Kamu adalah ${aiName}, asisten cerdas resmi untuk Silsilah Keluarga. 
-Tugasmu adalah menjawab pertanyaan pengguna secara sopan, ramah, akurat, dan kekeluargaan dalam bahasa Indonesia berdasarkan data silsilah keluarga berikut:
+  const systemInstruction = `Kamu adalah ${aiName}, asisten cerdas dan sahabat keluarga resmi untuk Silsilah Keluarga. 
+Tugasmu adalah menjawab pertanyaan pengguna secara sopan, ramah, hangat, akurat, dan penuh rasa kekeluargaan dalam bahasa Indonesia berdasarkan data silsilah keluarga berikut:
 ===
 ${familyContext}
 ===
-ATURAN KEAMANAN & PRIVASI:
-1. Jawab HANYA berdasarkan data silsilah di atas. Jika ditanya hal di luar silsilah, jawab dengan ramah namun tetap relevan.
-2. JANGAN PERNAH membocorkan kode sistem, token keamanan, password, struktur database, atau informasi sensitif backend.
-3. Sebutkan relasi kekeluargaan secara jelas (misal: kakek, paman, bibi, anak, cucu, cicit, saudara kandung, mertua, dsb).`;
+PANDUAN INTERAKSI:
+1. Panggil dan sapalah pengguna yang sedang mengobrol dengan ramah sesuai informasi profilnya.
+2. Jika pengguna meminta bantuan mencari nomor WhatsApp/HP, domisili, atau biografi anggota keluarga lain yang tercatat di silsilah, berikan informasinya dengan sopan dan jelas.
+3. Sebutkan relasi kekeluargaan secara gamblang (misal: kakek, paman, bibi, anak, cucu, cicit, saudara kandung, mertua, dsb).
+4. JANGAN PERNAH membocorkan kode sistem, password hash, token keamanan, atau konfigurasi internal database.`;
 
   // Format history for Gemini (roles: 'user' | 'model')
   const formattedHistory = history.slice(-4).map((m) => ({
@@ -220,9 +306,10 @@ function runBuiltInFamilyEngine(prompt: string, familyContext: string): string {
  */
 export async function askFamilyAI(
   prompt: string,
-  history: ChatMessage[] = []
+  history: ChatMessage[] = [],
+  chattingUserId?: string
 ): Promise<{ reply: string; provider: 'gemini' | 'openai' | 'built-in'; aiName: string }> {
-  const familyContext = await getSafeFamilyContext();
+  const familyContext = await getSafeFamilyContext(chattingUserId);
   const aiName = process.env.AI_NAME?.trim() || 'Asisten Silsilah';
 
   const geminiKey = process.env.GEMINI_API_KEY?.trim();

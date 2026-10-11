@@ -20,6 +20,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { COUNTRY_CODES, INDONESIAN_CITIES, searchIndonesianLocations, LocationSuggestion } from '@/lib/familyLogic';
+import { PhoneCountryInput } from '@/components/PhoneCountryInput';
 
 interface MemberModalProps {
   isOpen: boolean;
@@ -223,14 +224,14 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
     }
 
     // Format phone with country code
-    const cleanPhone = phoneNumber.trim();
+    const cleanPhone = (phone || phoneNumber).trim();
     let finalPhone: string | undefined = undefined;
     if (cleanPhone) {
       if (cleanPhone.startsWith('+')) {
         finalPhone = cleanPhone;
       } else {
         const noLeadingZero = cleanPhone.replace(/^0+/, '');
-        finalPhone = `${countryCode} ${noLeadingZero}`;
+        finalPhone = `${countryCode}${noLeadingZero}`;
       }
     }
 
@@ -830,49 +831,18 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                   </div>
                 </div>
 
-                {/* WhatsApp dengan Pilihan Kode Negara */}
+                {/* WhatsApp dengan Pilihan Kode Negara Terpadu */}
                 <div>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
-                    <Phone size={13} color="#10B981" />
-                    Nomor WhatsApp / Telepon
-                  </label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <select
-                      value={countryCode}
-                      onChange={(e) => setCountryCode(e.target.value)}
-                      style={{
-                        width: 140,
-                        padding: '8px 8px',
-                        borderRadius: 8,
-                        background: '#162035',
-                        border: '1px solid #1E293B',
-                        color: '#F8FAFC',
-                        fontSize: 12,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {COUNTRY_CODES.map((item) => (
-                        <option key={item.code} value={item.code}>
-                          {item.flag} {item.code} ({item.country.split(' ')[0]})
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      type="tel"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      placeholder="Contoh: 8123456789 atau 0812..."
-                      style={{
-                        flex: 1,
-                        padding: '8px 12px',
-                        borderRadius: 8,
-                        background: '#162035',
-                        border: '1px solid #1E293B',
-                        color: '#F8FAFC',
-                        fontSize: 13,
-                      }}
-                    />
-                  </div>
+                  <PhoneCountryInput
+                    label="Nomor WhatsApp / Telepon"
+                    value={phone}
+                    onChange={(val) => {
+                      setPhone(val);
+                      setPhoneNumber(val);
+                    }}
+                    placeholder="8123456789"
+                    showWhatsAppPreview={true}
+                  />
                 </div>
 
                 {/* Email & Instagram */}

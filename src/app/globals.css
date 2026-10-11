@@ -26,6 +26,10 @@
   --border-medium: #334155;
   --border-focus: #10B981;
   
+  --community-btn: #162035;
+  --community-btn-text: #38BDF8;
+  --community-btn-border: #1E293B;
+  
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -37,6 +41,38 @@
   --shadow-glow: 0 0 25px rgba(16, 185, 129, 0.35);
   --shadow-gold-glow: 0 0 25px rgba(245, 158, 11, 0.35);
 }
+
+[data-theme='light'], body.theme-light {
+  --bg-primary: #F8FAFC;
+  --bg-navbar: #FFFFFF;
+  --bg-menu: #F1F5F9;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F1F5F9;
+  
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-glow: rgba(5, 150, 105, 0.2);
+  
+  --accent-gold: #D97706;
+  --accent-gold-glow: rgba(217, 119, 6, 0.2);
+  --accent-blue: #2563EB;
+  --accent-rose: #E11D48;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  
+  --border-subtle: #E2E8F0;
+  --border-medium: #CBD5E1;
+  --border-focus: #059669;
+
+  --community-btn: #E0F2FE;
+  --community-btn-text: #0284C7;
+  --community-btn-border: #BAE6FD;
+}
+
 
 * {
   box-sizing: border-box;
@@ -84,18 +120,19 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: white;
+  background: var(--primary, #10B981);
+  color: #FFFFFF;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 14px;
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 10px var(--primary-glow, rgba(16, 185, 129, 0.3));
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-primary:hover {
+  filter: brightness(1.1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 4px 16px var(--primary-glow, rgba(16, 185, 129, 0.45));
 }
 
 .btn-secondary {

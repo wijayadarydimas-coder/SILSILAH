@@ -39,104 +39,120 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { action } = body;
 
-    // 1. AJUKAN PERMOHONAN RESET
+    // 1. AJUKAN PERMOHONAN RESET (Hanya melalui Email & Wajib SMTP Aktif)
     if (action === 'REQUEST_RESET') {
-      const { identifier } = body; // Bisa username, email, atau no WhatsApp
-      if (!identifier?.trim()) {
-        return NextResponse.json({ error: 'Masukkan username, email, atau nomor WhatsApp Anda.' }, { status: 400 });
+      const emailInput = (body.email || body.identifier || '').trim();
+      if (!emailInput) {
+        return NextResponse.json({ error: 'Alamat email wajib diisi.' }, { status: 400 });
       }
 
-      const cleanId = identifier.trim().toLowerCase();
+      const cleanEmail = emailInput.toLowerCase();
+      if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+        return NextResponse.json({ error: 'Format alamat email tidak valid.' }, { status: 400 });
+      }
+
+      // Validasi ketat: Layanan SMTP HARUS terkonfigurasi di server
+      const smtpHost = process.env.SMTP_HOST?.trim();
+      const smtpUser = process.env.SMTP_USER?.trim();
+      const smtpPass = process.env.SMTP_PASS?.trim();
+      if (!smtpHost || !smtpUser || !smtpPass) {
+        return NextResponse.json(
+          {
+            error:
+              'Layanan SMTP Email belum dikonfigurasi pada server (.env.local). Fitur reset password memerlukan server SMTP aktif untuk mengirimkan token verifikasi.',
+          },
+          { status: 503 }
+        );
+      }
+
       const userRes = await query(
-        `SELECT id, username, display_name, email, phone, role
+        `SELECT id, username, display_name, email
          FROM users
-         WHERE LOWER(username) = $1 OR LOWER(COALESCE(email, '')) = $1 OR COALESCE(phone, '') = $2`,
-        [cleanId, identifier.trim()]
+         WHERE LOWER(email) = $1`,
+        [cleanEmail]
       );
 
       if (userRes.rows.length === 0) {
         return NextResponse.json(
-          { error: 'Akun dengan username, email, atau nomor WhatsApp tersebut tidak ditemukan.' },
+          { error: `Tidak ditemukan akun yang terdaftar dengan alamat email: ${cleanEmail}` },
           { status: 404 }
         );
       }
 
       const targetUser = userRes.rows[0];
       const requestId = `rst-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+      const token = Math.floor(100000 + Math.random() * 900000).toString();
 
-      // Jika user punya email dan permintaan memakai email / username dengan email
-      if (targetUser.email && (cleanId.includes('@') || !targetUser.phone)) {
-        // Buat 6-digit token verifikasi otomatis
-        const token = Math.floor(100000 + Math.random() * 900000).toString();
-
-        await query(
-          `INSERT INTO password_reset_requests (id, user_id, username, display_name, contact_type, contact_value, token, status, notes)
-           VALUES ($1, $2, $3, $4, 'email', $5, $6, 'pending', 'Permintaan verifikasi via Email')`,
-          [requestId, targetUser.id, targetUser.username, targetUser.display_name, targetUser.email, token]
-        );
-
-        // Kirim email nyata ke inbox pengguna via SMTP
-        const emailResult = await sendPasswordResetEmail({
-          toEmail: targetUser.email,
-          userName: targetUser.username,
-          displayName: targetUser.display_name || targetUser.username,
-          token,
-        });
-
-        const userMessage = emailResult.sent
-          ? `Kode verifikasi 6 digit telah dikirim langsung ke alamat email Anda (${targetUser.email}). Silakan periksa kotak masuk atau folder spam Anda.`
-          : `Permintaan reset berhasil dibuat untuk email: ${targetUser.email}. ${emailResult.message || ''}`;
-
-        return NextResponse.json({
-          success: true,
-          method: 'email',
-          username: targetUser.username,
-          contactValue: targetUser.email,
-          emailSent: emailResult.sent,
-          token: emailResult.sent ? undefined : token, // jika belum diset SMTP, tampilkan token agar pengembang tetap bisa tes
-          message: userMessage,
-        });
-      }
-
-      // Jika menggunakan nomor WhatsApp / HP
-      const phoneValue = targetUser.phone || identifier.trim();
       await query(
         `INSERT INTO password_reset_requests (id, user_id, username, display_name, contact_type, contact_value, token, status, notes)
-         VALUES ($1, $2, $3, $4, 'whatsapp', $5, NULL, 'pending', 'Menunggu konfirmasi reset manual oleh Admin/Superadmin')`,
-        [requestId, targetUser.id, targetUser.username, targetUser.display_name, phoneValue]
+         VALUES ($1, $2, $3, $4, 'email', $5, $6, 'pending', 'Permintaan verifikasi via SMTP Email')`,
+        [requestId, targetUser.id, targetUser.username, targetUser.display_name, targetUser.email, token]
       );
+
+      // Kirim email nyata ke inbox pengguna via server SMTP
+      const emailResult = await sendPasswordResetEmail({
+        toEmail: targetUser.email,
+        userName: targetUser.username,
+        displayName: targetUser.display_name || targetUser.username,
+        token,
+      });
+
+      if (!emailResult.sent) {
+        // Hapus permintaan karena pengiriman email gagal
+        await query(`DELETE FROM password_reset_requests WHERE id = $1`, [requestId]);
+        return NextResponse.json(
+          {
+            error: `Gagal mengirim email verifikasi melalui server SMTP: ${emailResult.message || 'Koneksi SMTP ditolak'}. Pastikan kredensial SMTP di .env.local benar.`,
+          },
+          { status: 500 }
+        );
+      }
 
       return NextResponse.json({
         success: true,
-        method: 'whatsapp',
+        method: 'email',
+        emailSent: true,
+        email: targetUser.email,
         username: targetUser.username,
-        contactValue: phoneValue,
-        message: `Permintaan reset kata sandi dengan nomor WhatsApp (${phoneValue}) telah dicatat ke database. Silakan hubungi Admin atau tunggu Admin mereset akun Anda.`,
+        message: `Kode verifikasi 6 digit telah dikirimkan ke alamat email Anda (${targetUser.email}). Silakan periksa kotak masuk (inbox) atau folder spam Anda.`,
       });
     }
 
     // 2. KONFIRMASI RESET DENGAN TOKEN EMAIL
     if (action === 'CONFIRM_TOKEN') {
-      const { username, token, newPassword } = body;
-      if (!username || !token || !newPassword) {
-        return NextResponse.json({ error: 'Username, token verifikasi, dan kata sandi baru wajib diisi.' }, { status: 400 });
+      const emailInput = (body.email || body.username || '').trim().toLowerCase();
+      const token = (body.token || '').trim();
+      const newPassword = (body.newPassword || '').trim();
+
+      if (!emailInput || !token || !newPassword) {
+        return NextResponse.json(
+          { error: 'Alamat email, kode token verifikasi, dan kata sandi baru wajib diisi.' },
+          { status: 400 }
+        );
       }
 
       if (newPassword.length < 4) {
         return NextResponse.json({ error: 'Kata sandi baru minimal 4 karakter.' }, { status: 400 });
       }
 
-      // Cari permintaan reset pending yang valid
+      // Cari permintaan reset pending yang valid berdasarkan email atau username
       const reqRes = await query(
-        `SELECT id, user_id FROM password_reset_requests
-         WHERE LOWER(username) = LOWER($1) AND token = $2 AND status = 'pending'
-         ORDER BY created_at DESC LIMIT 1`,
-        [username.trim(), token.trim()]
+        `SELECT id, user_id, username, contact_value
+         FROM password_reset_requests
+         WHERE (LOWER(contact_value) = $1 OR LOWER(username) = $1)
+           AND token = $2
+           AND status = 'pending'
+         ORDER BY created_at DESC
+         LIMIT 1`,
+        [emailInput, token]
       );
 
       if (reqRes.rows.length === 0) {
         return NextResponse.json(
-          { error: 'Token verifikasi salah atau sudah kadaluarsa. Silakan ajukan permohonan baru.' },
+          {
+            error:
+              'Token verifikasi salah, tidak sesuai dengan email tersebut, atau sudah kadaluarsa. Silakan ajukan permohonan baru.',
+          },
           { status: 400 }
         );
       }
@@ -144,11 +160,13 @@ export async function POST(req: NextRequest) {
       const resetReq = reqRes.rows[0];
       const newHash = await bcrypt.hash(newPassword, 10);
 
-      // Update password user
+      // Update password user di tabel database
       await query('UPDATE users SET password_hash = $1 WHERE id = $2', [newHash, resetReq.user_id]);
 
       // Tandai request sebagai resolved
-      await query("UPDATE password_reset_requests SET status = 'resolved', resolved_at = NOW() WHERE id = $1", [resetReq.id]);
+      await query("UPDATE password_reset_requests SET status = 'resolved', resolved_at = NOW() WHERE id = $1", [
+        resetReq.id,
+      ]);
 
       return NextResponse.json({
         success: true,

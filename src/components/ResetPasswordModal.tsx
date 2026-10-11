@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, KeyRound, Mail, Phone, CheckCircle, AlertTriangle, ArrowRight, ShieldAlert } from 'lucide-react';
+import { X, KeyRound, Mail, CheckCircle, AlertTriangle, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface ResetPasswordModalProps {
   isOpen: boolean;
@@ -10,17 +10,14 @@ interface ResetPasswordModalProps {
 
 export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps) {
   const [tab, setTab] = useState<'request' | 'confirm'>('request');
-  const [identifier, setIdentifier] = useState('');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
   // Confirmation state
-  const [confirmUsername, setConfirmUsername] = useState('');
   const [tokenInput, setTokenInput] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [generatedToken, setGeneratedToken] = useState<string | null>(null);
-  const [isWhatsappNotice, setIsWhatsappNotice] = useState(false);
 
   if (!isOpen) return null;
 
@@ -28,8 +25,6 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
-    setGeneratedToken(null);
-    setIsWhatsappNotice(false);
     setLoading(true);
 
     try {
@@ -38,7 +33,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'REQUEST_RESET',
-          identifier: identifier.trim(),
+          email: email.trim().toLowerCase(),
         }),
       });
 
@@ -46,16 +41,11 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
       if (!res.ok) {
         setErrorMsg(data.error || 'Gagal memproses permohonan.');
       } else {
-        if (data.method === 'email' && data.token) {
-          setGeneratedToken(data.token);
-          setConfirmUsername(data.username);
-          setTokenInput(data.token);
-          setTab('confirm');
-          setSuccessMsg(`✓ Token verifikasi berhasil dibuat otomatis: ${data.token}. Silakan tentukan kata sandi baru Anda.`);
-        } else {
-          setIsWhatsappNotice(true);
-          setSuccessMsg(data.message || 'Permintaan reset telah dicatat ke database.');
-        }
+        setTab('confirm');
+        setSuccessMsg(
+          data.message ||
+            `Kode verifikasi 6-digit telah dikirim ke alamat email ${email}. Silakan periksa kotak masuk (inbox) atau folder spam Anda.`
+        );
       }
     } catch {
       setErrorMsg('Gagal terhubung ke server.');
@@ -76,7 +66,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'CONFIRM_TOKEN',
-          username: confirmUsername.trim(),
+          email: email.trim().toLowerCase(),
           token: tokenInput.trim(),
           newPassword,
         }),
@@ -86,10 +76,10 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
       if (!res.ok) {
         setErrorMsg(data.error || 'Gagal mereset kata sandi.');
       } else {
-        setSuccessMsg('🎉 Kata sandi berhasil diperbarui! Anda dapat masuk sekarang.');
+        setSuccessMsg('🎉 Kata sandi berhasil diperbarui! Mengalihkan ke login...');
         setTimeout(() => {
           onClose();
-        }, 2000);
+        }, 1800);
       }
     } catch {
       setErrorMsg('Gagal terhubung ke server.');
@@ -121,7 +111,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
           border: '1px solid #1E293B',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 460,
+          maxWidth: 450,
           boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
           overflow: 'hidden',
           display: 'flex',
@@ -142,10 +132,13 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <KeyRound size={20} color="#F59E0B" />
             <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
-              Pemulihan &amp; Lupa Kata Sandi
+              Reset Kata Sandi via Email
             </h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer' }}>
+          <button
+            onClick={onClose}
+            style={{ color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer' }}
+          >
             <X size={20} />
           </button>
         </div>
@@ -169,7 +162,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
               cursor: 'pointer',
             }}
           >
-            1. Ajukan Pemulihan
+            1. Minta Token Email
           </button>
           <button
             onClick={() => {
@@ -188,7 +181,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
               cursor: 'pointer',
             }}
           >
-            2. Masukkan Token Reset
+            2. Masukkan Token & Sandi Baru
           </button>
         </div>
 
@@ -232,75 +225,62 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
             </div>
           )}
 
-          {/* TAB 1: AJUKAN REQUEST */}
+          {/* TAB 1: AJUKAN REQUEST EMAIL */}
           {tab === 'request' && (
-            <form onSubmit={handleRequestReset} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <form onSubmit={handleRequestReset} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <p style={{ fontSize: 12, color: '#94A3B8', lineHeight: 1.5 }}>
-                Masukkan <b>Username</b>, <b>Alamat Email</b>, atau <b>Nomor WhatsApp</b> akun Anda yang terdaftar.
+                Masukkan alamat email yang terdaftar pada akun Anda. Sistem akan mengirimkan token verifikasi 6 digit langsung ke inbox email Anda melalui server SMTP.
               </p>
 
               <div>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#F1F5F9', marginBottom: 6 }}>
-                  Identitas Akun (Username / Email / Nomor WA):
+                  Alamat Email Terdaftar:
                 </label>
-                <input
-                  type="text"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="Contoh: user123, email@domain.com, atau 08123456789"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '9px 12px',
-                    borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
-                    fontSize: 13,
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <Mail size={15} color="#94A3B8" style={{ position: 'absolute', left: 12, top: 12 }} />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="nama@keluarga.com"
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px 10px 36px',
+                      borderRadius: 8,
+                      background: '#162035',
+                      border: '1px solid #1E293B',
+                      color: '#F8FAFC',
+                      fontSize: 13,
+                      outline: 'none',
+                    }}
+                  />
+                </div>
               </div>
 
               <div
                 style={{
-                  background: 'rgba(245, 158, 11, 0.1)',
-                  border: '1px solid rgba(245, 158, 11, 0.25)',
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  border: '1px solid rgba(59, 130, 246, 0.25)',
                   padding: '10px 12px',
                   borderRadius: 8,
                   fontSize: 11.5,
-                  color: '#FCD34D',
-                  lineHeight: 1.45,
+                  color: '#93C5FD',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
                 }}
               >
-                <b>Ketentuan Pemulihan:</b>
-                <ul style={{ paddingLeft: 16, marginTop: 4 }}>
-                  <li><b>Akun Email:</b> Sistem otomatis menerbitkan kode token verifikasi instan.</li>
-                  <li><b>Nomor WhatsApp:</b> Permintaan akan dicatat ke database untuk diverifikasi oleh Admin/Superadmin.</li>
-                </ul>
+                <ShieldCheck size={16} color="#38BDF8" style={{ flexShrink: 0 }} />
+                <span>Pemulihan kata sandi dilindungi verifikasi SMTP email real-time.</span>
               </div>
-
-              {isWhatsappNotice && (
-                <div
-                  style={{
-                    background: 'rgba(59, 130, 246, 0.1)',
-                    border: '1px solid rgba(59, 130, 246, 0.25)',
-                    padding: '10px 12px',
-                    borderRadius: 8,
-                    fontSize: 12,
-                    color: '#93C5FD',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  📱 Permintaan pemulihan nomor WhatsApp telah tersimpan di sistem. Admin &amp; Superadmin dapat melihat permintaan Anda di menu <b>Laporan Permintaan Reset</b>.
-                </div>
-              )}
 
               <button
                 type="submit"
                 disabled={loading}
                 className="btn-primary"
                 style={{
-                  marginTop: 6,
+                  marginTop: 4,
                   padding: '10px 16px',
                   fontSize: 13,
                   display: 'flex',
@@ -310,28 +290,28 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
                   opacity: loading ? 0.7 : 1,
                 }}
               >
-                <span>{loading ? 'Memeriksa Data...' : 'Kirim Permintaan Pemulihan'}</span>
+                <span>{loading ? 'Mengirim Email...' : 'Kirim Token ke Email'}</span>
                 <ArrowRight size={15} />
               </button>
             </form>
           )}
 
-          {/* TAB 2: KONFIRMASI DENGAN TOKEN */}
+          {/* TAB 2: KONFIRMASI TOKEN EMAIL */}
           {tab === 'confirm' && (
             <form onSubmit={handleConfirmReset} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <p style={{ fontSize: 12, color: '#94A3B8', lineHeight: 1.5 }}>
-                Masukkan token verifikasi yang telah dibuat serta kata sandi baru untuk akun Anda.
+                Masukkan token verifikasi 6 digit yang dikirimkan ke email Anda dan tentukan kata sandi baru.
               </p>
 
               <div>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#F1F5F9', marginBottom: 4 }}>
-                  Username Akun:
+                  Alamat Email:
                 </label>
                 <input
-                  type="text"
-                  value={confirmUsername}
-                  onChange={(e) => setConfirmUsername(e.target.value)}
-                  placeholder="Username akun Anda..."
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="nama@keluarga.com"
                   required
                   style={{
                     width: '100%',
@@ -347,7 +327,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
 
               <div>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#F1F5F9', marginBottom: 4 }}>
-                  Token Verifikasi (6-Digit):
+                  Token Verifikasi Email (6-Digit):
                 </label>
                 <input
                   type="text"
@@ -363,8 +343,9 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
                     border: '1px solid #1E293B',
                     color: '#F59E0B',
                     fontWeight: 700,
-                    letterSpacing: '1px',
-                    fontSize: 14,
+                    letterSpacing: '2px',
+                    fontSize: 15,
+                    textAlign: 'center',
                   }}
                 />
               </div>
@@ -406,7 +387,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
                   opacity: loading ? 0.7 : 1,
                 }}
               >
-                <span>{loading ? 'Menyimpan...' : 'Perbarui Kata Sandi Sekarang'}</span>
+                <span>{loading ? 'Menyimpan...' : 'Perbarui Kata Sandi'}</span>
                 <CheckCircle size={15} />
               </button>
             </form>

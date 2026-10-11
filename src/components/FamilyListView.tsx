@@ -77,12 +77,12 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Users size={22} color="#10B981" />
+          <Users size={22} color="var(--primary, #10B981)" />
           <div>
-            <h1 style={{ fontSize: 20, fontWeight: 700, color: '#F8FAFC' }}>
+            <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
               Direktori Anggota Silsilah Keluarga
             </h1>
-            <p style={{ fontSize: 13, color: '#94A3B8' }}>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary, #94A3B8)' }}>
               Tampilan daftar silsilah terstruktur per generasi untuk kemudahan aksesibilitas (TREE-09)
             </p>
           </div>
@@ -91,7 +91,7 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
         <div style={{ position: 'relative' }}>
           <Search
             size={16}
-            color="#94A3B8"
+            color="var(--text-secondary, #94A3B8)"
             style={{ position: 'absolute', left: 12, top: 12 }}
           />
           <input
@@ -103,9 +103,9 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
               width: '100%',
               padding: '10px 14px 10px 38px',
               borderRadius: 10,
-              background: '#131B2E',
-              border: '1px solid #1E293B',
-              color: '#F8FAFC',
+              background: 'var(--bg-menu, #131B2E)',
+              border: '1px solid var(--border-subtle, #1E293B)',
+              color: 'var(--text-primary, #F8FAFC)',
               fontSize: 13.5,
             }}
           />
@@ -121,8 +121,8 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
             <div
               key={genNum}
               style={{
-                background: '#111827',
-                border: '1px solid #1E293B',
+                background: 'var(--bg-card, #111827)',
+                border: '1px solid var(--border-subtle, #1E293B)',
                 borderRadius: 14,
                 overflow: 'hidden',
               }}
@@ -130,17 +130,17 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
               <div
                 style={{
                   padding: '12px 18px',
-                  background: '#162035',
-                  borderBottom: '1px solid #1E293B',
+                  background: 'var(--bg-menu, #162035)',
+                  borderBottom: '1px solid var(--border-subtle, #1E293B)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}
               >
-                <h2 style={{ fontSize: 14, fontWeight: 700, color: '#F8FAFC' }}>
+                <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
                   Generasi ke-{genNum}
                 </h2>
-                <span style={{ fontSize: 12, color: '#94A3B8' }}>
+                <span style={{ fontSize: 12, color: 'var(--text-secondary, #94A3B8)' }}>
                   {members.length} Anggota
                 </span>
               </div>
@@ -164,7 +164,7 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '14px 18px',
-                        borderBottom: idx < members.length - 1 ? '1px solid #1E293B' : 'none',
+                        borderBottom: idx < members.length - 1 ? '1px solid var(--border-subtle, #1E293B)' : 'none',
                         background: isFocus ? 'rgba(245, 158, 11, 0.05)' : 'transparent',
                       }}
                     >
@@ -188,7 +188,7 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
                           ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94A3B8' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary, #94A3B8)' }}>
                               <User size={20} />
                             </div>
                           )}
@@ -196,11 +196,11 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
 
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ fontSize: 14, fontWeight: 600, color: isFocus ? '#FDE68A' : '#F8FAFC' }}>
+                            <span style={{ fontSize: 14, fontWeight: 600, color: isFocus ? 'var(--accent-gold, #FDE68A)' : 'var(--text-primary, #F8FAFC)' }}>
                               {p.fullName}
                             </span>
                             {p.verificationStatus === 'verified' && (
-                              <ShieldCheck size={14} color="#10B981" />
+                              <ShieldCheck size={14} color="var(--primary, #10B981)" />
                             )}
                             {p.isDeceased && (
                               <span style={{ fontSize: 11 }}>🕊️</span>
@@ -212,14 +212,14 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
                                 fontSize: 11,
                                 padding: '2px 7px',
                                 borderRadius: 4,
-                                background: isFocus ? '#F59E0B' : 'rgba(16, 185, 129, 0.12)',
-                                color: isFocus ? '#0F172A' : '#34D399',
+                                background: isFocus ? '#F59E0B' : 'var(--primary-glow, rgba(16, 185, 129, 0.12))',
+                                color: isFocus ? '#0F172A' : 'var(--primary, #34D399)',
                                 fontWeight: 600,
                               }}
                             >
                               {isFocus ? '⭐ TITIK FOKUS' : relInfo.label}
                             </span>
-                            <span style={{ fontSize: 11.5, color: '#94A3B8' }}>
+                            <span style={{ fontSize: 11.5, color: 'var(--text-secondary, #94A3B8)' }}>
                               {calculateAge(p.birthDate, p.deathDate, p.isDeceased).formattedLifeSpan}
                             </span>
                           </div>

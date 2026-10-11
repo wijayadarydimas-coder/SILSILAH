@@ -13,18 +13,23 @@ export async function sendPasswordResetEmail({
   displayName,
   token,
 }: SendVerificationEmailParams): Promise<{ sent: boolean; message?: string }> {
-  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const host = process.env.SMTP_HOST?.trim();
   const port = parseInt(process.env.SMTP_PORT || '587', 10);
-  const secure = process.env.SMTP_SECURE === 'true' || port === 465;
+  const secure = port === 465;
   const user = process.env.SMTP_USER?.trim();
   const pass = process.env.SMTP_PASS?.trim();
-  const from = process.env.SMTP_FROM?.trim() || (user ? `SILSILAH Keluarga <${user}>` : 'noreply@silsilah.local');
+  const from = process.env.SMTP_FROM?.trim() || (user ? `SILSILAH Keluarga <${user}>` : '');
 
-  if (!user || !pass) {
-    console.warn('[SMTP] Kredensial SMTP belum diset di .env.local (SMTP_USER dan SMTP_PASS).');
+  if (!host || !user || !pass) {
+    const missing = [];
+    if (!host) missing.push('SMTP_HOST');
+    if (!user) missing.push('SMTP_USER');
+    if (!pass) missing.push('SMTP_PASS');
+    const msg = `Konfigurasi SMTP belum lengkap di file .env.local (${missing.join(', ')} belum diisi). Pengiriman email tidak dapat dilakukan.`;
+    console.warn(`[SMTP Error] ${msg}`);
     return {
       sent: false,
-      message: 'SMTP belum dikonfigurasi di .env.local. Token ditampilkan di layar untuk pengujian lokal.',
+      message: msg,
     };
   }
 
@@ -48,7 +53,7 @@ export async function sendPasswordResetEmail({
         <div style="padding: 28px 24px;">
           <p style="font-size: 15px; color: #1e293b; margin-top: 0;">Halo <strong>${displayName || userName}</strong>,</p>
           <p style="font-size: 14px; color: #475569; line-height: 1.6;">
-            Kami menerima permohonan untuk mengatur ulang kata sandi akun SILSILAH Anda (<strong>@${userName}</strong>). 
+            Kami menerima permohonan untuk mengatur ulang kata sandi akun SILSILAH dengan username <strong>@${userName}</strong>. 
             Gunakan kode token verifikasi 6 digit di bawah ini untuk melanjutkan:
           </p>
           <div style="text-align: center; margin: 28px 0;">

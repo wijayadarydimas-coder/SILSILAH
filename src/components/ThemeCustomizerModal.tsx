@@ -9,19 +9,42 @@ export interface ThemeColors {
   bgNavbar: string;
   bgMenu: string;
   bgSurface: string;
+  bgCard: string;
+  textPrimary: string;
   accentGold: string;
+  communityBtn?: string;
+  communityBtnText?: string;
 }
 
-const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
+export const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
   {
-    name: '🌿 Emerald Heritage (Default)',
+    name: '🌿 Emerald Heritage (Dark Default)',
     colors: {
       primary: '#10B981',
       bgPrimary: '#0A0E17',
       bgNavbar: '#0D1322',
       bgMenu: '#0F1626',
       bgSurface: '#131B2E',
+      bgCard: '#131B2E',
+      textPrimary: '#F8FAFC',
       accentGold: '#F59E0B',
+      communityBtn: '#162035',
+      communityBtnText: '#38BDF8',
+    },
+  },
+  {
+    name: '☀️ Clean Porcelain (White / Mode Terang)',
+    colors: {
+      primary: '#059669',
+      bgPrimary: '#F8FAFC',
+      bgNavbar: '#FFFFFF',
+      bgMenu: '#F1F5F9',
+      bgSurface: '#FFFFFF',
+      bgCard: '#FFFFFF',
+      textPrimary: '#0F172A',
+      accentGold: '#D97706',
+      communityBtn: '#E0F2FE',
+      communityBtnText: '#0284C7',
     },
   },
   {
@@ -32,7 +55,11 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
       bgNavbar: '#141416',
       bgMenu: '#17171A',
       bgSurface: '#1C1917',
+      bgCard: '#1C1917',
+      textPrimary: '#F8FAFC',
       accentGold: '#EAB308',
+      communityBtn: '#292524',
+      communityBtnText: '#FBBF24',
     },
   },
   {
@@ -43,7 +70,11 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
       bgNavbar: '#0B132B',
       bgMenu: '#0E1738',
       bgSurface: '#0F172A',
+      bgCard: '#0F172A',
+      textPrimary: '#F8FAFC',
       accentGold: '#38BDF8',
+      communityBtn: '#172554',
+      communityBtnText: '#60A5FA',
     },
   },
   {
@@ -54,7 +85,11 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
       bgNavbar: '#140D26',
       bgMenu: '#1A1033',
       bgSurface: '#19112E',
+      bgCard: '#19112E',
+      textPrimary: '#F8FAFC',
       accentGold: '#EC4899',
+      communityBtn: '#2E1065',
+      communityBtnText: '#C084FC',
     },
   },
   {
@@ -65,27 +100,68 @@ const PRESET_THEMES: { name: string; colors: ThemeColors }[] = [
       bgNavbar: '#1D1712',
       bgMenu: '#231B15',
       bgSurface: '#241D17',
+      bgCard: '#241D17',
+      textPrimary: '#F8FAFC',
       accentGold: '#F59E0B',
+      communityBtn: '#291E16',
+      communityBtnText: '#FBBF24',
     },
   },
 ];
 
-const THEME_STORAGE_KEY = 'silsilah_custom_theme_v1';
+export const THEME_STORAGE_KEY = 'silsilah_custom_theme_v1';
 
 export function applyThemeColors(colors: ThemeColors) {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
   root.style.setProperty('--primary', colors.primary);
   root.style.setProperty('--primary-hover', colors.primary);
+  root.style.setProperty('--primary-glow', `${colors.primary}40`);
   root.style.setProperty('--bg-primary', colors.bgPrimary);
   root.style.setProperty('--bg-navbar', colors.bgNavbar || '#0D1322');
   root.style.setProperty('--bg-menu', colors.bgMenu || '#0F1626');
-  root.style.setProperty('--bg-surface', colors.bgSurface);
-  root.style.setProperty('--bg-surface-elevated', colors.bgSurface);
-  root.style.setProperty('--bg-card', colors.bgSurface);
+  root.style.setProperty('--bg-surface', colors.bgSurface || colors.bgCard || '#131B2E');
+  root.style.setProperty('--bg-surface-elevated', colors.bgSurface || colors.bgCard || '#131B2E');
+  root.style.setProperty('--bg-card', colors.bgCard || colors.bgSurface || '#131B2E');
   root.style.setProperty('--accent-gold', colors.accentGold);
   root.style.setProperty('--border-focus', colors.primary);
+  if (colors.communityBtn) {
+    root.style.setProperty('--community-btn', colors.communityBtn);
+    root.style.setProperty('--community-btn-border', colors.communityBtn);
+  }
+  if (colors.communityBtnText) {
+    root.style.setProperty('--community-btn-text', colors.communityBtnText);
+  }
+
+  const isLight =
+    colors.bgPrimary === '#F8FAFC' ||
+    colors.bgPrimary === '#FFFFFF' ||
+    colors.bgPrimary.toLowerCase() === '#f8fafc' ||
+    colors.bgPrimary.toLowerCase() === '#ffffff';
+
+  if (colors.textPrimary) {
+    root.style.setProperty('--text-primary', colors.textPrimary);
+  } else {
+    root.style.setProperty('--text-primary', isLight ? '#0F172A' : '#F8FAFC');
+  }
+
+  if (isLight) {
+    root.setAttribute('data-theme', 'light');
+    document.body.classList.add('theme-light');
+    root.style.setProperty('--text-secondary', '#475569');
+    root.style.setProperty('--text-muted', '#64748B');
+    root.style.setProperty('--border-subtle', '#E2E8F0');
+    root.style.setProperty('--border-medium', '#CBD5E1');
+  } else {
+    root.removeAttribute('data-theme');
+    document.body.classList.remove('theme-light');
+    root.style.setProperty('--text-secondary', '#94A3B8');
+    root.style.setProperty('--text-muted', '#64748B');
+    root.style.setProperty('--border-subtle', '#1E293B');
+    root.style.setProperty('--border-medium', '#334155');
+  }
 }
+
 
 interface ThemeCustomizerModalProps {
   isOpen: boolean;
@@ -285,17 +361,34 @@ export function ThemeCustomizerModal({ isOpen, onClose }: ThemeCustomizerModalPr
               </div>
             </div>
 
-            {/* Card & Surface */}
+            {/* Card & Box Containers */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Kartu &amp; Modal:</span>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Kotakan / Kartu (Box):</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input
                   type="color"
-                  value={colors.bgSurface}
-                  onChange={(e) => handleColorChange('bgSurface', e.target.value)}
+                  value={colors.bgCard || colors.bgSurface || '#131B2E'}
+                  onChange={(e) => {
+                    handleColorChange('bgCard', e.target.value);
+                    handleColorChange('bgSurface', e.target.value);
+                  }}
                   style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
                 />
-                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.bgSurface}</span>
+                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.bgCard || colors.bgSurface || '#131B2E'}</span>
+              </div>
+            </div>
+
+            {/* Text & Font Primary */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Warna Teks / Font Utama:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="color"
+                  value={colors.textPrimary || '#F8FAFC'}
+                  onChange={(e) => handleColorChange('textPrimary', e.target.value)}
+                  style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
+                />
+                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.textPrimary || '#F8FAFC'}</span>
               </div>
             </div>
 
@@ -310,6 +403,34 @@ export function ThemeCustomizerModal({ isOpen, onClose }: ThemeCustomizerModalPr
                   style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
                 />
                 <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.accentGold}</span>
+              </div>
+            </div>
+
+            {/* Community Chat Button Background */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Tombol Chat Komunitas:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="color"
+                  value={colors.communityBtn || '#162035'}
+                  onChange={(e) => handleColorChange('communityBtn', e.target.value)}
+                  style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
+                />
+                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.communityBtn || '#162035'}</span>
+              </div>
+            </div>
+
+            {/* Community Chat Button Text Color */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12.5, color: '#F8FAFC' }}>Teks Tombol Chat Komunitas:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="color"
+                  value={colors.communityBtnText || '#38BDF8'}
+                  onChange={(e) => handleColorChange('communityBtnText', e.target.value)}
+                  style={{ width: 36, height: 28, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'none' }}
+                />
+                <span style={{ fontSize: 11.5, color: '#94A3B8', fontFamily: 'monospace' }}>{colors.communityBtnText || '#38BDF8'}</span>
               </div>
             </div>
           </div>

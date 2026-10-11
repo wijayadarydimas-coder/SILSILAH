@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Sparkles, Send, Bot, User, Trash2, ShieldCheck, HelpCircle } from 'lucide-react';
+import { X, Sparkles, Send, Trash2, ShieldCheck, HelpCircle, User } from 'lucide-react';
+import { useFamilyStore } from '@/lib/store';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -89,43 +90,46 @@ function FormattedMarkdownText({ content, isAssistant }: { content: string; isAs
 const SUGGESTED_QUESTIONS = [
   'Siapa saja generasi tertua dalam silsilah?',
   'Berapa total anggota yang terdata dan berapa yang masih hidup?',
-  'Siapa saja yang berdomisili di Jakarta atau Yogyakarta?',
-  'Jelaskan struktur garis keturunan keluarga ini.',
+  'Bisa carikan nomor WhatsApp atau kontak keluarga?',
+  'Siapa saja yang berdomisili di Jakarta atau Jawa Tengah?',
+  'Apakah akun saya sudah masuk ke dalam silsilah keluarga?',
 ];
 
 export function AIChatDrawer() {
+  const { currentUser } = useFamilyStore();
   const [isOpen, setIsOpen] = useState(false);
   const [aiName, setAiName] = useState('Asisten Silsilah');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isOverloaded, setIsOverloaded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Load configured AI Name
+  // Load configured AI Name & initialize friendly greeting
   useEffect(() => {
     fetch('/api/ai/chat')
       .then((res) => res.json())
       .then((data) => {
-        if (data?.aiName) {
-          setAiName(data.aiName);
-          setMessages([
-            {
-              role: 'assistant',
-              content: `Halo! Saya ${data.aiName} keluarga Anda. Saya dapat membantu mencari informasi anggota, relasi kekeluargaan (ayah/ibu/anak/pasangan), dan domisili anggota keluarga. Ada yang bisa saya bantu?`,
-            },
-          ]);
-        }
-      })
-      .catch(() => {
+        const loadedAiName = data?.aiName || 'Asisten Silsilah';
+        setAiName(loadedAiName);
+        const greetingName = currentUser?.displayName ? `, ${currentUser.displayName}` : '';
         setMessages([
           {
             role: 'assistant',
-            content:
-              'Halo! Saya Asisten Silsilah keluarga Anda. Saya dapat membantu mencari informasi anggota, relasi kekeluargaan, dan garis keturunan. Ada yang bisa saya bantu?',
+            content: `Halo${greetingName}! Saya ${loadedAiName} keluarga Anda. Saya mengenal Anda dan siap membantu mencari informasi anggota, nomor WhatsApp, domisili, atau biografi di silsilah keluarga kita. Ada yang bisa saya bantu?`,
+          },
+        ]);
+      })
+      .catch(() => {
+        const greetingName = currentUser?.displayName ? `, ${currentUser.displayName}` : '';
+        setMessages([
+          {
+            role: 'assistant',
+            content: `Halo${greetingName}! Saya Asisten Silsilah keluarga Anda. Saya siap membantu mencari informasi anggota, kontak WhatsApp, dan riwayat silsilah keluarga.`,
           },
         ]);
       });
-  }, []);
+  }, [currentUser]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -139,7 +143,7 @@ export function AIChatDrawer() {
 
   const handleSend = async (textToSend?: string) => {
     const text = (textToSend || input).trim();
-    if (!text || loading) return;
+    if (!text || loading || isOverloaded) return;
 
     const userMsg: ChatMessage = { role: 'user', content: text };
     const newHistory = [...messages, userMsg];
@@ -154,19 +158,24 @@ export function AIChatDrawer() {
         body: JSON.stringify({
           prompt: text,
           history: newHistory.slice(-8),
+          userId: currentUser?.id,
         }),
       });
 
       const data = await res.json();
       if (res.ok && data.reply) {
+        setIsOverloaded(false);
         setMessages((prev) => [...prev, { role: 'assistant', content: data.reply }]);
         if (data.aiName) setAiName(data.aiName);
       } else {
+        if (data.isOverloaded || res.status === 429) {
+          setIsOverloaded(true);
+        }
         setMessages((prev) => [
           ...prev,
           {
             role: 'assistant',
-            content: `Maaf, terjadi kendala saat memproses jawaban: ${data.error || 'Server error'}.`,
+            content: `⚠️ ${data.error || 'Server error saat memproses pertanyaan.'}`,
           },
         ]);
       }
@@ -181,21 +190,23 @@ export function AIChatDrawer() {
   };
 
   const handleClearChat = () => {
+    const greetingName = currentUser?.displayName ? `, ${currentUser.displayName}` : '';
     setMessages([
       {
         role: 'assistant',
-        content: 'Halo! Riwayat percakapan telah dibersihkan. Ada yang ingin Anda tanyakan seputar silsilah keluarga?',
+        content: `Halo${greetingName}! Riwayat percakapan telah dibersihkan. Ada yang ingin Anda tanyakan seputar anggota atau silsilah keluarga?`,
       },
     ]);
   };
 
   return (
     <>
-      {/* Floating trigger button on bottom-right of screen */}
+      {/* Floating trigger button on bottom-right: Pure vector logo only without text */}
       <button
         onClick={() => setIsOpen(true)}
         className="no-print"
-        title={`Tanya ${aiName}`}
+        title={aiName}
+        aria-label={aiName}
         style={{
           position: 'fixed',
           bottom: 24,
@@ -203,29 +214,32 @@ export function AIChatDrawer() {
           zIndex: 900,
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
-          padding: '10px 16px',
-          borderRadius: 999,
-          background: 'linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%)',
-          color: '#FFFFFF',
-          fontWeight: 700,
-          fontSize: 13,
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 8px 25px rgba(16, 185, 129, 0.45)',
+          justifyContent: 'center',
+          width: 52,
+          height: 52,
+          padding: 0,
+          borderRadius: '50%',
+          background: 'var(--primary, #10B981)',
+          border: '2px solid rgba(255, 255, 255, 0.25)',
+          boxShadow: '0 8px 25px var(--primary-glow, rgba(16, 185, 129, 0.45))',
           cursor: 'pointer',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          transition: 'transform 0.25s ease, box-shadow 0.25s ease',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'scale(1.04)';
-          e.currentTarget.style.boxShadow = '0 12px 30px rgba(16, 185, 129, 0.6)';
+          e.currentTarget.style.transform = 'scale(1.1) rotate(6deg)';
+          e.currentTarget.style.boxShadow = '0 12px 30px var(--primary-glow, rgba(16, 185, 129, 0.65))';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = '0 8px 25px rgba(16, 185, 129, 0.45)';
+          e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+          e.currentTarget.style.boxShadow = '0 8px 25px var(--primary-glow, rgba(16, 185, 129, 0.45))';
         }}
       >
-        <Sparkles size={16} />
-        <span>✨ Tanya {aiName}</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/ai-icon.svg"
+          alt={aiName}
+          style={{ width: 32, height: 32, display: 'block', pointerEvents: 'none' }}
+        />
       </button>
 
       {/* Drawer Overlay & Panel */}
@@ -261,16 +275,22 @@ export function AIChatDrawer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
                   background: 'rgba(16, 185, 129, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  padding: 3,
                 }}
               >
-                <Bot size={18} color="#10B981" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/assets/ai-icon.svg"
+                  alt={aiName}
+                  style={{ width: 26, height: 26, display: 'block' }}
+                />
               </div>
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 700, color: '#F8FAFC' }}>
@@ -282,11 +302,17 @@ export function AIChatDrawer() {
                       width: 7,
                       height: 7,
                       borderRadius: '50%',
-                      background: '#10B981',
-                      boxShadow: '0 0 8px #10B981',
+                      background: isOverloaded ? '#EF4444' : '#10B981',
+                      boxShadow: isOverloaded ? '0 0 8px #EF4444' : '0 0 8px #10B981',
                     }}
                   />
-                  <span style={{ fontSize: 11, color: '#94A3B8' }}>Aktif</span>
+                  <span style={{ fontSize: 11, color: isOverloaded ? '#F87171' : '#94A3B8' }}>
+                    {isOverloaded
+                      ? 'Kapasitas Penuh (Maks 10 Akun)'
+                      : currentUser
+                      ? `Aktif (${currentUser.displayName})`
+                      : 'Aktif'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -353,15 +379,20 @@ export function AIChatDrawer() {
                       width: 28,
                       height: 28,
                       borderRadius: '50%',
-                      background: isAssistant ? '#162035' : '#10B981',
-                      border: '1px solid #1E293B',
+                      background: isAssistant ? 'var(--bg-menu, #162035)' : 'var(--primary, #10B981)',
+                      border: '1px solid var(--border-subtle, #1E293B)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0,
                     }}
                   >
-                    {isAssistant ? <Bot size={15} color="#10B981" /> : <User size={15} color="#FFFFFF" />}
+                    {isAssistant ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src="/assets/ai-icon.svg" alt="AI" style={{ width: 18, height: 18, display: 'block' }} />
+                    ) : (
+                      <User size={15} color="#FFFFFF" />
+                    )}
                   </div>
 
                   <div
@@ -369,9 +400,9 @@ export function AIChatDrawer() {
                       maxWidth: '82%',
                       padding: '10px 14px',
                       borderRadius: 12,
-                      background: isAssistant ? '#162035' : '#10B981',
-                      color: isAssistant ? '#F1F5F9' : '#FFFFFF',
-                      border: isAssistant ? '1px solid #1E293B' : 'none',
+                      background: isAssistant ? 'var(--bg-menu, #162035)' : 'var(--primary, #10B981)',
+                      color: isAssistant ? 'var(--text-primary, #F1F5F9)' : '#FFFFFF',
+                      border: isAssistant ? '1px solid var(--border-subtle, #1E293B)' : 'none',
                       fontSize: 12.5,
                       lineHeight: 1.55,
                       wordBreak: 'break-word',
@@ -396,7 +427,8 @@ export function AIChatDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  <Bot size={15} color="#10B981" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/assets/ai-icon.svg" alt="AI" style={{ width: 18, height: 18, display: 'block' }} />
                 </div>
                 <div
                   style={{
@@ -453,6 +485,22 @@ export function AIChatDrawer() {
             </div>
           </div>
 
+          {/* Overload alert banner */}
+          {isOverloaded && (
+            <div
+              style={{
+                padding: '10px 14px',
+                background: 'rgba(239, 68, 68, 0.15)',
+                borderTop: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#FCA5A5',
+                fontSize: 11.5,
+                lineHeight: 1.45,
+              }}
+            >
+              ⚠️ <strong>Kapasitas AI Penuh:</strong> Saat ini telah mencapai batas maksimal 10 akun aktif. Asisten dinonaktifkan sementara untuk mencegah beban server (overloaded). Silakan tunggu sejenak sebelum mengirim pesan kembali.
+            </div>
+          )}
+
           {/* Input Bar */}
           <div
             style={{
@@ -473,32 +521,33 @@ export function AIChatDrawer() {
                   handleSend();
                 }
               }}
-              placeholder="Tanya apapun tentang silsilah..."
-              disabled={loading}
+              placeholder={isOverloaded ? 'Asisten AI sementara nonaktif (kapasitas penuh)...' : 'Tanya apapun tentang silsilah...'}
+              disabled={loading || isOverloaded}
               style={{
                 flex: 1,
                 padding: '9px 12px',
                 borderRadius: 8,
-                background: '#162035',
-                border: '1px solid #1E293B',
-                color: '#F8FAFC',
+                background: 'var(--bg-menu, #162035)',
+                border: '1px solid var(--border-subtle, #1E293B)',
+                color: isOverloaded ? 'var(--text-secondary, #94A3B8)' : 'var(--text-primary, #F8FAFC)',
                 fontSize: 12.5,
+                cursor: isOverloaded ? 'not-allowed' : 'text',
               }}
             />
             <button
               onClick={() => handleSend()}
-              disabled={loading || !input.trim()}
+              disabled={loading || !input.trim() || isOverloaded}
               style={{
                 padding: '9px 14px',
                 borderRadius: 8,
-                background: '#10B981',
+                background: isOverloaded ? '#475569' : 'var(--primary, #10B981)',
                 border: 'none',
                 color: 'white',
-                cursor: 'pointer',
+                cursor: isOverloaded ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                opacity: loading || !input.trim() ? 0.5 : 1,
+                opacity: loading || !input.trim() || isOverloaded ? 0.5 : 1,
               }}
             >
               <Send size={15} />

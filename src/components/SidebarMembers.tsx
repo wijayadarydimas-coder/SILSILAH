@@ -91,7 +91,7 @@ export function SidebarMembers({
         <div
           style={{
             padding: '16px',
-            borderBottom: '1px solid #1E293B',
+            borderBottom: '1px solid var(--border-subtle, #1E293B)',
             background: 'var(--bg-menu, #131B2E)',
             display: 'flex',
             alignItems: 'center',
@@ -99,16 +99,16 @@ export function SidebarMembers({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Users size={18} color="#10B981" />
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#F8FAFC' }}>
+            <Users size={18} color="var(--primary, #10B981)" />
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
               Daftar Anggota Keluarga
             </h2>
           </div>
           <span
             style={{
               fontSize: 11,
-              background: 'rgba(16, 185, 129, 0.15)',
-              color: '#34D399',
+              background: 'var(--primary-glow, rgba(16, 185, 129, 0.15))',
+              color: 'var(--primary, #34D399)',
               padding: '2px 8px',
               borderRadius: 999,
               fontWeight: 600,
@@ -119,8 +119,8 @@ export function SidebarMembers({
         </div>
 
         {/* Tab Filters & Search */}
-        <div style={{ padding: '12px 14px', borderBottom: '1px solid #1E293B', display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{ display: 'flex', background: '#162035', padding: 2, borderRadius: 8 }}>
+        <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--border-subtle, #1E293B)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', background: 'var(--bg-menu, #162035)', padding: 2, borderRadius: 8, border: '1px solid var(--border-subtle, transparent)' }}>
             <button
               onClick={() => setFilterMode('all')}
               style={{
@@ -129,8 +129,8 @@ export function SidebarMembers({
                 borderRadius: 6,
                 fontSize: 11.5,
                 fontWeight: 600,
-                background: filterMode === 'all' ? '#10B981' : 'transparent',
-                color: filterMode === 'all' ? 'white' : '#94A3B8',
+                background: filterMode === 'all' ? 'var(--primary, #10B981)' : 'transparent',
+                color: filterMode === 'all' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
               }}
             >
               Semua ({people.length})
@@ -144,7 +144,7 @@ export function SidebarMembers({
                 fontSize: 11.5,
                 fontWeight: 600,
                 background: filterMode === 'clients' ? '#3B82F6' : 'transparent',
-                color: filterMode === 'clients' ? 'white' : '#94A3B8',
+                color: filterMode === 'clients' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
               }}
             >
               Akun User
@@ -152,7 +152,7 @@ export function SidebarMembers({
           </div>
 
           <div style={{ position: 'relative' }}>
-            <Search size={14} color="#94A3B8" style={{ position: 'absolute', left: 10, top: 9 }} />
+            <Search size={14} color="var(--text-secondary, #94A3B8)" style={{ position: 'absolute', left: 10, top: 9 }} />
             <input
               type="text"
               value={searchQuery}
@@ -162,9 +162,9 @@ export function SidebarMembers({
                 width: '100%',
                 padding: '6px 10px 6px 30px',
                 borderRadius: 6,
-                background: '#162035',
-                border: '1px solid #1E293B',
-                color: '#F8FAFC',
+                background: 'var(--bg-menu, #162035)',
+                border: '1px solid var(--border-subtle, #1E293B)',
+                color: 'var(--text-primary, #F8FAFC)',
                 fontSize: 12,
               }}
             />
@@ -338,8 +338,8 @@ export function SidebarMembers({
                       style={{
                         padding: '4px 6px',
                         borderRadius: 6,
-                        background: 'rgba(16, 185, 129, 0.12)',
-                        color: '#34D399',
+                        background: 'var(--primary-glow, rgba(16, 185, 129, 0.12))',
+                        color: 'var(--primary, #34D399)',
                         fontSize: 10.5,
                         fontWeight: 600,
                         display: 'flex',
@@ -364,8 +364,8 @@ export function SidebarMembers({
         style={{
           width: isOpen ? 24 : 32,
           height: isOpen ? 60 : 76,
-          background: isOpen ? '#131B2E' : '#10B981',
-          border: '1px solid #1E293B',
+          background: isOpen ? 'var(--bg-menu, #131B2E)' : 'var(--primary, #10B981)',
+          border: '1px solid var(--border-subtle, #1E293B)',
           borderLeft: 'none',
           borderRadius: '0 8px 8px 0',
           display: 'flex',
@@ -373,10 +373,10 @@ export function SidebarMembers({
           alignItems: 'center',
           justifyContent: 'center',
           gap: 3,
-          color: isOpen ? '#10B981' : '#0A0E17',
+          color: isOpen ? 'var(--primary, #10B981)' : '#FFFFFF',
           alignSelf: 'center',
           cursor: 'pointer',
-          boxShadow: '4px 0 12px rgba(0,0,0,0.5)',
+          boxShadow: '4px 0 12px var(--primary-glow, rgba(0,0,0,0.5))',
           transition: 'all 0.2s ease',
         }}
       >

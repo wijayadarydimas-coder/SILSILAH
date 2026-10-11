@@ -61,16 +61,16 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
         width: 250,
         borderRadius: 14,
         background: isFocus
-          ? 'linear-gradient(160deg, #1A263D 0%, #151F33 100%)'
-          : 'linear-gradient(160deg, #151D2C 0%, #111827 100%)',
+          ? 'var(--bg-card, #1A263D)'
+          : 'var(--bg-card, #151D2C)',
         border: isFocus
-          ? '2px solid #F59E0B'
+          ? '2px solid var(--accent-gold, #F59E0B)'
           : isDeceased
-          ? '1px solid #334155'
-          : '1px solid #1E293B',
+          ? '1px solid var(--border-medium, #334155)'
+          : '1px solid var(--border-subtle, #1E293B)',
         boxShadow: isFocus
-          ? '0 0 24px rgba(245, 158, 11, 0.35), 0 8px 24px rgba(0, 0, 0, 0.5)'
-          : '0 4px 16px rgba(0, 0, 0, 0.35)',
+          ? '0 0 24px rgba(245, 158, 11, 0.35), 0 8px 24px rgba(0, 0, 0, 0.25)'
+          : '0 4px 16px rgba(0, 0, 0, 0.18)',
         padding: '12px 14px',
         transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         cursor: 'default',
@@ -238,7 +238,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
             style={{
               fontWeight: 600,
               fontSize: 13.5,
-              color: isFocus ? '#FDE68A' : '#F8FAFC',
+              color: isFocus ? 'var(--accent-gold, #FDE68A)' : 'var(--text-primary, #F8FAFC)',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -250,7 +250,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           <div
             style={{
               fontSize: 11,
-              color: '#94A3B8',
+              color: 'var(--text-secondary, #94A3B8)',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -262,7 +262,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           <div
             style={{
               fontSize: 10.5,
-              color: '#64748B',
+              color: 'var(--text-muted, #64748B)',
               marginTop: 3,
             }}
           >
@@ -279,7 +279,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           justifyContent: 'space-between',
           marginTop: 12,
           paddingTop: 8,
-          borderTop: '1px solid rgba(255, 255, 255, 0.07)',
+          borderTop: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.07))',
         }}
       >
         <div style={{ display: 'flex', gap: 6 }}>

@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { UserAccount } from '@/types';
 import { X, Upload, Camera, Save, User, Check, AlertCircle } from 'lucide-react';
+import { PhoneCountryInput } from '@/components/PhoneCountryInput';
 
 interface UserProfileModalProps {
   currentUser: UserAccount;
@@ -352,24 +353,12 @@ export function UserProfileModal({
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 6, fontWeight: 500 }}>
-              Nomor WhatsApp
-            </label>
-            <input
-              type="tel"
+            <PhoneCountryInput
+              label="Nomor WhatsApp"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="08123456789"
-              style={{
-                width: '100%',
-                padding: '9px 12px',
-                borderRadius: 8,
-                background: '#162035',
-                border: '1px solid #1E293B',
-                color: '#FFFFFF',
-                fontSize: 13,
-                outline: 'none',
-              }}
+              onChange={(val) => setPhone(val)}
+              placeholder="81234567890"
+              showWhatsAppPreview={true}
             />
           </div>
 
