@@ -89,12 +89,12 @@ export function WorkspaceSettingsModal({ isOpen, onClose }: WorkspaceSettingsMod
     >
       <div
         style={{
-          background: '#0F1626',
-          border: '1px solid #1E293B',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
           width: '100%',
           maxWidth: 480,
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -107,17 +107,35 @@ export function WorkspaceSettingsModal({ isOpen, onClose }: WorkspaceSettingsMod
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
-            borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Home size={18} color="#10B981" />
-            <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
+            <Home size={18} color="var(--accent-gold, #C6A15B)" />
+            <h2
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: 'var(--text-primary, #F1E8D8)',
+                fontFamily: 'Cinzel, serif',
+                letterSpacing: '0.02em',
+              }}
+            >
               Ubah Judul &amp; Nama Ruang Keluarga
             </h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94A3B8' }}>
+          <button
+            onClick={onClose}
+            style={{
+              color: 'var(--text-muted, #A79D8D)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <X size={20} />
           </button>
         </div>
@@ -127,9 +145,9 @@ export function WorkspaceSettingsModal({ isOpen, onClose }: WorkspaceSettingsMod
           {errorMsg && (
             <div
               style={{
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#FCA5A5',
+                background: 'rgba(217, 121, 112, 0.12)',
+                border: '1px solid rgba(217, 121, 112, 0.3)',
+                color: 'var(--accent-danger, #D97970)',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -146,9 +164,9 @@ export function WorkspaceSettingsModal({ isOpen, onClose }: WorkspaceSettingsMod
           {successMsg && (
             <div
               style={{
-                background: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#34D399',
+                background: 'rgba(126, 170, 131, 0.15)',
+                border: '1px solid rgba(126, 170, 131, 0.35)',
+                color: 'var(--accent-success, #7EAA83)',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -163,45 +181,47 @@ export function WorkspaceSettingsModal({ isOpen, onClose }: WorkspaceSettingsMod
           )}
 
           <div>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
               Judul / Nama Keluarga (Dapat diedit oleh Superadmin)
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Contoh: Keluarga Besar Wijaya"
+              placeholder="Contoh: Trah Ageng Kyai Ageng..."
               required
               style={{
                 width: '100%',
-                padding: '9px 12px',
+                padding: '10px 12px',
                 borderRadius: 8,
-                background: '#162035',
-                border: '1px solid #1E293B',
-                color: '#F8FAFC',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: 'var(--text-primary, #F1E8D8)',
                 fontSize: 13,
+                outline: 'none',
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
               Deskripsi Singkat / Asal Trah
             </label>
             <textarea
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Arsip digital silsilah trah..."
+              placeholder="Catatan silsilah, pusaka keluarga, dan garis keturunan..."
               style={{
                 width: '100%',
-                padding: '9px 12px',
+                padding: '10px 12px',
                 borderRadius: 8,
-                background: '#162035',
-                border: '1px solid #1E293B',
-                color: '#F8FAFC',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: 'var(--text-primary, #F1E8D8)',
                 fontSize: 13,
                 resize: 'vertical',
+                outline: 'none',
               }}
             />
           </div>
@@ -212,20 +232,17 @@ export function WorkspaceSettingsModal({ isOpen, onClose }: WorkspaceSettingsMod
               display: 'flex',
               justifyContent: 'flex-end',
               gap: 10,
-              borderTop: '1px solid #1E293B',
+              borderTop: '1px solid var(--border-subtle, #393128)',
               marginTop: 6,
             }}
           >
             <button
               type="button"
               onClick={onClose}
+              className="btn-secondary"
               style={{
-                padding: '8px 14px',
-                borderRadius: 8,
-                background: '#1E293B',
-                color: '#CBD5E1',
+                padding: '8px 16px',
                 fontSize: 12.5,
-                fontWeight: 600,
               }}
             >
               Batal
@@ -234,7 +251,7 @@ export function WorkspaceSettingsModal({ isOpen, onClose }: WorkspaceSettingsMod
               type="submit"
               disabled={loading}
               className="btn-primary"
-              style={{ padding: '8px 18px', fontSize: 12.5 }}
+              style={{ padding: '8px 20px', fontSize: 12.5 }}
             >
               {loading ? 'Menyimpan...' : 'Simpan Nama Keluarga'}
             </button>

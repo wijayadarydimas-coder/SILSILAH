@@ -107,12 +107,12 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
     >
       <div
         style={{
-          background: '#0F1626',
-          border: '1px solid #1E293B',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
           width: '100%',
           maxWidth: 'min(450px, 94vw)',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -125,26 +125,35 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
-            borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <KeyRound size={20} color="#F59E0B" />
-            <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
+            <KeyRound size={20} color="#C6A15B" />
+            <h2
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: 'var(--text-primary, #F1E8D8)',
+                fontFamily: 'Cinzel, serif',
+                letterSpacing: '0.02em',
+                margin: 0,
+              }}
+            >
               Reset Kata Sandi via Email
             </h2>
           </div>
           <button
             onClick={onClose}
-            style={{ color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer' }}
+            style={{ color: 'var(--text-secondary, #A79D8D)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Tab switcher */}
-        <div style={{ display: 'flex', borderBottom: '1px solid #1E293B', background: '#111827' }}>
+        <div style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle, #393128)', background: 'var(--bg-secondary, #191714)' }}>
           <button
             onClick={() => {
               setTab('request');
@@ -155,10 +164,10 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
               padding: '10px 12px',
               fontSize: 12.5,
               fontWeight: 600,
-              background: tab === 'request' ? '#162035' : 'transparent',
-              color: tab === 'request' ? '#F8FAFC' : '#94A3B8',
+              background: tab === 'request' ? 'var(--bg-elevated, #211D18)' : 'transparent',
+              color: tab === 'request' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
               border: 'none',
-              borderBottom: tab === 'request' ? '2px solid #F59E0B' : '2px solid transparent',
+              borderBottom: tab === 'request' ? '2px solid #C6A15B' : '2px solid transparent',
               cursor: 'pointer',
             }}
           >
@@ -174,14 +183,14 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
               padding: '10px 12px',
               fontSize: 12.5,
               fontWeight: 600,
-              background: tab === 'confirm' ? '#162035' : 'transparent',
-              color: tab === 'confirm' ? '#F8FAFC' : '#94A3B8',
+              background: tab === 'confirm' ? 'var(--bg-elevated, #211D18)' : 'transparent',
+              color: tab === 'confirm' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
               border: 'none',
-              borderBottom: tab === 'confirm' ? '2px solid #F59E0B' : '2px solid transparent',
+              borderBottom: tab === 'confirm' ? '2px solid #C6A15B' : '2px solid transparent',
               cursor: 'pointer',
             }}
           >
-            2. Masukkan Token & Sandi Baru
+            2. Masukkan Token &amp; Sandi Baru
           </button>
         </div>
 
@@ -190,9 +199,9 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
           {errorMsg && (
             <div
               style={{
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#FCA5A5',
+                background: 'rgba(217, 121, 112, 0.15)',
+                border: '1px solid rgba(217, 121, 112, 0.3)',
+                color: '#D97970',
                 padding: '10px 12px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -209,9 +218,9 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
           {successMsg && (
             <div
               style={{
-                background: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#34D399',
+                background: 'rgba(126, 170, 131, 0.15)',
+                border: '1px solid rgba(126, 170, 131, 0.3)',
+                color: '#7EAA83',
                 padding: '10px 12px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -228,16 +237,16 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
           {/* TAB 1: AJUKAN REQUEST EMAIL */}
           {tab === 'request' && (
             <form onSubmit={handleRequestReset} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <p style={{ fontSize: 12, color: '#94A3B8', lineHeight: 1.5 }}>
+              <p style={{ fontSize: 12, color: 'var(--text-secondary, #A79D8D)', lineHeight: 1.5 }}>
                 Masukkan alamat email yang terdaftar pada akun Anda. Sistem akan mengirimkan token verifikasi 6 digit langsung ke inbox email Anda melalui server SMTP.
               </p>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#F1F5F9', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-primary, #F1E8D8)', marginBottom: 6 }}>
                   Alamat Email Terdaftar:
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <Mail size={15} color="#94A3B8" style={{ position: 'absolute', left: 12, top: 12 }} />
+                  <Mail size={15} color="#C6A15B" style={{ position: 'absolute', left: 12, top: 12 }} />
                   <input
                     type="email"
                     value={email}
@@ -248,9 +257,9 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
                       width: '100%',
                       padding: '10px 12px 10px 36px',
                       borderRadius: 8,
-                      background: '#162035',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
+                      background: 'var(--bg-secondary, #191714)',
+                      border: '1px solid var(--border-subtle, #393128)',
+                      color: 'var(--text-primary, #F1E8D8)',
                       fontSize: 13,
                       outline: 'none',
                     }}
@@ -260,18 +269,18 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
 
               <div
                 style={{
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  border: '1px solid rgba(59, 130, 246, 0.25)',
+                  background: 'rgba(198, 161, 91, 0.1)',
+                  border: '1px solid rgba(198, 161, 91, 0.25)',
                   padding: '10px 12px',
                   borderRadius: 8,
                   fontSize: 11.5,
-                  color: '#93C5FD',
+                  color: '#F1E8D8',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
                 }}
               >
-                <ShieldCheck size={16} color="#38BDF8" style={{ flexShrink: 0 }} />
+                <ShieldCheck size={16} color="#C6A15B" style={{ flexShrink: 0 }} />
                 <span>Pemulihan kata sandi dilindungi verifikasi SMTP email real-time.</span>
               </div>
 
@@ -299,12 +308,12 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
           {/* TAB 2: KONFIRMASI TOKEN EMAIL */}
           {tab === 'confirm' && (
             <form onSubmit={handleConfirmReset} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <p style={{ fontSize: 12, color: '#94A3B8', lineHeight: 1.5 }}>
+              <p style={{ fontSize: 12, color: 'var(--text-secondary, #A79D8D)', lineHeight: 1.5 }}>
                 Masukkan token verifikasi 6 digit yang dikirimkan ke email Anda dan tentukan kata sandi baru.
               </p>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#F1F5F9', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-primary, #F1E8D8)', marginBottom: 4 }}>
                   Alamat Email:
                 </label>
                 <input
@@ -317,16 +326,16 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#F1F5F9', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-primary, #F1E8D8)', marginBottom: 4 }}>
                   Token Verifikasi Email (6-Digit):
                 </label>
                 <input
@@ -339,9 +348,9 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F59E0B',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: '#C6A15B',
                     fontWeight: 700,
                     letterSpacing: '2px',
                     fontSize: 15,
@@ -351,7 +360,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#F1F5F9', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-primary, #F1E8D8)', marginBottom: 4 }}>
                   Kata Sandi Baru:
                 </label>
                 <input
@@ -364,9 +373,9 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />

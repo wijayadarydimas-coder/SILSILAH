@@ -85,104 +85,130 @@ function FullScreenAuthPortal() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#070B14',
+        background: '#11100E',
         position: 'relative',
         overflow: 'hidden',
         padding: '16px',
       }}
     >
-      {/* Background SVG illustration */}
+      {/* Background Batik illustration */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/assets/background.svg"
         alt="Background Pattern"
         style={{
           position: 'absolute',
-          top: 0,
-          left: 0,
+          inset: 0,
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          opacity: 0.25,
+          opacity: 0.65,
           pointerEvents: 'none',
         }}
       />
 
-      {/* Decorative gradient glowing spheres */}
-      <div
+      {/* Subtle Batik Sulur Corner Watermarks */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/assets/batik-sulur-corner.svg"
+        alt=""
         style={{
           position: 'absolute',
-          width: 500,
-          height: 500,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)',
-          top: '-10%',
-          right: '-5%',
+          top: 0,
+          left: 0,
+          width: 'clamp(140px, 18vw, 240px)',
+          opacity: 0.22,
           pointerEvents: 'none',
         }}
       />
-      <div
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/assets/batik-sulur-corner.svg"
+        alt=""
         style={{
           position: 'absolute',
-          width: 450,
-          height: 450,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, transparent 70%)',
-          bottom: '-10%',
-          left: '-5%',
+          bottom: 0,
+          right: 0,
+          width: 'clamp(140px, 18vw, 240px)',
+          transform: 'rotate(180deg)',
+          opacity: 0.22,
           pointerEvents: 'none',
         }}
       />
 
-      {/* Glassmorphic Central Card */}
+      {/* Subtle Warm Antique Gold Ambient Aura (non-neon) */}
+      <div
+        style={{
+          position: 'absolute',
+          width: 550,
+          height: 550,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(198, 161, 91, 0.08) 0%, transparent 70%)',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Dark Pro Central Card */}
       <div
         style={{
           width: '100%',
           maxWidth: 'min(440px, 94vw)',
-          background: 'rgba(15, 23, 42, 0.85)',
+          background: 'rgba(33, 29, 24, 0.94)',
           backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          border: '1px solid #393128',
           borderRadius: 20,
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 40px rgba(16, 185, 129, 0.1)',
+          boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.88), 0 0 35px rgba(198, 161, 91, 0.08)',
           padding: 'clamp(24px, 5vw, 36px) clamp(16px, 5vw, 30px)',
           position: 'relative',
           zIndex: 10,
         }}
       >
         {/* App Logo & Header */}
-        <div style={{ textAlign: 'center', marginBottom: 26 }}>
+        <div style={{ textAlign: 'center', marginBottom: 22 }}>
           <div
             style={{
-              width: 64,
-              height: 64,
+              width: 68,
+              height: 68,
               margin: '0 auto 14px auto',
-              borderRadius: 18,
-              background: 'rgba(16, 185, 129, 0.12)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: 20,
+              background: '#191714',
+              border: '1.5px solid #49372A',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: 8,
-              boxShadow: '0 0 25px rgba(16, 185, 129, 0.25)',
+              padding: 6,
+              boxShadow: '0 0 25px rgba(198, 161, 91, 0.25)',
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/logo.svg" alt="Silsilah Logo" style={{ width: '100%', height: '100%' }} />
+            <img src="/assets/javanese-darkpro-mark.svg" alt="Silsilah Logo" style={{ width: '100%', height: '100%' }} />
           </div>
           <h1
             style={{
-              fontSize: 24,
+              fontSize: 25,
               fontWeight: 800,
-              letterSpacing: '0.04em',
-              color: '#F8FAFC',
+              letterSpacing: '0.06em',
+              color: '#F1E8D8',
+              fontFamily: 'var(--font-serif)',
               marginBottom: 4,
             }}
           >
             SILSILAH
           </h1>
-          <p style={{ fontSize: 13, color: '#94A3B8' }}>
-            Portal Pohon Silsilah Keluarga Interaktif & Terproteksi
+          <p style={{ fontSize: 12.5, color: '#A79D8D', letterSpacing: '0.01em' }}>
+            Portal Pohon Silsilah Trah &amp; Jejak Keluarga
           </p>
+
+          {/* Delicate Batik Divider */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/batik-sulur-divider.svg"
+            alt=""
+            style={{ width: '70%', height: 'auto', margin: '14px auto 0 auto', opacity: 0.6 }}
+          />
         </div>
 
         {/* Alerts */}
@@ -192,13 +218,13 @@ function FullScreenAuthPortal() {
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              background: 'rgba(239, 68, 68, 0.15)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              color: '#FCA5A5',
+              background: 'rgba(217, 121, 112, 0.15)',
+              border: '1px solid rgba(217, 121, 112, 0.35)',
+              color: '#F8B4AD',
               padding: '10px 14px',
               borderRadius: 8,
               fontSize: 12,
-              marginBottom: 18,
+              marginBottom: 16,
             }}
           >
             <AlertTriangle size={15} style={{ flexShrink: 0 }} />
@@ -212,13 +238,13 @@ function FullScreenAuthPortal() {
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              background: 'rgba(16, 185, 129, 0.15)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              color: '#6EE7B7',
+              background: 'rgba(126, 170, 131, 0.15)',
+              border: '1px solid rgba(126, 170, 131, 0.35)',
+              color: '#A8D2AC',
               padding: '10px 14px',
               borderRadius: 8,
               fontSize: 12,
-              marginBottom: 18,
+              marginBottom: 16,
             }}
           >
             <CheckCircle size={15} style={{ flexShrink: 0 }} />
@@ -234,14 +260,15 @@ function FullScreenAuthPortal() {
                 display: 'block',
                 fontSize: 11.5,
                 fontWeight: 600,
-                color: '#CBD5E1',
+                color: '#C6A15B',
                 marginBottom: 6,
+                letterSpacing: '0.02em',
               }}
             >
               Username
             </label>
             <div style={{ position: 'relative' }}>
-              <User size={15} color="#64748B" style={{ position: 'absolute', left: 12, top: 11 }} />
+              <User size={15} color="#8F6D35" style={{ position: 'absolute', left: 12, top: 11 }} />
               <input
                 type="text"
                 required
@@ -252,9 +279,9 @@ function FullScreenAuthPortal() {
                   width: '100%',
                   padding: '9px 12px 9px 36px',
                   borderRadius: 8,
-                  background: '#0D1322',
-                  border: '1px solid #1E293B',
-                  color: '#F8FAFC',
+                  background: '#191714',
+                  border: '1px solid #393128',
+                  color: '#F1E8D8',
                   fontSize: 13,
                   outline: 'none',
                 }}
@@ -268,14 +295,15 @@ function FullScreenAuthPortal() {
                 display: 'block',
                 fontSize: 11.5,
                 fontWeight: 600,
-                color: '#CBD5E1',
+                color: '#C6A15B',
                 marginBottom: 6,
+                letterSpacing: '0.02em',
               }}
             >
               Kata Sandi (Password)
             </label>
             <div style={{ position: 'relative' }}>
-              <Lock size={15} color="#64748B" style={{ position: 'absolute', left: 12, top: 11 }} />
+              <Lock size={15} color="#8F6D35" style={{ position: 'absolute', left: 12, top: 11 }} />
               <input
                 type="password"
                 required
@@ -286,9 +314,9 @@ function FullScreenAuthPortal() {
                   width: '100%',
                   padding: '9px 12px 9px 36px',
                   borderRadius: 8,
-                  background: '#0D1322',
-                  border: '1px solid #1E293B',
-                  color: '#F8FAFC',
+                  background: '#191714',
+                  border: '1px solid #393128',
+                  color: '#F1E8D8',
                   fontSize: 13,
                   outline: 'none',
                 }}
@@ -303,11 +331,11 @@ function FullScreenAuthPortal() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#F59E0B',
+                color: '#C6A15B',
                 fontSize: 12,
                 cursor: 'pointer',
                 padding: 0,
-                fontWeight: 500,
+                fontWeight: 600,
               }}
             >
               Lupa kata sandi?
@@ -317,44 +345,18 @@ function FullScreenAuthPortal() {
           <button
             type="submit"
             disabled={loading}
+            className="btn-primary"
             style={{
               width: '100%',
               padding: '11px 0',
-              borderRadius: 8,
-              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-              color: 'white',
               fontSize: 13.5,
               fontWeight: 700,
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              boxShadow: '0 4px 15px rgba(16, 185, 129, 0.35)',
               opacity: loading ? 0.7 : 1,
             }}
           >
-            <span>{loading ? 'Memproses...' : 'Masuk ke Silsilah'}</span>
+            <span>{loading ? 'Memproses...' : 'Masuk ke Ruang Silsilah'}</span>
             <ArrowRight size={15} />
           </button>
-
-          {/* Admin Managed Note */}
-          <div
-            style={{
-              marginTop: 18,
-              padding: '10px 14px',
-              background: 'rgba(15, 23, 42, 0.6)',
-              borderRadius: 8,
-              border: '1px solid #1E293B',
-              textAlign: 'center',
-              fontSize: 11.5,
-              color: '#94A3B8',
-              lineHeight: 1.45,
-            }}
-          >
-            🔒 Pendaftaran akun baru dikelola langsung oleh <strong>Admin / Superadmin</strong> keluarga.
-          </div>
         </form>
 
         {/* Reset Password Modal */}
@@ -369,10 +371,10 @@ function FullScreenAuthPortal() {
             justifyContent: 'center',
             gap: 6,
             fontSize: 11,
-            color: '#64748B',
+            color: '#7A7063',
           }}
         >
-          <ShieldCheck size={13} color="#10B981" />
+          <ShieldCheck size={13} color="#C6A15B" />
           <span>Sistem terproteksi PostgreSQL dengan enkripsi kata sandi</span>
         </div>
       </div>
@@ -448,7 +450,7 @@ function SilsilahDashboard() {
         height: '100vh',
         width: '100vw',
         overflow: 'hidden',
-        background: '#0A0E17',
+        background: 'var(--bg-primary, #11100E)',
       }}
     >
       {/* Top Navbar */}
@@ -520,43 +522,45 @@ function SilsilahDashboard() {
                 top: '50%',
                 left: isSidebarOpen ? 'calc(50% + 155px)' : '50%',
                 transform: 'translate(-50%, -50%)',
-                background: 'var(--bg-card, rgba(15, 23, 42, 0.95))',
+                background: 'var(--bg-card, #211D18)',
                 backdropFilter: 'blur(16px)',
-                border: '1px solid var(--border-subtle, #1E293B)',
-                borderRadius: 16,
-                padding: '32px 36px',
+                border: '1px solid var(--border-subtle, #393128)',
+                borderRadius: 18,
+                padding: '34px 38px',
                 textAlign: 'center',
-                maxWidth: 440,
-                boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
+                maxWidth: 450,
+                boxShadow: '0 25px 50px rgba(0,0,0,0.65), 0 0 30px rgba(198, 161, 91, 0.08)',
                 zIndex: 20,
               }}
             >
               <div
                 style={{
-                  width: 54,
-                  height: 54,
+                  width: 58,
+                  height: 58,
                   borderRadius: '50%',
-                  background: 'var(--primary-glow, rgba(16, 185, 129, 0.15))',
-                  border: '1px solid var(--primary, rgba(16, 185, 129, 0.3))',
+                  background: 'rgba(198, 161, 91, 0.15)',
+                  border: '1.5px solid var(--primary, #C6A15B)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 16px auto',
+                  boxShadow: '0 0 20px rgba(198, 161, 91, 0.25)',
                 }}
               >
-                <Sparkles size={24} color="var(--primary, #34D399)" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/assets/icon-family-tree.svg" alt="Trah" style={{ width: 28, height: 28 }} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)', marginBottom: 8 }}>
-                Pohon Silsilah Bersih &amp; Siap Digunakan
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)', fontFamily: 'var(--font-serif)', marginBottom: 8 }}>
+                Pohon Silsilah Siap Dimulai
               </h3>
-              <p style={{ fontSize: 13, color: 'var(--text-secondary, #94A3B8)', lineHeight: 1.5, marginBottom: 20 }}>
-                Data contoh lama telah dibersihkan sepenuhnya. Mulai bangun silsilah keluarga Anda dengan menambahkan anggota pertama.
+              <p style={{ fontSize: 13, color: 'var(--text-secondary, #A79D8D)', lineHeight: 1.55, marginBottom: 20 }}>
+                Mulai bangun garis keturunan trah keluarga Anda dengan menambahkan data leluhur atau anggota pertama.
               </p>
               <button
                 onClick={handleOpenAddMember}
                 className="btn-primary"
                 style={{
-                  padding: '10px 20px',
+                  padding: '10px 22px',
                   fontSize: 13,
                   margin: '0 auto',
                   display: 'flex',

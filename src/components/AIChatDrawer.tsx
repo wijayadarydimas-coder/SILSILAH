@@ -25,14 +25,14 @@ function FormattedMarkdownText({ content, isAssistant }: { content: string; isAs
     return parts.map((part, pIdx) => {
       if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
         return (
-          <strong key={pIdx} style={{ fontWeight: 700, color: '#38BDF8' }}>
+          <strong key={pIdx} style={{ fontWeight: 700, color: 'var(--antique-gold, #C6A15B)' }}>
             {part.slice(2, -2)}
           </strong>
         );
       }
       if (part.startsWith('*') && part.endsWith('*') && part.length >= 2) {
         return (
-          <em key={pIdx} style={{ fontStyle: 'italic', color: '#E2E8F0' }}>
+          <em key={pIdx} style={{ fontStyle: 'italic', color: 'var(--ivory, #F1E8D8)' }}>
             {part.slice(1, -1)}
           </em>
         );
@@ -60,7 +60,7 @@ function FormattedMarkdownText({ content, isAssistant }: { content: string; isAs
         if (isBullet) {
           return (
             <div key={lIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: 6, paddingLeft: 4 }}>
-              <span style={{ color: '#10B981', fontSize: 13, lineHeight: '18px' }}>•</span>
+              <span style={{ color: 'var(--antique-gold, #C6A15B)', fontSize: 13, lineHeight: '18px' }}>•</span>
               <span style={{ flex: 1, lineHeight: 1.55 }}>{parseInline(textToParse)}</span>
             </div>
           );
@@ -71,7 +71,7 @@ function FormattedMarkdownText({ content, isAssistant }: { content: string; isAs
           const num = numMatch ? numMatch[1] : '1';
           return (
             <div key={lIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: 6, paddingLeft: 4 }}>
-              <span style={{ color: '#38BDF8', fontWeight: 600, fontSize: 12, minWidth: 16 }}>{num}.</span>
+              <span style={{ color: 'var(--antique-gold, #C6A15B)', fontWeight: 600, fontSize: 12, minWidth: 16 }}>{num}.</span>
               <span style={{ flex: 1, lineHeight: 1.55 }}>{parseInline(textToParse)}</span>
             </div>
           );
@@ -219,19 +219,19 @@ export function AIChatDrawer() {
           height: 52,
           padding: 0,
           borderRadius: '50%',
-          background: 'var(--primary, #10B981)',
-          border: '2px solid rgba(255, 255, 255, 0.25)',
-          boxShadow: '0 8px 25px var(--primary-glow, rgba(16, 185, 129, 0.45))',
+          background: 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+          border: '2px solid rgba(198, 161, 91, 0.45)',
+          boxShadow: '0 8px 25px rgba(198, 161, 91, 0.45)',
           cursor: 'pointer',
           transition: 'transform 0.25s ease, box-shadow 0.25s ease',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.1) rotate(6deg)';
-          e.currentTarget.style.boxShadow = '0 12px 30px var(--primary-glow, rgba(16, 185, 129, 0.65))';
+          e.currentTarget.style.boxShadow = '0 12px 30px rgba(198, 161, 91, 0.65)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-          e.currentTarget.style.boxShadow = '0 8px 25px var(--primary-glow, rgba(16, 185, 129, 0.45))';
+          e.currentTarget.style.boxShadow = '0 8px 25px rgba(198, 161, 91, 0.45)';
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -251,7 +251,7 @@ export function AIChatDrawer() {
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(0, 0, 0, 0.6)',
+              background: 'rgba(0, 0, 0, 0.65)',
               backdropFilter: 'blur(3px)',
               zIndex: 1099,
             }}
@@ -264,9 +264,9 @@ export function AIChatDrawer() {
               right: 0,
               bottom: 0,
               width: 'min(440px, 100vw)',
-              background: '#0F1626',
-              borderLeft: '1px solid #1E293B',
-              boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.75)',
+              background: 'var(--bg-secondary, #191714)',
+              borderLeft: '1px solid var(--border-subtle, #393128)',
+              boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.85)',
               zIndex: 1100,
               display: 'flex',
               flexDirection: 'column',
@@ -276,8 +276,8 @@ export function AIChatDrawer() {
           <div
             style={{
               padding: '14px 18px',
-              borderBottom: '1px solid #1E293B',
-              background: '#131B2E',
+              borderBottom: '1px solid var(--border-subtle, #393128)',
+              background: 'var(--bg-card, #211D18)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -289,22 +289,23 @@ export function AIChatDrawer() {
                   width: 34,
                   height: 34,
                   borderRadius: 10,
-                  background: 'rgba(16, 185, 129, 0.15)',
+                  background: 'rgba(198, 161, 91, 0.15)',
+                  border: '1px solid rgba(198, 161, 91, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: 3,
+                  padding: 4,
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/assets/ai-icon.svg"
                   alt={aiName}
-                  style={{ width: 26, height: 26, display: 'block' }}
+                  style={{ width: 24, height: 24, display: 'block' }}
                 />
               </div>
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: '#F8FAFC' }}>
+                <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 14, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
                   {aiName}
                 </h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -313,11 +314,11 @@ export function AIChatDrawer() {
                       width: 7,
                       height: 7,
                       borderRadius: '50%',
-                      background: isOverloaded ? '#EF4444' : '#10B981',
-                      boxShadow: isOverloaded ? '0 0 8px #EF4444' : '0 0 8px #10B981',
+                      background: isOverloaded ? 'var(--danger, #D97970)' : 'var(--success, #7EAA83)',
+                      boxShadow: isOverloaded ? '0 0 8px #D97970' : '0 0 8px #7EAA83',
                     }}
                   />
-                  <span style={{ fontSize: 11, color: isOverloaded ? '#F87171' : '#94A3B8' }}>
+                  <span style={{ fontSize: 11, color: isOverloaded ? 'var(--danger, #D97970)' : 'var(--text-muted, #A79D8D)' }}>
                     {isOverloaded
                       ? 'Kapasitas Penuh (Maks 10 Akun)'
                       : currentUser
@@ -337,7 +338,7 @@ export function AIChatDrawer() {
                   borderRadius: 6,
                   background: 'transparent',
                   border: 'none',
-                  color: '#94A3B8',
+                  color: 'var(--text-muted, #A79D8D)',
                   cursor: 'pointer',
                   display: 'flex',
                 }}
@@ -351,7 +352,7 @@ export function AIChatDrawer() {
                   borderRadius: 6,
                   background: 'transparent',
                   border: 'none',
-                  color: '#94A3B8',
+                  color: 'var(--text-muted, #A79D8D)',
                   cursor: 'pointer',
                   display: 'flex',
                 }}
@@ -390,8 +391,8 @@ export function AIChatDrawer() {
                       width: 28,
                       height: 28,
                       borderRadius: '50%',
-                      background: isAssistant ? 'var(--bg-menu, #162035)' : 'var(--primary, #10B981)',
-                      border: '1px solid var(--border-subtle, #1E293B)',
+                      background: isAssistant ? 'var(--bg-card, #211D18)' : 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+                      border: '1px solid var(--border-subtle, #393128)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -402,7 +403,7 @@ export function AIChatDrawer() {
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img src="/assets/ai-icon.svg" alt="AI" style={{ width: 18, height: 18, display: 'block' }} />
                     ) : (
-                      <User size={15} color="#FFFFFF" />
+                      <User size={15} color="#11100E" />
                     )}
                   </div>
 
@@ -411,12 +412,14 @@ export function AIChatDrawer() {
                       maxWidth: '82%',
                       padding: '10px 14px',
                       borderRadius: 12,
-                      background: isAssistant ? 'var(--bg-menu, #162035)' : 'var(--primary, #10B981)',
-                      color: isAssistant ? 'var(--text-primary, #F1F5F9)' : '#FFFFFF',
-                      border: isAssistant ? '1px solid var(--border-subtle, #1E293B)' : 'none',
+                      background: isAssistant ? 'var(--bg-card, #211D18)' : 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+                      color: isAssistant ? 'var(--ivory, #F1E8D8)' : '#11100E',
+                      fontWeight: isAssistant ? 400 : 500,
+                      border: isAssistant ? '1px solid var(--border-subtle, #393128)' : 'none',
                       fontSize: 12.5,
                       lineHeight: 1.55,
                       wordBreak: 'break-word',
+                      boxShadow: isAssistant ? '0 2px 10px rgba(0,0,0,0.3)' : '0 2px 10px rgba(198,161,91,0.25)',
                     }}
                   >
                     <FormattedMarkdownText content={m.content} isAssistant={isAssistant} />
@@ -432,7 +435,8 @@ export function AIChatDrawer() {
                     width: 28,
                     height: 28,
                     borderRadius: '50%',
-                    background: '#162035',
+                    background: 'var(--bg-card, #211D18)',
+                    border: '1px solid var(--border-subtle, #393128)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -445,13 +449,14 @@ export function AIChatDrawer() {
                   style={{
                     padding: '8px 14px',
                     borderRadius: 12,
-                    background: '#162035',
-                    color: '#94A3B8',
+                    background: 'var(--bg-card, #211D18)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-muted, #A79D8D)',
                     fontSize: 12,
                     fontStyle: 'italic',
                   }}
                 >
-                  Sedang menelusuri data silsilah...
+                  Sedang menelusuri data silsilah trah...
                 </div>
               </div>
             )}
@@ -460,9 +465,9 @@ export function AIChatDrawer() {
           </div>
 
           {/* Suggested Prompts */}
-          <div style={{ padding: '8px 16px', background: '#111827', borderTop: '1px solid #1E293B' }}>
-            <div style={{ fontSize: 10.5, fontWeight: 600, color: '#64748B', marginBottom: 6 }}>
-              PERTANYAAN CEPAT:
+          <div style={{ padding: '8px 16px', background: 'var(--bg-card, #211D18)', borderTop: '1px solid var(--border-subtle, #393128)' }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', marginBottom: 6, letterSpacing: '0.04em' }}>
+              PANDUAN TELUSUR:
             </div>
             <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4 }}>
               {SUGGESTED_QUESTIONS.map((q, i) => (
@@ -474,20 +479,20 @@ export function AIChatDrawer() {
                     whiteSpace: 'nowrap',
                     padding: '4px 10px',
                     borderRadius: 999,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#94A3B8',
+                    background: 'var(--bg-menu, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-muted, #A79D8D)',
                     fontSize: 11,
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#F8FAFC';
-                    e.currentTarget.style.borderColor = '#10B981';
+                    e.currentTarget.style.color = 'var(--ivory, #F1E8D8)';
+                    e.currentTarget.style.borderColor = 'var(--antique-gold, #C6A15B)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#94A3B8';
-                    e.currentTarget.style.borderColor = '#1E293B';
+                    e.currentTarget.style.color = 'var(--text-muted, #A79D8D)';
+                    e.currentTarget.style.borderColor = 'var(--border-subtle, #393128)';
                   }}
                 >
                   {q}
@@ -501,9 +506,9 @@ export function AIChatDrawer() {
             <div
               style={{
                 padding: '10px 14px',
-                background: 'rgba(239, 68, 68, 0.15)',
-                borderTop: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#FCA5A5',
+                background: 'rgba(217, 121, 112, 0.15)',
+                borderTop: '1px solid rgba(217, 121, 112, 0.3)',
+                color: 'var(--danger, #D97970)',
                 fontSize: 11.5,
                 lineHeight: 1.45,
               }}
@@ -516,8 +521,8 @@ export function AIChatDrawer() {
           <div
             style={{
               padding: 12,
-              borderTop: '1px solid #1E293B',
-              background: '#0F1626',
+              borderTop: '1px solid var(--border-subtle, #393128)',
+              background: 'var(--bg-card, #211D18)',
               display: 'flex',
               gap: 8,
             }}
@@ -532,17 +537,18 @@ export function AIChatDrawer() {
                   handleSend();
                 }
               }}
-              placeholder={isOverloaded ? 'Asisten AI sementara nonaktif (kapasitas penuh)...' : 'Tanya apapun tentang silsilah...'}
+              placeholder={isOverloaded ? 'Asisten AI sementara nonaktif (kapasitas penuh)...' : 'Tanya apapun tentang silsilah trah...'}
               disabled={loading || isOverloaded}
               style={{
                 flex: 1,
                 padding: '9px 12px',
                 borderRadius: 8,
-                background: 'var(--bg-menu, #162035)',
-                border: '1px solid var(--border-subtle, #1E293B)',
-                color: isOverloaded ? 'var(--text-secondary, #94A3B8)' : 'var(--text-primary, #F8FAFC)',
+                background: 'var(--bg-menu, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: isOverloaded ? 'var(--text-muted, #A79D8D)' : 'var(--ivory, #F1E8D8)',
                 fontSize: 12.5,
                 cursor: isOverloaded ? 'not-allowed' : 'text',
+                outline: 'none',
               }}
             />
             <button
@@ -551,9 +557,9 @@ export function AIChatDrawer() {
               style={{
                 padding: '9px 14px',
                 borderRadius: 8,
-                background: isOverloaded ? '#475569' : 'var(--primary, #10B981)',
+                background: isOverloaded ? '#475569' : 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
                 border: 'none',
-                color: 'white',
+                color: isOverloaded ? 'white' : '#11100E',
                 cursor: isOverloaded ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',

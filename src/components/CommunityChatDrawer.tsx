@@ -152,8 +152,8 @@ export function CommunityChatDrawer({
           width: '100%',
           maxWidth: 420,
           height: '100%',
-          background: '#0D1424',
-          borderLeft: '1px solid #1E293B',
+          background: 'var(--bg-secondary, #191714)',
+          borderLeft: '1px solid var(--border-subtle, #393128)',
           boxShadow: '-10px 0 35px rgba(0, 0, 0, 0.7)',
           display: 'flex',
           flexDirection: 'column',
@@ -164,8 +164,8 @@ export function CommunityChatDrawer({
         <div
           style={{
             padding: '16px 18px',
-            borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-elevated, #211D18)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -177,17 +177,27 @@ export function CommunityChatDrawer({
                 width: 34,
                 height: 34,
                 borderRadius: 10,
-                background: 'linear-gradient(135deg, #0284C7, #0369A1)',
+                background: 'linear-gradient(135deg, #C6A15B, #8F6D35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#FFFFFF',
+                color: '#11100E',
+                boxShadow: '0 2px 10px rgba(198, 161, 91, 0.3)',
               }}
             >
               <MessageSquare size={18} />
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: 14.5, fontWeight: 700, color: '#F8FAFC' }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: 'var(--text-primary, #F1E8D8)',
+                  fontFamily: 'Cinzel, serif',
+                  letterSpacing: '0.02em',
+                }}
+              >
                 Obrolan Komunitas
               </h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -196,10 +206,10 @@ export function CommunityChatDrawer({
                     width: 7,
                     height: 7,
                     borderRadius: '50%',
-                    background: '#10B981',
+                    background: '#7EAA83',
                   }}
                 />
-                <span style={{ fontSize: 11, color: '#94A3B8' }}>
+                <span style={{ fontSize: 11, color: 'var(--text-secondary, #A79D8D)' }}>
                   {messages.length} pesan terkirim
                 </span>
               </div>
@@ -213,7 +223,7 @@ export function CommunityChatDrawer({
               borderRadius: 6,
               background: 'transparent',
               border: 'none',
-              color: '#94A3B8',
+              color: 'var(--text-secondary, #A79D8D)',
               cursor: 'pointer',
               display: 'flex',
             }}
@@ -231,6 +241,7 @@ export function CommunityChatDrawer({
             display: 'flex',
             flexDirection: 'column',
             gap: 12,
+            background: 'var(--bg-primary, #11100E)',
           }}
         >
           {messages.length === 0 ? (
@@ -241,14 +252,14 @@ export function CommunityChatDrawer({
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100%',
-                color: '#64748B',
+                color: 'var(--text-secondary, #A79D8D)',
                 textAlign: 'center',
                 padding: 24,
               }}
             >
-              <Users size={36} style={{ marginBottom: 10, opacity: 0.5 }} />
-              <p style={{ fontSize: 13, margin: 0, fontWeight: 500 }}>Belum ada pesan komunitas.</p>
-              <p style={{ fontSize: 11.5, margin: '4px 0 0', color: '#475569' }}>
+              <Users size={36} style={{ marginBottom: 10, color: '#8F6D35', opacity: 0.7 }} />
+              <p style={{ fontSize: 13, margin: 0, fontWeight: 600, color: '#F1E8D8' }}>Belum ada pesan komunitas.</p>
+              <p style={{ fontSize: 11.5, margin: '4px 0 0', color: '#A79D8D' }}>
                 Mulai percakapan keluarga pertama di bawah ini!
               </p>
             </div>
@@ -260,10 +271,10 @@ export function CommunityChatDrawer({
 
               const roleBadgeColor =
                 msg.userRole === 'superadmin'
-                  ? { bg: 'rgba(245, 158, 11, 0.15)', text: '#FBBF24', border: 'rgba(245, 158, 11, 0.3)' }
+                  ? { bg: 'rgba(198, 161, 91, 0.18)', text: '#C6A15B', border: 'rgba(198, 161, 91, 0.4)' }
                   : msg.userRole === 'admin'
-                  ? { bg: 'rgba(16, 185, 129, 0.15)', text: '#34D399', border: 'rgba(16, 185, 129, 0.3)' }
-                  : { bg: 'rgba(100, 116, 139, 0.15)', text: '#94A3B8', border: 'rgba(100, 116, 139, 0.3)' };
+                  ? { bg: 'rgba(126, 170, 131, 0.18)', text: '#7EAA83', border: 'rgba(126, 170, 131, 0.4)' }
+                  : { bg: 'rgba(167, 157, 141, 0.15)', text: '#A79D8D', border: 'rgba(167, 157, 141, 0.3)' };
 
               return (
                 <div
@@ -283,8 +294,8 @@ export function CommunityChatDrawer({
                       width: 32,
                       height: 32,
                       borderRadius: '50%',
-                      background: '#1E293B',
-                      border: '1px solid #334155',
+                      background: 'var(--bg-elevated, #211D18)',
+                      border: '1px solid var(--border-subtle, #393128)',
                       overflow: 'hidden',
                       display: 'flex',
                       alignItems: 'center',
@@ -299,7 +310,7 @@ export function CommunityChatDrawer({
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     ) : (
-                      <User size={16} color="#94A3B8" />
+                      <User size={16} color="#A79D8D" />
                     )}
                   </div>
 
@@ -322,7 +333,7 @@ export function CommunityChatDrawer({
                         fontSize: 11,
                       }}
                     >
-                      <span style={{ fontWeight: 600, color: isSelf ? '#38BDF8' : '#CBD5E1' }}>
+                      <span style={{ fontWeight: 600, color: isSelf ? '#C6A15B' : '#F1E8D8' }}>
                         {isSelf ? 'Anda' : msg.displayName}
                       </span>
                       <span
@@ -337,7 +348,7 @@ export function CommunityChatDrawer({
                           textTransform: 'uppercase',
                         }}
                       >
-                        {msg.userRole === 'client' ? 'USER' : msg.userRole}
+                        {msg.userRole === 'client' ? 'WARGA' : msg.userRole}
                       </span>
                     </div>
 
@@ -347,14 +358,16 @@ export function CommunityChatDrawer({
                         position: 'relative',
                         padding: '9px 13px',
                         borderRadius: isSelf ? '12px 2px 12px 12px' : '2px 12px 12px 12px',
-                        background: isSelf ? '#0284C7' : '#162035',
-                        color: '#FFFFFF',
-                        border: isSelf ? 'none' : '1px solid #1E293B',
+                        background: isSelf
+                          ? 'linear-gradient(135deg, #3A2E1F, #261D13)'
+                          : 'var(--bg-elevated, #211D18)',
+                        color: '#F1E8D8',
+                        border: isSelf ? '1px solid #C6A15B' : '1px solid var(--border-subtle, #393128)',
                         fontSize: 12.5,
                         lineHeight: 1.5,
                         wordBreak: 'break-word',
                         whiteSpace: 'pre-wrap',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
                       }}
                     >
                       {msg.message}
@@ -370,7 +383,7 @@ export function CommunityChatDrawer({
                             float: 'right',
                             background: 'transparent',
                             border: 'none',
-                            color: isSelf ? 'rgba(255,255,255,0.7)' : '#EF4444',
+                            color: isSelf ? 'rgba(241, 232, 216, 0.7)' : '#D97970',
                             cursor: 'pointer',
                             padding: 2,
                             display: 'inline-flex',
@@ -383,7 +396,7 @@ export function CommunityChatDrawer({
                     </div>
 
                     {/* Time */}
-                    <span style={{ fontSize: 9.5, color: '#64748B', marginTop: 3 }}>
+                    <span style={{ fontSize: 9.5, color: '#A79D8D', marginTop: 3 }}>
                       {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
@@ -399,8 +412,8 @@ export function CommunityChatDrawer({
           onSubmit={handleSendMessage}
           style={{
             padding: 12,
-            borderTop: '1px solid #1E293B',
-            background: '#131B2E',
+            borderTop: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-elevated, #211D18)',
             display: 'flex',
             alignItems: 'center',
             gap: 8,
@@ -410,14 +423,14 @@ export function CommunityChatDrawer({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Tulis pesan komunitas..."
+            placeholder="Tulis pesan komunitas keluarga..."
             style={{
               flex: 1,
               padding: '10px 14px',
               borderRadius: 8,
-              background: '#0F172A',
-              border: '1px solid #1E293B',
-              color: '#FFFFFF',
+              background: 'var(--bg-primary, #11100E)',
+              border: '1px solid var(--border-subtle, #393128)',
+              color: '#F1E8D8',
               fontSize: 12.5,
               outline: 'none',
             }}
@@ -428,14 +441,16 @@ export function CommunityChatDrawer({
             style={{
               padding: '10px 14px',
               borderRadius: 8,
-              background: '#0284C7',
-              color: '#FFFFFF',
+              background: 'linear-gradient(135deg, #C6A15B, #8F6D35)',
+              color: '#11100E',
+              fontWeight: 700,
               border: 'none',
               cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
               opacity: loading || !input.trim() ? 0.6 : 1,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(198, 161, 91, 0.3)',
             }}
           >
             <Send size={15} />

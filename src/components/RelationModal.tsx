@@ -122,15 +122,15 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
     >
       <div
         style={{
-          background: '#0F1626',
-          border: '1px solid #1E293B',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
           width: '100%',
           maxWidth: 'min(580px, 95vw)',
           maxHeight: '90vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
           overflow: 'hidden',
         }}
       >
@@ -141,17 +141,35 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
-            borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <GitCommit size={20} color="#10B981" />
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: '#F8FAFC' }}>
+            <GitCommit size={20} color="var(--accent-gold, #C6A15B)" />
+            <h2
+              style={{
+                fontSize: 16,
+                fontWeight: 700,
+                color: 'var(--text-primary, #F1E8D8)',
+                fontFamily: 'Cinzel, serif',
+                letterSpacing: '0.02em',
+              }}
+            >
               Kelola Hubungan Silsilah Keluarga
             </h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94A3B8' }}>
+          <button
+            onClick={onClose}
+            style={{
+              color: 'var(--text-muted, #A79D8D)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <X size={20} />
           </button>
         </div>
@@ -160,8 +178,8 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
         <div
           style={{
             display: 'flex',
-            borderBottom: '1px solid #1E293B',
-            background: '#111827',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-primary, #11100E)',
           }}
         >
           <button
@@ -178,9 +196,14 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
               gap: 8,
               fontSize: 13,
               fontWeight: 600,
-              color: activeTab === 'parent_child' ? '#10B981' : '#94A3B8',
-              borderBottom: activeTab === 'parent_child' ? '2px solid #10B981' : 'none',
-              background: activeTab === 'parent_child' ? 'rgba(16, 185, 129, 0.05)' : 'none',
+              cursor: 'pointer',
+              color: activeTab === 'parent_child' ? 'var(--accent-gold, #C6A15B)' : 'var(--text-muted, #A79D8D)',
+              borderBottom: activeTab === 'parent_child' ? '2px solid var(--accent-gold, #C6A15B)' : '2px solid transparent',
+              background: activeTab === 'parent_child' ? 'rgba(198, 161, 91, 0.08)' : 'transparent',
+              borderTop: 'none',
+              borderLeft: 'none',
+              borderRight: 'none',
+              transition: 'all 0.15s ease',
             }}
           >
             <Users size={16} />
@@ -200,9 +223,14 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
               gap: 8,
               fontSize: 13,
               fontWeight: 600,
-              color: activeTab === 'partnership' ? '#F43F5E' : '#94A3B8',
-              borderBottom: activeTab === 'partnership' ? '2px solid #F43F5E' : 'none',
-              background: activeTab === 'partnership' ? 'rgba(244, 63, 94, 0.05)' : 'none',
+              cursor: 'pointer',
+              color: activeTab === 'partnership' ? 'var(--accent-terracotta, #B96F4B)' : 'var(--text-muted, #A79D8D)',
+              borderBottom: activeTab === 'partnership' ? '2px solid var(--accent-terracotta, #B96F4B)' : '2px solid transparent',
+              background: activeTab === 'partnership' ? 'rgba(185, 111, 75, 0.08)' : 'transparent',
+              borderTop: 'none',
+              borderLeft: 'none',
+              borderRight: 'none',
+              transition: 'all 0.15s ease',
             }}
           >
             <Heart size={16} />
@@ -254,7 +282,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
           {activeTab === 'parent_child' && (
             <form onSubmit={handleAddParentChild} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
                   Pilih Orang Tua (Ayah / Ibu)
                 </label>
                 <select
@@ -262,12 +290,13 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                   onChange={(e) => handleParentSelect(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '8px 12px',
+                    padding: '9px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
+                    outline: 'none',
                   }}
                 >
                   {people.map((p) => (
@@ -279,7 +308,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
                   Pilih Anak
                 </label>
                 <select
@@ -287,12 +316,13 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                   onChange={(e) => setChildId(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '8px 12px',
+                    padding: '9px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
+                    outline: 'none',
                   }}
                 >
                   {people.map((p) => (
@@ -305,7 +335,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
                     Peran Orang Tua
                   </label>
                   <select
@@ -313,12 +343,13 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                     onChange={(e) => setParentRole(e.target.value as ParentRole)}
                     style={{
                       width: '100%',
-                      padding: '8px 12px',
+                      padding: '9px 12px',
                       borderRadius: 8,
-                      background: '#162035',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
+                      background: 'var(--bg-secondary, #191714)',
+                      border: '1px solid var(--border-subtle, #393128)',
+                      color: 'var(--text-primary, #F1E8D8)',
                       fontSize: 13,
+                      outline: 'none',
                     }}
                   >
                     <option value="father">Ayah</option>
@@ -328,7 +359,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
                     Jenis Kekerabatan
                   </label>
                   <select
@@ -336,12 +367,13 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                     onChange={(e) => setParentageType(e.target.value as ParentageType)}
                     style={{
                       width: '100%',
-                      padding: '8px 12px',
+                      padding: '9px 12px',
                       borderRadius: 8,
-                      background: '#162035',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
+                      background: 'var(--bg-secondary, #191714)',
+                      border: '1px solid var(--border-subtle, #393128)',
+                      color: 'var(--text-primary, #F1E8D8)',
                       fontSize: 13,
+                      outline: 'none',
                     }}
                   >
                     <option value="biological">Biologis (Kandung)</option>
@@ -353,7 +385,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                 </div>
               </div>
 
-              <p style={{ fontSize: 11.5, color: '#94A3B8', fontStyle: 'italic' }}>
+              <p style={{ fontSize: 11.5, color: 'var(--text-muted, #A79D8D)', fontStyle: 'italic', margin: '2px 0' }}>
                 * Sistem secara otomatis mencegah siklus silsilah (seseorang tidak dapat menjadi leluhur dari dirinya sendiri).
               </p>
 
@@ -367,7 +399,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
           {activeTab === 'partnership' && (
             <form onSubmit={handleAddPartnership} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
                   Orang Pertama (Pasangan 1)
                 </label>
                 <select
@@ -375,12 +407,13 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                   onChange={(e) => setPartnerAId(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '8px 12px',
+                    padding: '9px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
+                    outline: 'none',
                   }}
                 >
                   {people.map((p) => (
@@ -392,7 +425,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
                   Orang Kedua (Pasangan 2)
                 </label>
                 <select
@@ -400,12 +433,13 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                   onChange={(e) => setPartnerBId(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '8px 12px',
+                    padding: '9px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
+                    outline: 'none',
                   }}
                 >
                   {people.map((p) => (
@@ -417,7 +451,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted, #A79D8D)', marginBottom: 6 }}>
                   Status Pernikahan / Kemitraan
                 </label>
                 <select
@@ -425,12 +459,13 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                   onChange={(e) => setPartnerStatus(e.target.value as 'current' | 'past')}
                   style={{
                     width: '100%',
-                    padding: '8px 12px',
+                    padding: '9px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
+                    outline: 'none',
                   }}
                 >
                   <option value="current">💍 Menikah / Berpasangan (Saat ini)</option>
@@ -446,13 +481,16 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 8,
-                  padding: '9px 16px',
-                  background: 'linear-gradient(135deg, #F43F5E 0%, #BE123C 100%)',
-                  color: 'white',
+                  padding: '10px 16px',
+                  background: 'linear-gradient(135deg, #B96F4B 0%, #8F4C2A 100%)',
+                  border: '1px solid rgba(185, 111, 75, 0.4)',
+                  color: '#FFFFFF',
                   borderRadius: 8,
                   fontWeight: 600,
                   fontSize: 13,
-                  boxShadow: '0 2px 10px rgba(244, 63, 94, 0.3)',
+                  boxShadow: '0 4px 14px rgba(185, 111, 75, 0.25)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
                 }}
               >
                 <Heart size={16} />
@@ -463,8 +501,8 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
 
           {/* List of existing relations for selected person if present */}
           {selectedPersonId && (
-            <div style={{ marginTop: 12, borderTop: '1px solid #1E293B', paddingTop: 16 }}>
-              <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 10 }}>
+            <div style={{ marginTop: 12, borderTop: '1px solid var(--border-subtle, #393128)', paddingTop: 16 }}>
+              <h3 style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-gold, #C6A15B)', marginBottom: 10, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                 RELASI AKTIF UNTUK &quot;{peopleMap.get(selectedPersonId)?.fullName}&quot;
               </h3>
 
@@ -483,10 +521,12 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          padding: '6px 12px',
-                          background: '#162035',
+                          padding: '8px 12px',
+                          background: 'var(--bg-secondary, #191714)',
+                          border: '1px solid var(--border-subtle, #393128)',
                           borderRadius: 8,
                           fontSize: 12.5,
+                          color: 'var(--text-primary, #F1E8D8)',
                         }}
                       >
                         <span>
@@ -497,7 +537,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
                             await deleteParentChild(r.id);
                           }}
                           title="Hapus relasi ini"
-                          style={{ color: '#F87171', padding: 4 }}
+                          style={{ color: 'var(--accent-danger, #D97970)', padding: 4, background: 'transparent', border: 'none', cursor: 'pointer' }}
                         >
                           <Trash2 size={14} />
                         </button>

@@ -29,18 +29,18 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
 
   const getActionBadge = (action: string) => {
     if (action.startsWith('CREATE')) {
-      return { bg: 'rgba(16, 185, 129, 0.15)', text: '#34D399', label: 'Tambah Data' };
+      return { bg: 'rgba(126, 170, 131, 0.18)', text: '#7EAA83', label: 'Tambah Data' };
     }
     if (action.startsWith('UPDATE')) {
-      return { bg: 'rgba(59, 130, 246, 0.15)', text: '#60A5FA', label: 'Ubah Data' };
+      return { bg: 'rgba(198, 161, 91, 0.18)', text: '#C6A15B', label: 'Ubah Data' };
     }
     if (action.startsWith('DELETE')) {
-      return { bg: 'rgba(239, 68, 68, 0.15)', text: '#F87171', label: 'Hapus Data' };
+      return { bg: 'rgba(217, 121, 112, 0.18)', text: '#D97970', label: 'Hapus Data' };
     }
     if (action.includes('ROLE')) {
-      return { bg: 'rgba(245, 158, 11, 0.15)', text: '#FBBF24', label: 'Ubah Hak Akses' };
+      return { bg: 'rgba(215, 164, 90, 0.18)', text: '#D7A45A', label: 'Ubah Hak Akses' };
     }
-    return { bg: 'rgba(148, 163, 184, 0.15)', text: '#94A3B8', label: 'Sistem' };
+    return { bg: 'rgba(167, 157, 141, 0.15)', text: '#A79D8D', label: 'Sistem' };
   };
 
   return (
@@ -52,8 +52,8 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
         bottom: 0,
         width: '100%',
         maxWidth: 480,
-        background: '#0F1626',
-        borderLeft: '1px solid #1E293B',
+        background: 'var(--bg-secondary, #191714)',
+        borderLeft: '1px solid var(--border-subtle, #393128)',
         boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.7)',
         zIndex: 1000,
         display: 'flex',
@@ -67,14 +67,23 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '16px 20px',
-          borderBottom: '1px solid #1E293B',
-          background: '#131B2E',
+          borderBottom: '1px solid var(--border-subtle, #393128)',
+          background: 'var(--bg-elevated, #211D18)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <History size={18} color="#10B981" />
-          <h2 style={{ fontWeight: 600, fontSize: 15, color: '#F8FAFC' }}>
-            Audit Log Riwayat Perubahan Silsilah
+          <History size={18} color="#C6A15B" />
+          <h2
+            style={{
+              fontWeight: 700,
+              fontSize: 15,
+              color: 'var(--text-primary, #F1E8D8)',
+              fontFamily: 'Cinzel, serif',
+              letterSpacing: '0.02em',
+              margin: 0,
+            }}
+          >
+            Audit Log Riwayat Silsilah
           </h2>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -87,9 +96,9 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 5,
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#F87171',
+                background: 'rgba(217, 121, 112, 0.15)',
+                border: '1px solid rgba(217, 121, 112, 0.3)',
+                color: '#D97970',
                 padding: '5px 10px',
                 borderRadius: 6,
                 fontSize: 12,
@@ -101,7 +110,17 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
               <span>{isDeleting ? 'Membersihkan...' : 'Bersihkan Semua'}</span>
             </button>
           )}
-          <button onClick={onClose} style={{ color: '#94A3B8', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', padding: 4 }}>
+          <button
+            onClick={onClose}
+            style={{
+              color: 'var(--text-secondary, #A79D8D)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              padding: 4,
+            }}
+          >
             <X size={20} />
           </button>
         </div>
@@ -116,15 +135,16 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
           display: 'flex',
           flexDirection: 'column',
           gap: 12,
+          background: 'var(--bg-primary, #11100E)',
         }}
       >
-        <p style={{ fontSize: 12, color: '#94A3B8', lineHeight: 1.5, marginBottom: 4 }}>
+        <p style={{ fontSize: 12, color: 'var(--text-secondary, #A79D8D)', lineHeight: 1.5, marginBottom: 4 }}>
           Merekam setiap aktivitas modifikasi person, relasi keluarga, dan perubahan hak akses untuk
           menjamin akuntabilitas dan keamanan silsilah.
         </p>
 
         {auditLogs.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#64748B', fontSize: 13 }}>
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary, #A79D8D)', fontSize: 13 }}>
             Belum ada catatan riwayat perubahan.
           </div>
         ) : (
@@ -139,13 +159,14 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
               <div
                 key={log.id}
                 style={{
-                  background: '#162035',
+                  background: 'var(--bg-elevated, #211D18)',
                   borderRadius: 10,
-                  border: '1px solid #1E293B',
+                  border: '1px solid var(--border-subtle, #393128)',
                   padding: '12px 14px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 6,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -162,7 +183,7 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
                     {badge.label}
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 11, color: '#64748B', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ fontSize: 11, color: 'var(--text-secondary, #A79D8D)', display: 'flex', alignItems: 'center', gap: 4 }}>
                       <Clock size={11} />
                       {dateStr}
                     </span>
@@ -173,7 +194,7 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: '#64748B',
+                          color: '#A79D8D',
                           cursor: 'pointer',
                           padding: 2,
                           display: 'flex',
@@ -181,8 +202,8 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
                           borderRadius: 4,
                           transition: 'color 0.15s ease',
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = '#F87171')}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = '#64748B')}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = '#D97970')}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = '#A79D8D')}
                       >
                         <Trash2 size={13} />
                       </button>
@@ -190,7 +211,7 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
                   </div>
                 </div>
 
-                <div style={{ fontSize: 13, color: '#F1F5F9', fontWeight: 500, lineHeight: 1.4 }}>
+                <div style={{ fontSize: 13, color: '#F1E8D8', fontWeight: 500, lineHeight: 1.4 }}>
                   {log.summary}
                 </div>
 
@@ -200,14 +221,14 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
                     alignItems: 'center',
                     gap: 6,
                     fontSize: 11,
-                    color: '#94A3B8',
+                    color: 'var(--text-secondary, #A79D8D)',
                     marginTop: 2,
-                    paddingTop: 4,
-                    borderTop: '1px solid rgba(255,255,255,0.05)',
+                    paddingTop: 6,
+                    borderTop: '1px solid var(--border-subtle, #393128)',
                   }}
                 >
-                  <User size={11} />
-                  <span>Pelaku: {log.actorName}</span>
+                  <User size={11} color="#C6A15B" />
+                  <span>Pelaku: <strong style={{ color: '#F1E8D8' }}>{log.actorName}</strong></span>
                   <span style={{ opacity: 0.7 }}>({log.actorRole.toUpperCase()})</span>
                 </div>
               </div>

@@ -1,78 +1,98 @@
 @import '@xyflow/react/dist/style.css';
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-primary: #0A0E17;
-  --bg-navbar: #0D1322;
-  --bg-menu: #0F1626;
-  --bg-surface: #111827;
-  --bg-surface-elevated: #162032;
-  --bg-card: #192438;
-  --bg-card-hover: #202E46;
-  
-  --primary: #10B981;
-  --primary-hover: #059669;
-  --primary-glow: rgba(16, 185, 129, 0.25);
-  
-  --accent-gold: #F59E0B;
-  --accent-gold-glow: rgba(245, 158, 11, 0.25);
-  --accent-blue: #3B82F6;
-  --accent-rose: #F43F5E;
-  
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  
-  --border-subtle: #1E293B;
-  --border-medium: #334155;
-  --border-focus: #10B981;
-  
-  --community-btn: #162035;
-  --community-btn-text: #38BDF8;
-  --community-btn-border: #1E293B;
-  
+  /* DARK PRO × JAVANESE HERITAGE FOUNDATION DESIGN TOKENS */
+  --bg-primary: #11100E;
+  --bg-secondary: #191714;
+  --bg-navbar: #151310;
+  --bg-menu: #191714;
+  --bg-surface: #1C1915;
+  --bg-surface-elevated: #211D18;
+  --bg-card: #211D18;
+  --bg-card-hover: #2B251E;
+
+  /* JAVANESE HERITAGE PALETTE */
+  --antique-gold: #C6A15B;
+  --deep-gold: #8F6D35;
+  --teak-brown: #49372A;
+  --terracotta: #B96F4B;
+  --ivory: #F1E8D8;
+  --muted-text: #A79D8D;
+
+  --primary: #C6A15B;
+  --primary-hover: #D4AF37;
+  --primary-glow: rgba(198, 161, 91, 0.24);
+
+  --accent-gold: #C6A15B;
+  --accent-gold-glow: rgba(198, 161, 91, 0.25);
+  --accent-terracotta: #B96F4B;
+  --accent-teak: #49372A;
+
+  --text-primary: #F1E8D8;
+  --text-secondary: #A79D8D;
+  --text-muted: #7A7063;
+
+  --border-subtle: #393128;
+  --border-medium: #49372A;
+  --border-focus: #C6A15B;
+
+  --community-btn: #211D18;
+  --community-btn-text: #C6A15B;
+  --community-btn-border: #393128;
+
+  --status-success: #7EAA83;
+  --status-warning: #D7A45A;
+  --status-danger: #D97970;
+
+  --font-serif: 'Cinzel', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
-  
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 25px rgba(16, 185, 129, 0.35);
-  --shadow-gold-glow: 0 0 25px rgba(245, 158, 11, 0.35);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.82);
+  --shadow-gold: 0 0 25px rgba(198, 161, 91, 0.22);
 }
 
+/* WULAN PURNAMA (PORCELAIN & ANTIQUE GOLD MODE TERANG) */
 [data-theme='light'], body.theme-light {
-  --bg-primary: #F8FAFC;
-  --bg-navbar: #FFFFFF;
-  --bg-menu: #F1F5F9;
+  --bg-primary: #FAF7F2;
+  --bg-secondary: #F3ECE1;
+  --bg-navbar: #FAF7F2;
+  --bg-menu: #F3ECE1;
   --bg-surface: #FFFFFF;
-  --bg-surface-elevated: #F8FAFC;
+  --bg-surface-elevated: #FFFFFF;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #F1F5F9;
-  
-  --primary: #059669;
-  --primary-hover: #047857;
-  --primary-glow: rgba(5, 150, 105, 0.2);
-  
-  --accent-gold: #D97706;
-  --accent-gold-glow: rgba(217, 119, 6, 0.2);
-  --accent-blue: #2563EB;
-  --accent-rose: #E11D48;
-  
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
-  
-  --border-subtle: #E2E8F0;
-  --border-medium: #CBD5E1;
-  --border-focus: #059669;
+  --bg-card-hover: #F8F3EA;
 
-  --community-btn: #E0F2FE;
-  --community-btn-text: #0284C7;
-  --community-btn-border: #BAE6FD;
+  --primary: #8F6D35;
+  --primary-hover: #735425;
+  --primary-glow: rgba(143, 109, 53, 0.16);
+
+  --accent-gold: #8F6D35;
+  --accent-gold-glow: rgba(143, 109, 53, 0.16);
+  --accent-terracotta: #A85A36;
+  --accent-teak: #6B513E;
+
+  --text-primary: #26201A;
+  --text-secondary: #63584C;
+  --text-muted: #8E8274;
+
+  --border-subtle: #E3D9CC;
+  --border-medium: #D1C4B2;
+  --border-focus: #8F6D35;
+
+  --community-btn: #F3ECE1;
+  --community-btn-text: #8F6D35;
+  --community-btn-border: #E3D9CC;
 }
-
 
 * {
   box-sizing: border-box;
@@ -81,21 +101,31 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar */
+/* Noble Typography utilities */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Custom Heritage Scrollbar */
 ::-webkit-scrollbar {
   width: 7px;
   height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-surface);
+  background: var(--bg-secondary);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-medium);
@@ -105,7 +135,7 @@ body {
   background: var(--primary);
 }
 
-/* Button & interactive utilities */
+/* Button & interactive components */
 button, input, select, textarea {
   font-family: inherit;
 }
@@ -114,45 +144,55 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  background: var(--primary, #10B981);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #D4AF37 0%, #C6A15B 50%, #8F6D35 100%);
+  color: #11100E;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 14px;
-  box-shadow: 0 2px 10px var(--primary-glow, rgba(16, 185, 129, 0.3));
+  font-weight: 700;
+  font-size: 13.5px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #E8C987;
 }
+
 .btn-primary:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.12);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px var(--primary-glow, rgba(16, 185, 129, 0.45));
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-secondary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  background: var(--bg-surface-elevated);
-  color: var(--text-primary);
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-card, #211D18);
+  color: var(--text-primary, #F1E8D8);
+  border: 1px solid var(--border-subtle, #393128);
   padding: 8px 14px;
   border-radius: var(--radius-sm);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 13px;
   transition: all 0.2s ease;
 }
+
 .btn-secondary:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-medium);
+  background: var(--bg-card-hover, #2B251E);
+  border-color: var(--antique-gold, #C6A15B);
+  color: #FFFFFF;
 }
 
+/* Badges */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -160,36 +200,43 @@ button {
   padding: 3px 8px;
   border-radius: var(--radius-full);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .badge-focus {
-  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-  color: #1E1B4B;
+  background: linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%);
+  color: #11100E;
   box-shadow: 0 0 12px var(--accent-gold-glow);
 }
 
 .badge-superadmin {
-  background: rgba(245, 158, 11, 0.15);
-  color: #FBBF24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(198, 161, 91, 0.16);
+  color: #E8C987;
+  border: 1px solid rgba(198, 161, 91, 0.4);
 }
 
 .badge-admin {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60A5FA;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: rgba(185, 111, 75, 0.16);
+  color: #E5A17D;
+  border: 1px solid rgba(185, 111, 75, 0.35);
 }
 
 .badge-client {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94A3B8;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(167, 157, 141, 0.14);
+  color: #F1E8D8;
+  border: 1px solid rgba(167, 157, 141, 0.28);
 }
 
-/* React Flow custom canvas adjustments */
+/* React Flow canvas styling for Dark Pro Javanese Heritage */
 .react-flow__pane {
   background-color: var(--bg-primary);
 }
@@ -198,15 +245,16 @@ button {
   box-shadow: var(--shadow-md) !important;
   border-radius: var(--radius-md) !important;
   overflow: hidden;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-subtle) !important;
+  background: var(--bg-card) !important;
 }
 
 .react-flow__controls-button {
-  background: var(--bg-surface) !important;
+  background: var(--bg-card) !important;
   border-bottom: 1px solid var(--border-subtle) !important;
   fill: var(--text-secondary) !important;
   color: var(--text-secondary) !important;
+  transition: all 0.2s ease;
 }
 
 .react-flow__controls-button:hover {
@@ -216,36 +264,32 @@ button {
 }
 
 .react-flow__minimap {
-  background-color: var(--bg-surface) !important;
+  background-color: var(--bg-card) !important;
   border: 1px solid var(--border-subtle) !important;
   border-radius: var(--radius-md) !important;
   overflow: hidden;
 }
 
-/* Animation utilities */
-@keyframes pulseGlow {
+/* Animations & Microinteractions */
+@keyframes pulseGoldGlow {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 14px rgba(198, 161, 91, 0.28);
   }
   50% {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 28px rgba(198, 161, 91, 0.55);
   }
 }
 
 .pulse-focus {
-  animation: pulseGlow 2.5s infinite ease-in-out;
+  animation: pulseGoldGlow 2.5s infinite ease-in-out;
 }
 
-/* Responsive Breakpoints & Mobile Optimization */
-@media (max-width: 640px) {
-  .react-flow__minimap {
-    display: none !important;
-  }
-  .react-flow__controls {
-    bottom: 14px !important;
-    left: 14px !important;
-    transform: scale(0.85);
-    transform-origin: bottom left;
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -295,7 +339,7 @@ button {
   }
 }
 
-/* Responsive Toolbar */
+/* Responsive Canvas Toolbar */
 .toolbar-canvas-responsive {
   max-width: calc(100vw - 24px);
   overflow-x: auto;
@@ -305,5 +349,14 @@ button {
     top: 10px !important;
     padding: 4px 8px !important;
     gap: 4px !important;
+  }
+  .react-flow__minimap {
+    display: none !important;
+  }
+  .react-flow__controls {
+    bottom: 14px !important;
+    left: 14px !important;
+    transform: scale(0.85);
+    transform-origin: bottom left;
   }
 }

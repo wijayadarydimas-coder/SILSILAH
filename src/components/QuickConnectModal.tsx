@@ -114,12 +114,12 @@ export function QuickConnectModal({
     >
       <div
         style={{
-          background: '#0F1626',
-          border: '1px solid #1E293B',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
           width: '100%',
           maxWidth: 500,
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -132,17 +132,35 @@ export function QuickConnectModal({
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
-            borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <GitMerge size={20} color="#10B981" />
-            <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
+            <GitMerge size={20} color="var(--accent-gold, #C6A15B)" />
+            <h2
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: 'var(--text-primary, #F1E8D8)',
+                fontFamily: 'Cinzel, serif',
+                letterSpacing: '0.02em',
+              }}
+            >
               Pilih Jenis Relasi Silsilah
             </h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94A3B8' }}>
+          <button
+            onClick={onClose}
+            style={{
+              color: 'var(--text-muted, #A79D8D)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <X size={20} />
           </button>
         </div>
@@ -152,9 +170,9 @@ export function QuickConnectModal({
           {errorMsg && (
             <div
               style={{
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#FCA5A5',
+                background: 'rgba(217, 121, 112, 0.12)',
+                border: '1px solid rgba(217, 121, 112, 0.3)',
+                color: 'var(--accent-danger, #D97970)',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -171,9 +189,9 @@ export function QuickConnectModal({
           {successMsg && (
             <div
               style={{
-                background: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#34D399',
+                background: 'rgba(126, 170, 131, 0.15)',
+                border: '1px solid rgba(126, 170, 131, 0.35)',
+                color: 'var(--accent-success, #7EAA83)',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -190,15 +208,16 @@ export function QuickConnectModal({
           <div
             style={{
               padding: '12px 14px',
-              background: '#162035',
+              background: 'var(--bg-secondary, #191714)',
               borderRadius: 10,
-              border: '1px solid #1E293B',
+              border: '1px solid var(--border-subtle, #393128)',
               textAlign: 'center',
               fontSize: 13,
+              color: 'var(--text-primary, #F1E8D8)',
             }}
           >
-            Menghubungkan <b style={{ color: '#10B981' }}>{source.fullName}</b> dengan{' '}
-            <b style={{ color: '#3B82F6' }}>{target.fullName}</b>
+            Menghubungkan <b style={{ color: 'var(--accent-gold, #C6A15B)' }}>{source.fullName}</b> dengan{' '}
+            <b style={{ color: 'var(--accent-terracotta, #B96F4B)' }}>{target.fullName}</b>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -210,19 +229,27 @@ export function QuickConnectModal({
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: 6,
-                padding: '14px 10px',
-                background: '#162035',
-                border: '1px solid #1E293B',
+                padding: '16px 12px',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
                 borderRadius: 10,
-                color: '#F8FAFC',
+                color: 'var(--text-primary, #F1E8D8)',
                 textAlign: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent-gold, #C6A15B)';
+                e.currentTarget.style.background = 'var(--bg-surface-hover, #2B251E)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-subtle, #393128)';
+                e.currentTarget.style.background = 'var(--bg-secondary, #191714)';
+              }}
             >
               <span style={{ fontSize: 24 }}>👨‍👦</span>
-              <span style={{ fontSize: 13, fontWeight: 600 }}>Sebagai Ayah</span>
-              <span style={{ fontSize: 10.5, color: '#94A3B8' }}>{source.displayName || source.fullName} adalah Ayah</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-gold, #C6A15B)' }}>Sebagai Ayah</span>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>{source.displayName || source.fullName} adalah Ayah</span>
             </button>
 
             {/* Opsi 2: Ibu */}
@@ -233,19 +260,27 @@ export function QuickConnectModal({
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: 6,
-                padding: '14px 10px',
-                background: '#162035',
-                border: '1px solid #1E293B',
+                padding: '16px 12px',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
                 borderRadius: 10,
-                color: '#F8FAFC',
+                color: 'var(--text-primary, #F1E8D8)',
                 textAlign: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent-gold, #C6A15B)';
+                e.currentTarget.style.background = 'var(--bg-surface-hover, #2B251E)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-subtle, #393128)';
+                e.currentTarget.style.background = 'var(--bg-secondary, #191714)';
+              }}
             >
               <span style={{ fontSize: 24 }}>👩‍👧</span>
-              <span style={{ fontSize: 13, fontWeight: 600 }}>Sebagai Ibu</span>
-              <span style={{ fontSize: 10.5, color: '#94A3B8' }}>{source.displayName || source.fullName} adalah Ibu</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-gold, #C6A15B)' }}>Sebagai Ibu</span>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>{source.displayName || source.fullName} adalah Ibu</span>
             </button>
 
             {/* Opsi 3: Anak */}
@@ -256,19 +291,27 @@ export function QuickConnectModal({
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: 6,
-                padding: '14px 10px',
-                background: '#162035',
-                border: '1px solid #1E293B',
+                padding: '16px 12px',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
                 borderRadius: 10,
-                color: '#F8FAFC',
+                color: 'var(--text-primary, #F1E8D8)',
                 textAlign: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent-gold, #C6A15B)';
+                e.currentTarget.style.background = 'var(--bg-surface-hover, #2B251E)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-subtle, #393128)';
+                e.currentTarget.style.background = 'var(--bg-secondary, #191714)';
+              }}
             >
               <span style={{ fontSize: 24 }}>👶</span>
-              <span style={{ fontSize: 13, fontWeight: 600 }}>Sebagai Anak</span>
-              <span style={{ fontSize: 10.5, color: '#94A3B8' }}>{source.displayName || source.fullName} adalah Anak</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-gold, #C6A15B)' }}>Sebagai Anak</span>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>{source.displayName || source.fullName} adalah Anak</span>
             </button>
 
             {/* Opsi 4: Pasangan */}
@@ -279,19 +322,27 @@ export function QuickConnectModal({
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: 6,
-                padding: '14px 10px',
-                background: '#162035',
-                border: '1px solid #1E293B',
+                padding: '16px 12px',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
                 borderRadius: 10,
-                color: '#F8FAFC',
+                color: 'var(--text-primary, #F1E8D8)',
                 textAlign: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent-terracotta, #B96F4B)';
+                e.currentTarget.style.background = 'var(--bg-surface-hover, #2B251E)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-subtle, #393128)';
+                e.currentTarget.style.background = 'var(--bg-secondary, #191714)';
+              }}
             >
               <span style={{ fontSize: 24 }}>💍</span>
-              <span style={{ fontSize: 13, fontWeight: 600 }}>Sebagai Pasangan</span>
-              <span style={{ fontSize: 10.5, color: '#FDA4AF' }}>Suami / Istri (Menikah)</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-terracotta, #B96F4B)' }}>Sebagai Pasangan</span>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Suami / Istri (Menikah)</span>
             </button>
           </div>
         </div>

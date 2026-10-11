@@ -138,9 +138,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
           right: 0,
           bottom: 0,
           width: 'min(450px, 100vw)',
-          background: '#0F1626',
-          borderLeft: '1px solid #1E293B',
-          boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.7)',
+          background: 'var(--bg-secondary, #191714)',
+          borderLeft: '1px solid var(--border-subtle, #393128)',
+          boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.85)',
           zIndex: 1000,
           display: 'flex',
           flexDirection: 'column',
@@ -154,22 +154,25 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '16px 20px',
-          borderBottom: '1px solid #1E293B',
-          background: '#131B2E',
+          borderBottom: '1px solid var(--border-subtle, #393128)',
+          background: 'var(--bg-card, #211D18)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <User size={18} color="#10B981" />
-          <span style={{ fontWeight: 600, fontSize: 15, color: '#F8FAFC' }}>
-            Profil Silsilah
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <User size={18} color="var(--antique-gold, #C6A15B)" />
+          <span style={{ fontFamily: 'Cinzel, Georgia, serif', fontWeight: 700, fontSize: 15, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
+            Profil Trah Silsilah
           </span>
         </div>
         <button
           onClick={onClose}
           style={{
-            color: '#94A3B8',
+            color: 'var(--text-muted, #A79D8D)',
+            background: 'transparent',
+            border: 'none',
             padding: 6,
             borderRadius: 8,
+            cursor: 'pointer',
             transition: 'background 0.2s',
           }}
         >
@@ -195,11 +198,11 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
-            background: 'linear-gradient(180deg, #162035 0%, #111827 100%)',
+            background: 'var(--bg-card, #211D18)',
             padding: '24px 16px',
             borderRadius: 16,
-            border: isFocus ? '1px solid #F59E0B' : '1px solid #1E293B',
-            boxShadow: isFocus ? '0 0 20px rgba(245, 158, 11, 0.2)' : 'none',
+            border: isFocus ? '2px solid var(--antique-gold, #C6A15B)' : '1px solid var(--border-subtle, #393128)',
+            boxShadow: isFocus ? '0 0 24px rgba(198, 161, 91, 0.25)' : '0 4px 16px rgba(0,0,0,0.4)',
           }}
         >
           <div
@@ -209,13 +212,14 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               height: 96,
               borderRadius: '50%',
               overflow: 'hidden',
-              border: `3px solid ${isFocus ? '#F59E0B' : person.gender === 'male' ? '#3B82F6' : '#EC4899'}`,
+              border: `3px solid ${isFocus ? 'var(--antique-gold, #C6A15B)' : person.gender === 'male' ? '#8F6D35' : '#B96F4B'}`,
               marginBottom: 12,
               aspectRatio: '1 / 1',
               isolation: 'isolate',
               WebkitMaskImage: '-webkit-radial-gradient(white, black)',
               transform: 'translateZ(0)',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.6)',
+              background: 'var(--bg-elevated, #211D18)',
             }}
           >
             {person.photoUrl ? (
@@ -240,8 +244,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  background: '#1E293B',
-                  color: '#94A3B8',
+                  background: 'var(--bg-elevated, #211D18)',
+                  color: 'var(--text-muted, #A79D8D)',
                 }}
               >
                 <User size={40} />
@@ -249,11 +253,11 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             )}
           </div>
 
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: '#F8FAFC' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--ivory, #F1E8D8)' }}>
             {person.fullName}
           </h2>
           {person.displayName && (
-            <p style={{ fontSize: 13, color: '#94A3B8', marginTop: 2 }}>
+            <p style={{ fontSize: 13, color: 'var(--text-muted, #A79D8D)', marginTop: 2 }}>
               Dikenal sebagai: &quot;{person.displayName}&quot;
             </p>
           )}
@@ -274,9 +278,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 padding: '4px 10px',
                 borderRadius: 999,
                 fontWeight: 600,
-                background: isFocus ? '#F59E0B' : 'rgba(16, 185, 129, 0.15)',
-                color: isFocus ? '#0F172A' : '#34D399',
-                border: isFocus ? 'none' : '1px solid rgba(16, 185, 129, 0.3)',
+                background: isFocus ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'rgba(198, 161, 91, 0.15)',
+                color: isFocus ? '#11100E' : 'var(--antique-gold, #C6A15B)',
+                border: isFocus ? 'none' : '1px solid rgba(198, 161, 91, 0.3)',
               }}
             >
               {isFocus ? '⭐ Titik Fokus Aktif' : `Hubungan: ${relativeInfo.label}`}
@@ -288,9 +292,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                   fontSize: 11,
                   padding: '4px 10px',
                   borderRadius: 999,
-                  background: 'rgba(59, 130, 246, 0.15)',
-                  color: '#60A5FA',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  background: 'rgba(126, 170, 131, 0.15)',
+                  color: 'var(--success, #7EAA83)',
+                  border: '1px solid rgba(126, 170, 131, 0.3)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 4,
@@ -307,8 +311,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                   fontSize: 11,
                   padding: '4px 10px',
                   borderRadius: 999,
-                  background: 'rgba(148, 163, 184, 0.15)',
-                  color: '#CBD5E1',
+                  background: 'rgba(73, 55, 42, 0.35)',
+                  color: 'var(--ivory, #F1E8D8)',
+                  border: '1px solid rgba(57, 49, 40, 0.8)',
                 }}
               >
                 🕊️ Almarhum / Almarhumah
@@ -321,9 +326,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                   fontSize: 11,
                   padding: '4px 10px',
                   borderRadius: 999,
-                  background: 'rgba(245, 158, 11, 0.15)',
-                  color: '#FBBF24',
-                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  background: 'rgba(198, 161, 91, 0.12)',
+                  color: 'var(--antique-gold, #C6A15B)',
+                  border: '1px solid rgba(198, 161, 91, 0.3)',
                   fontWeight: 600,
                 }}
               >
@@ -341,13 +346,15 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 6,
-                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                color: '#0F172A',
+                background: 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+                color: '#11100E',
                 padding: '7px 16px',
                 borderRadius: 8,
                 fontSize: 12.5,
                 fontWeight: 700,
-                boxShadow: '0 2px 10px rgba(245, 158, 11, 0.3)',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 2px 10px rgba(198, 161, 91, 0.3)',
               }}
             >
               <Sparkles size={14} />
@@ -360,16 +367,16 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
         {person.biography && (
           <div
             style={{
-              background: '#131B2E',
+              background: 'var(--bg-card, #211D18)',
               padding: '14px 16px',
               borderRadius: 12,
-              border: '1px solid #1E293B',
+              border: '1px solid var(--border-subtle, #393128)',
             }}
           >
-            <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+            <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', marginBottom: 6, letterSpacing: '0.04em' }}>
               CATATAN BIOGRAFI &amp; SEJARAH
             </h3>
-            <p style={{ fontSize: 13, color: '#E2E8F0', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 13, color: 'var(--ivory, #F1E8D8)', lineHeight: 1.6 }}>
               {person.biography}
             </p>
           </div>
@@ -378,42 +385,42 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
         {/* Life Dates & Age */}
         <div
           style={{
-            background: '#131B2E',
+            background: 'var(--bg-card, #211D18)',
             padding: '14px 16px',
             borderRadius: 12,
-            border: '1px solid #1E293B',
+            border: '1px solid var(--border-subtle, #393128)',
           }}
         >
-          <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 10 }}>
+          <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', marginBottom: 10, letterSpacing: '0.04em' }}>
             TANGGAL PENTING
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
-              <Calendar size={15} color="#10B981" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--ivory, #F1E8D8)' }}>
+              <Calendar size={15} color="var(--antique-gold, #C6A15B)" />
               <span>
                 Lahir: <b>{person.birthDate || 'Tidak tercatat'}</b>
                 {!person.isDeceased && ageInfo.age !== undefined && (
-                  <span style={{ color: '#34D399', marginLeft: 6, fontWeight: 600 }}>
+                  <span style={{ color: 'var(--success, #7EAA83)', marginLeft: 6, fontWeight: 600 }}>
                     ({ageInfo.age} tahun sekarang)
                   </span>
                 )}
               </span>
             </div>
             {person.isDeceased && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#CBD5E1' }}>
-                <Calendar size={15} color="#F43F5E" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--ivory, #F1E8D8)' }}>
+                <Calendar size={15} color="var(--terracotta, #B96F4B)" />
                 <span>
                   Wafat: <b>{person.deathDate || 'Tahun tidak tercatat'}</b>
                   {ageInfo.age !== undefined && (
-                    <span style={{ color: '#FCA5A5', marginLeft: 6, fontWeight: 600 }}>
+                    <span style={{ color: 'var(--danger, #D97970)', marginLeft: 6, fontWeight: 600 }}>
                       (wafat usia {ageInfo.age} tahun)
                     </span>
                   )}
                 </span>
               </div>
             )}
-            <div style={{ fontSize: 11.5, color: '#64748B', marginTop: 2, paddingLeft: 23 }}>
-              Masa Hidup: <span style={{ color: '#E2E8F0', fontWeight: 500 }}>{ageInfo.formattedLifeSpan}</span>
+            <div style={{ fontSize: 11.5, color: 'var(--text-muted, #A79D8D)', marginTop: 2, paddingLeft: 23 }}>
+              Masa Hidup: <span style={{ color: 'var(--ivory, #F1E8D8)', fontWeight: 500 }}>{ageInfo.formattedLifeSpan}</span>
             </div>
           </div>
         </div>
@@ -421,10 +428,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
         {/* Contact Info */}
         <div
           style={{
-            background: '#131B2E',
+            background: 'var(--bg-card, #211D18)',
             padding: '14px 16px',
             borderRadius: 12,
-            border: '1px solid #1E293B',
+            border: '1px solid var(--border-subtle, #393128)',
           }}
         >
           <div
@@ -435,7 +442,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               marginBottom: 12,
             }}
           >
-            <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8' }}>
+            <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.04em' }}>
               INFORMASI KONTAK &amp; ALAMAT
             </h3>
           </div>
@@ -445,8 +452,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             {person.phone ? (
               <div
                 style={{
-                  background: 'rgba(16, 185, 129, 0.08)',
-                  border: '1px solid rgba(16, 185, 129, 0.25)',
+                  background: 'rgba(198, 161, 91, 0.08)',
+                  border: '1px solid rgba(198, 161, 91, 0.25)',
                   borderRadius: 10,
                   padding: '10px 12px',
                   display: 'flex',
@@ -456,10 +463,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                  <Phone size={16} color="#10B981" style={{ flexShrink: 0 }} />
+                  <Phone size={16} color="var(--antique-gold, #C6A15B)" style={{ flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 11, color: '#94A3B8' }}>WhatsApp &amp; Telepon</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>WhatsApp &amp; Telepon</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ivory, #F1E8D8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {person.phone}
                     </div>
                   </div>
@@ -475,8 +482,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 4,
-                      background: '#25D366',
-                      color: '#0F172A',
+                      background: 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+                      color: '#11100E',
                       padding: '5px 10px',
                       borderRadius: 6,
                       fontSize: 11.5,
@@ -494,8 +501,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      color: '#F8FAFC',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      color: 'var(--ivory, #F1E8D8)',
                       padding: '5px 8px',
                       borderRadius: 6,
                       fontSize: 11.5,
@@ -512,8 +519,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             {person.instagram ? (
               <div
                 style={{
-                  background: 'rgba(225, 48, 108, 0.08)',
-                  border: '1px solid rgba(225, 48, 108, 0.25)',
+                  background: 'rgba(185, 111, 75, 0.08)',
+                  border: '1px solid rgba(185, 111, 75, 0.25)',
                   borderRadius: 10,
                   padding: '10px 12px',
                   display: 'flex',
@@ -523,10 +530,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                  <Share2 size={16} color="#E1306C" style={{ flexShrink: 0 }} />
+                  <Share2 size={16} color="var(--terracotta, #B96F4B)" style={{ flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 11, color: '#94A3B8' }}>Instagram</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Instagram</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ivory, #F1E8D8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {person.instagram.startsWith('@') ? person.instagram : `@${person.instagram}`}
                     </div>
                   </div>
@@ -540,8 +547,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 4,
-                    background: 'linear-gradient(45deg, #F58529, #DD2A7B, #8134AF)',
-                    color: '#FFFFFF',
+                    background: 'rgba(185, 111, 75, 0.2)',
+                    color: 'var(--ivory, #F1E8D8)',
+                    border: '1px solid rgba(185, 111, 75, 0.4)',
                     padding: '5px 10px',
                     borderRadius: 6,
                     fontSize: 11.5,
@@ -560,8 +568,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             {person.address ? (
               <div
                 style={{
-                  background: 'rgba(236, 72, 153, 0.08)',
-                  border: '1px solid rgba(236, 72, 153, 0.25)',
+                  background: 'rgba(143, 109, 53, 0.08)',
+                  border: '1px solid rgba(143, 109, 53, 0.25)',
                   borderRadius: 10,
                   padding: '10px 12px',
                   display: 'flex',
@@ -571,10 +579,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
-                  <MapPin size={16} color="#EC4899" style={{ marginTop: 2, flexShrink: 0 }} />
+                  <MapPin size={16} color="var(--antique-gold, #C6A15B)" style={{ marginTop: 2, flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 11, color: '#94A3B8' }}>Domisili / Lokasi</div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: '#F8FAFC', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Domisili / Lokasi</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--ivory, #F1E8D8)', lineHeight: 1.4 }}>
                       {person.address}
                     </div>
                   </div>
@@ -588,9 +596,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 4,
-                    background: 'rgba(236, 72, 153, 0.2)',
-                    color: '#F472B6',
-                    border: '1px solid rgba(236, 72, 153, 0.4)',
+                    background: 'rgba(198, 161, 91, 0.15)',
+                    color: 'var(--antique-gold, #C6A15B)',
+                    border: '1px solid rgba(198, 161, 91, 0.35)',
                     padding: '5px 10px',
                     borderRadius: 6,
                     fontSize: 11.5,
@@ -609,8 +617,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             {person.email ? (
               <div
                 style={{
-                  background: 'rgba(59, 130, 246, 0.08)',
-                  border: '1px solid rgba(59, 130, 246, 0.25)',
+                  background: 'rgba(198, 161, 91, 0.08)',
+                  border: '1px solid rgba(198, 161, 91, 0.25)',
                   borderRadius: 10,
                   padding: '10px 12px',
                   display: 'flex',
@@ -620,10 +628,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                  <Mail size={16} color="#3B82F6" style={{ flexShrink: 0 }} />
+                  <Mail size={16} color="var(--antique-gold, #C6A15B)" style={{ flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 11, color: '#94A3B8' }}>Email</div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Email</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--ivory, #F1E8D8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {person.email}
                     </div>
                   </div>
@@ -635,9 +643,9 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 4,
-                    background: 'rgba(59, 130, 246, 0.2)',
-                    color: '#93C5FD',
-                    border: '1px solid rgba(59, 130, 246, 0.4)',
+                    background: 'rgba(198, 161, 91, 0.15)',
+                    color: 'var(--antique-gold, #C6A15B)',
+                    border: '1px solid rgba(198, 161, 91, 0.35)',
                     padding: '5px 10px',
                     borderRadius: 6,
                     fontSize: 11.5,
@@ -653,7 +661,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             ) : null}
 
             {!person.phone && !person.email && !person.address && !person.instagram && (
-              <div style={{ color: '#64748B', fontSize: 12.5, textAlign: 'center', padding: '10px 0' }}>
+              <div style={{ color: 'var(--text-muted, #A79D8D)', fontSize: 12.5, textAlign: 'center', padding: '10px 0' }}>
                 Belum ada informasi kontak atau domisili yang ditambahkan.
               </div>
             )}
@@ -663,10 +671,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
         {/* Immediate Family Relations Section */}
         <div
           style={{
-            background: '#131B2E',
+            background: 'var(--bg-card, #211D18)',
             padding: '14px 16px',
             borderRadius: 12,
-            border: '1px solid #1E293B',
+            border: '1px solid var(--border-subtle, #393128)',
           }}
         >
           <div
@@ -677,7 +685,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               marginBottom: 12,
             }}
           >
-            <h3 style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8' }}>
+            <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.04em' }}>
               JARINGAN HUBUNGAN KELUARGA
             </h3>
             {canEdit && (
@@ -685,7 +693,10 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 onClick={() => onAddRelation(person.id)}
                 style={{
                   fontSize: 11,
-                  color: '#10B981',
+                  color: 'var(--antique-gold, #C6A15B)',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 4,
@@ -701,7 +712,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {/* Orang Tua */}
             <div>
-              <span style={{ fontSize: 11, color: '#64748B', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Orang Tua ({parents.length})
               </span>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
@@ -714,29 +725,30 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '6px 10px',
-                        background: '#162035',
+                        padding: '7px 12px',
+                        background: 'var(--bg-menu, #191714)',
+                        border: '1px solid var(--border-subtle, #393128)',
                         borderRadius: 8,
                         cursor: 'pointer',
                         transition: 'background 0.15s',
                       }}
                     >
-                      <span style={{ fontSize: 12.5, color: '#F1F5F9' }}>{p!.fullName}</span>
-                      <span style={{ fontSize: 11, color: '#3B82F6', display: 'flex', alignItems: 'center' }}>
+                      <span style={{ fontSize: 12.5, color: 'var(--ivory, #F1E8D8)' }}>{p!.fullName}</span>
+                      <span style={{ fontSize: 11, color: 'var(--antique-gold, #C6A15B)', display: 'flex', alignItems: 'center', gap: 2 }}>
                         {rel.parentRole === 'father' ? 'Ayah' : rel.parentRole === 'mother' ? 'Ibu' : 'Orang Tua'}
                         <ChevronRight size={13} />
                       </span>
                     </div>
                   ))
                 ) : (
-                  <span style={{ fontSize: 12, color: '#64748B' }}>Belum tercatat</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted, #A79D8D)' }}>Belum tercatat</span>
                 )}
               </div>
             </div>
 
             {/* Pasangan */}
             <div>
-              <span style={{ fontSize: 11, color: '#64748B', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Pasangan ({spouses.length})
               </span>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
@@ -749,28 +761,29 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '6px 10px',
-                        background: '#162035',
+                        padding: '7px 12px',
+                        background: 'var(--bg-menu, #191714)',
+                        border: '1px solid var(--border-subtle, #393128)',
                         borderRadius: 8,
                         cursor: 'pointer',
                       }}
                     >
-                      <span style={{ fontSize: 12.5, color: '#F1F5F9' }}>{p!.fullName}</span>
-                      <span style={{ fontSize: 11, color: '#F43F5E', display: 'flex', alignItems: 'center' }}>
+                      <span style={{ fontSize: 12.5, color: 'var(--ivory, #F1E8D8)' }}>{p!.fullName}</span>
+                      <span style={{ fontSize: 11, color: 'var(--terracotta, #B96F4B)', display: 'flex', alignItems: 'center', gap: 2 }}>
                         {rel.status === 'past' ? 'Mantan' : '💍 Menikah'}
                         <ChevronRight size={13} />
                       </span>
                     </div>
                   ))
                 ) : (
-                  <span style={{ fontSize: 12, color: '#64748B' }}>Belum tercatat</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted, #A79D8D)' }}>Belum tercatat</span>
                 )}
               </div>
             </div>
 
             {/* Saudara */}
             <div>
-              <span style={{ fontSize: 11, color: '#64748B', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Saudara ({siblings.length})
               </span>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
@@ -783,25 +796,26 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '6px 10px',
-                        background: '#162035',
+                        padding: '7px 12px',
+                        background: 'var(--bg-menu, #191714)',
+                        border: '1px solid var(--border-subtle, #393128)',
                         borderRadius: 8,
                         cursor: 'pointer',
                       }}
                     >
-                      <span style={{ fontSize: 12.5, color: '#F1F5F9' }}>{sib!.fullName}</span>
-                      <ChevronRight size={13} color="#94A3B8" />
+                      <span style={{ fontSize: 12.5, color: 'var(--ivory, #F1E8D8)' }}>{sib!.fullName}</span>
+                      <ChevronRight size={13} color="var(--text-muted, #A79D8D)" />
                     </div>
                   ))
                 ) : (
-                  <span style={{ fontSize: 12, color: '#64748B' }}>Tidak ada saudara tercatat</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted, #A79D8D)' }}>Tidak ada saudara tercatat</span>
                 )}
               </div>
             </div>
 
             {/* Anak */}
             <div>
-              <span style={{ fontSize: 11, color: '#64748B', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Anak ({childrenList.length})
               </span>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
@@ -814,21 +828,22 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '6px 10px',
-                        background: '#162035',
+                        padding: '7px 12px',
+                        background: 'var(--bg-menu, #191714)',
+                        border: '1px solid var(--border-subtle, #393128)',
                         borderRadius: 8,
                         cursor: 'pointer',
                       }}
                     >
-                      <span style={{ fontSize: 12.5, color: '#F1F5F9' }}>{p!.fullName}</span>
-                      <span style={{ fontSize: 11, color: '#10B981', display: 'flex', alignItems: 'center' }}>
+                      <span style={{ fontSize: 12.5, color: 'var(--ivory, #F1E8D8)' }}>{p!.fullName}</span>
+                      <span style={{ fontSize: 11, color: 'var(--success, #7EAA83)', display: 'flex', alignItems: 'center', gap: 2 }}>
                         Anak
                         <ChevronRight size={13} />
                       </span>
                     </div>
                   ))
                 ) : (
-                  <span style={{ fontSize: 12, color: '#64748B' }}>Belum memiliki keturunan</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted, #A79D8D)' }}>Belum memiliki keturunan</span>
                 )}
               </div>
             </div>
@@ -847,12 +862,13 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 justifyContent: 'center',
                 gap: 6,
                 padding: '10px 14px',
-                background: '#1E293B',
-                color: '#F8FAFC',
+                background: 'rgba(73, 55, 42, 0.35)',
+                color: 'var(--ivory, #F1E8D8)',
                 borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 600,
-                border: '1px solid #334155',
+                border: '1px solid var(--border-subtle, #393128)',
+                cursor: 'pointer',
               }}
             >
               <Edit3 size={15} />
@@ -866,12 +882,13 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 justifyContent: 'center',
                 gap: 6,
                 padding: '10px 14px',
-                background: 'rgba(239, 68, 68, 0.15)',
-                color: '#F87171',
+                background: 'rgba(217, 121, 112, 0.15)',
+                color: 'var(--danger, #D97970)',
                 borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 600,
-                border: '1px solid rgba(239, 68, 68, 0.3)',
+                border: '1px solid rgba(217, 121, 112, 0.3)',
+                cursor: 'pointer',
               }}
             >
               <Trash2 size={15} />

@@ -70,210 +70,234 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
         {/* Header & Search */}
         <div
           style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 12,
-          marginBottom: 24,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Users size={22} color="var(--primary, #10B981)" />
-          <div>
-            <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
-              Direktori Anggota Silsilah Keluarga
-            </h1>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary, #94A3B8)' }}>
-              Tampilan daftar silsilah terstruktur per generasi untuk kemudahan aksesibilitas (TREE-09)
-            </p>
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 14,
+            marginBottom: 20,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div
+              style={{
+                width: 42,
+                height: 42,
+                borderRadius: 10,
+                background: 'rgba(198, 161, 91, 0.12)',
+                border: '1px solid rgba(198, 161, 91, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/assets/icon-family-tree.svg" alt="Trah" width={24} height={24} />
+            </div>
+            <div>
+              <h1 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 20, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
+                Direktori Trah Silsilah Keluarga
+              </h1>
+              <p style={{ fontSize: 13, color: 'var(--text-muted, #A79D8D)', marginTop: 2 }}>
+                Tampilan daftar silsilah per generasi
+              </p>
+            </div>
+          </div>
+
+          <div style={{ position: 'relative' }}>
+            <Search
+              size={16}
+              color="var(--antique-gold, #C6A15B)"
+              style={{ position: 'absolute', left: 14, top: 13 }}
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari nama anggota, gelar, panggilan, atau riwayat biografi..."
+              style={{
+                width: '100%',
+                padding: '11px 16px 11px 42px',
+                borderRadius: 10,
+                background: 'var(--bg-menu, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: 'var(--ivory, #F1E8D8)',
+                fontSize: 13.5,
+                outline: 'none',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.4)',
+              }}
+            />
           </div>
         </div>
 
-        <div style={{ position: 'relative' }}>
-          <Search
-            size={16}
-            color="var(--text-secondary, #94A3B8)"
-            style={{ position: 'absolute', left: 12, top: 12 }}
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari nama anggota, panggilan, atau riwayat silsilah..."
-            style={{
-              width: '100%',
-              padding: '10px 14px 10px 38px',
-              borderRadius: 10,
-              background: 'var(--bg-menu, #131B2E)',
-              border: '1px solid var(--border-subtle, #1E293B)',
-              color: 'var(--text-primary, #F8FAFC)',
-              fontSize: 13.5,
-            }}
-          />
-        </div>
-      </div>
+        {/* Generations List */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {sortedGens.map((genNum) => {
+            const members = genGroups.get(genNum)!;
 
-      {/* Generations List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        {sortedGens.map((genNum) => {
-          const members = genGroups.get(genNum)!;
-
-          return (
-            <div
-              key={genNum}
-              style={{
-                background: 'var(--bg-card, #111827)',
-                border: '1px solid var(--border-subtle, #1E293B)',
-                borderRadius: 14,
-                overflow: 'hidden',
-              }}
-            >
+            return (
               <div
+                key={genNum}
                 style={{
-                  padding: '12px 18px',
-                  background: 'var(--bg-menu, #162035)',
-                  borderBottom: '1px solid var(--border-subtle, #1E293B)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  background: 'var(--bg-card, #211D18)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  borderRadius: 12,
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
                 }}
               >
-                <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
-                  Generasi ke-{genNum}
-                </h2>
-                <span style={{ fontSize: 12, color: 'var(--text-secondary, #94A3B8)' }}>
-                  {members.length} Anggota
-                </span>
-              </div>
+                <div
+                  style={{
+                    padding: '12px 18px',
+                    background: 'var(--bg-secondary, #191714)',
+                    borderBottom: '1px solid var(--border-subtle, #393128)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <h2 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 14, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.03em' }}>
+                    Generasi ke-{genNum}
+                  </h2>
+                  <span style={{ fontSize: 11.5, color: 'var(--text-muted, #A79D8D)', background: 'rgba(198, 161, 91, 0.1)', padding: '2px 8px', borderRadius: 999, border: '1px solid rgba(198, 161, 91, 0.2)' }}>
+                    {members.length} Anggota
+                  </span>
+                </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {members.map((p, idx) => {
-                  const isFocus = p.id === focusPersonId;
-                  const relInfo = getRelativeRelationship(
-                    p.id,
-                    focusPersonId,
-                    peopleMap,
-                    parentChildRelations,
-                    partnerships
-                  );
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {members.map((p, idx) => {
+                    const isFocus = p.id === focusPersonId;
+                    const relInfo = getRelativeRelationship(
+                      p.id,
+                      focusPersonId,
+                      peopleMap,
+                      parentChildRelations,
+                      partnerships
+                    );
 
-                  return (
-                    <div
-                      key={p.id}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '14px 18px',
-                        borderBottom: idx < members.length - 1 ? '1px solid var(--border-subtle, #1E293B)' : 'none',
-                        background: isFocus ? 'rgba(245, 158, 11, 0.05)' : 'transparent',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <div
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: '50%',
-                            overflow: 'hidden',
-                            border: `2px solid ${isFocus ? '#F59E0B' : p.gender === 'male' ? '#3B82F6' : '#EC4899'}`,
-                            flexShrink: 0,
-                            background: '#1E293B',
-                          }}
-                        >
-                          {p.photoUrl ? (
-                            /* eslint-disable-next-line @next/next/no-img-element */
-                            <img
-                              src={p.photoUrl}
-                              alt={p.fullName}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                          ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary, #94A3B8)' }}>
-                              <User size={20} />
-                            </div>
-                          )}
-                        </div>
-
-                        <div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ fontSize: 14, fontWeight: 600, color: isFocus ? 'var(--accent-gold, #FDE68A)' : 'var(--text-primary, #F8FAFC)' }}>
-                              {p.fullName}
-                            </span>
-                            {p.verificationStatus === 'verified' && (
-                              <ShieldCheck size={14} color="var(--primary, #10B981)" />
-                            )}
-                            {p.isDeceased && (
-                              <span style={{ fontSize: 11 }}>🕊️</span>
+                    return (
+                      <div
+                        key={p.id}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '12px 18px',
+                          borderBottom: idx < members.length - 1 ? '1px solid var(--border-subtle, #393128)' : 'none',
+                          background: isFocus ? 'rgba(198, 161, 91, 0.08)' : 'transparent',
+                          transition: 'background 0.15s ease',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                          <div
+                            style={{
+                              width: 44,
+                              height: 44,
+                              borderRadius: '50%',
+                              overflow: 'hidden',
+                              border: `2px solid ${isFocus ? 'var(--antique-gold, #C6A15B)' : p.gender === 'male' ? '#8F6D35' : '#B96F4B'}`,
+                              flexShrink: 0,
+                              background: 'var(--bg-elevated, #211D18)',
+                            }}
+                          >
+                            {p.photoUrl ? (
+                              /* eslint-disable-next-line @next/next/no-img-element */
+                              <img
+                                src={p.photoUrl}
+                                alt={p.fullName}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            ) : (
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted, #A79D8D)' }}>
+                                <User size={20} />
+                              </div>
                             )}
                           </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
-                            <span
+
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{ fontSize: 14, fontWeight: 600, color: isFocus ? 'var(--antique-gold, #C6A15B)' : 'var(--ivory, #F1E8D8)' }}>
+                                {p.fullName}
+                              </span>
+                              {p.verificationStatus === 'verified' && (
+                                <ShieldCheck size={14} color="var(--success, #7EAA83)" />
+                              )}
+                              {p.isDeceased && (
+                                <span style={{ fontSize: 11 }} title="Almarhum / Almarhumah">🕊️</span>
+                              )}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 3 }}>
+                              <span
+                                style={{
+                                  fontSize: 10.5,
+                                  padding: '2px 8px',
+                                  borderRadius: 999,
+                                  background: isFocus ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'rgba(198, 161, 91, 0.12)',
+                                  color: isFocus ? '#11100E' : 'var(--antique-gold, #C6A15B)',
+                                  border: isFocus ? 'none' : '1px solid rgba(198, 161, 91, 0.25)',
+                                  fontWeight: 600,
+                                }}
+                              >
+                                {isFocus ? '⭐ TITIK FOKUS' : relInfo.label}
+                              </span>
+                              <span style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>
+                                {calculateAge(p.birthDate, p.deathDate, p.isDeceased).formattedLifeSpan}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          {!isFocus && (
+                            <button
+                              onClick={() => setFocusPersonId(p.id)}
                               style={{
-                                fontSize: 11,
-                                padding: '2px 7px',
-                                borderRadius: 4,
-                                background: isFocus ? '#F59E0B' : 'var(--primary-glow, rgba(16, 185, 129, 0.12))',
-                                color: isFocus ? '#0F172A' : 'var(--primary, #34D399)',
+                                background: 'rgba(198, 161, 91, 0.12)',
+                                color: 'var(--antique-gold, #C6A15B)',
+                                border: '1px solid rgba(198, 161, 91, 0.3)',
+                                padding: '6px 10px',
+                                borderRadius: 6,
+                                fontSize: 11.5,
                                 fontWeight: 600,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                cursor: 'pointer',
                               }}
                             >
-                              {isFocus ? '⭐ TITIK FOKUS' : relInfo.label}
-                            </span>
-                            <span style={{ fontSize: 11.5, color: 'var(--text-secondary, #94A3B8)' }}>
-                              {calculateAge(p.birthDate, p.deathDate, p.isDeceased).formattedLifeSpan}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        {!isFocus && (
+                              <Sparkles size={12} />
+                              Jadikan Fokus
+                            </button>
+                          )}
                           <button
-                            onClick={() => setFocusPersonId(p.id)}
+                            onClick={() => onOpenProfile(p.id)}
                             style={{
-                              background: 'rgba(245, 158, 11, 0.12)',
-                              color: '#FBBF24',
-                              padding: '6px 10px',
+                              background: 'rgba(73, 55, 42, 0.3)',
+                              color: 'var(--ivory, #F1E8D8)',
+                              border: '1px solid var(--border-subtle, #393128)',
+                              padding: '6px 12px',
                               borderRadius: 6,
                               fontSize: 11.5,
-                              fontWeight: 600,
+                              fontWeight: 500,
                               display: 'flex',
                               alignItems: 'center',
                               gap: 4,
+                              cursor: 'pointer',
                             }}
                           >
-                            <Sparkles size={12} />
-                            Jadikan Fokus
+                            <Eye size={12} />
+                            Profil
                           </button>
-                        )}
-                        <button
-                          onClick={() => onOpenProfile(p.id)}
-                          style={{
-                            background: '#1E293B',
-                            color: '#F8FAFC',
-                            padding: '6px 12px',
-                            borderRadius: 6,
-                            fontSize: 11.5,
-                            fontWeight: 500,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 4,
-                          }}
-                        >
-                          <Eye size={12} />
-                          Profil
-                        </button>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
-  </div>
   );
 }

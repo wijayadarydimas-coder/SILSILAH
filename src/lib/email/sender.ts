@@ -45,29 +45,29 @@ export async function sendPasswordResetEmail({
     });
 
     const htmlContent = `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 540px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <div style="background: linear-gradient(135deg, #0F172A, #1E293B); padding: 24px; text-align: center;">
-          <h1 style="color: #38BDF8; font-size: 22px; margin: 0; font-weight: 700; letter-spacing: 1px;">SILSILAH KELUARGA</h1>
-          <p style="color: #94A3B8; font-size: 13px; margin: 6px 0 0;">Verifikasi Pemulihan Kata Sandi</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 540px; margin: 0 auto; background: #191714; border: 1px solid #393128; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="background: linear-gradient(135deg, #11100E, #211D18); padding: 26px; text-align: center; border-bottom: 1px solid #393128;">
+          <h1 style="color: #C6A15B; font-size: 20px; margin: 0; font-weight: 700; letter-spacing: 2px;">SILSILAH KELUARGA</h1>
+          <p style="color: #A79D8D; font-size: 12px; margin: 6px 0 0; letter-spacing: 0.5px;">Verifikasi Pemulihan Kata Sandi Trah</p>
         </div>
-        <div style="padding: 28px 24px;">
-          <p style="font-size: 15px; color: #1e293b; margin-top: 0;">Halo <strong>${displayName || userName}</strong>,</p>
-          <p style="font-size: 14px; color: #475569; line-height: 1.6;">
-            Kami menerima permohonan untuk mengatur ulang kata sandi akun SILSILAH dengan username <strong>@${userName}</strong>. 
+        <div style="padding: 28px 24px; color: #F1E8D8;">
+          <p style="font-size: 15px; color: #F1E8D8; margin-top: 0;">Rahayu, <strong>${displayName || userName}</strong>,</p>
+          <p style="font-size: 14px; color: #A79D8D; line-height: 1.6;">
+            Kami menerima permohonan untuk mengatur ulang kata sandi akun SILSILAH dengan username <strong style="color: #C6A15B;">@${userName}</strong>. 
             Gunakan kode token verifikasi 6 digit di bawah ini untuk melanjutkan:
           </p>
           <div style="text-align: center; margin: 28px 0;">
-            <div style="display: inline-block; background: #F0F9FF; border: 2px dashed #0284C7; border-radius: 10px; padding: 14px 28px;">
-              <span style="font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #0284C7; font-family: monospace;">${token}</span>
+            <div style="display: inline-block; background: #211D18; border: 2px dashed #C6A15B; border-radius: 10px; padding: 14px 28px;">
+              <span style="font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #C6A15B; font-family: monospace;">${token}</span>
             </div>
-            <p style="font-size: 12px; color: #64748B; margin-top: 10px;">Kode verifikasi ini berlaku selama 30 menit.</p>
+            <p style="font-size: 12px; color: #A79D8D; margin-top: 10px;">Kode verifikasi ini berlaku selama 30 menit.</p>
           </div>
-          <p style="font-size: 13px; color: #64748B; line-height: 1.5; border-top: 1px solid #F1F5F9; padding-top: 16px;">
+          <p style="font-size: 12.5px; color: #8F8474; line-height: 1.5; border-top: 1px solid #393128; padding-top: 16px;">
             Jika Anda tidak merasa mengajukan permohonan ini, Anda dapat mengabaikan email ini dengan aman. Akun Anda tetap terlindungi.
           </p>
         </div>
-        <div style="background: #F8FAFC; padding: 14px 24px; text-align: center; border-top: 1px solid #E2E8F0; font-size: 11px; color: #94A3B8;">
-          Dikirim otomatis oleh Sistem Silsilah Keluarga Digital
+        <div style="background: #11100E; padding: 14px 24px; text-align: center; border-top: 1px solid #393128; font-size: 11px; color: #8F8474;">
+          Dikirim otomatis oleh Sistem Silsilah Keluarga Digital — Arsip Trah Leluhur
         </div>
       </div>
     `;

@@ -110,10 +110,10 @@ export function UserProfileModal({
         style={{
           width: '100%',
           maxWidth: 'min(440px, 94vw)',
-          background: '#0F172A',
-          border: '1px solid #1E293B',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.65)',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -123,11 +123,11 @@ export function UserProfileModal({
         <div
           style={{
             padding: '16px 20px',
-            borderBottom: '1px solid #1E293B',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: '#131D33',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -136,20 +136,30 @@ export function UserProfileModal({
                 width: 32,
                 height: 32,
                 borderRadius: 8,
-                background: 'rgba(56, 189, 248, 0.15)',
+                background: 'rgba(198, 161, 91, 0.15)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#38BDF8',
+                color: '#C6A15B',
+                border: '1px solid rgba(198, 161, 91, 0.3)',
               }}
             >
               <User size={18} />
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
-                Edit Profil & Foto Akun
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: 'var(--text-primary, #F1E8D8)',
+                  fontFamily: 'Cinzel, serif',
+                  letterSpacing: '0.02em',
+                }}
+              >
+                Edit Profil &amp; Foto Akun
               </h3>
-              <p style={{ margin: 0, fontSize: 11, color: '#94A3B8' }}>
+              <p style={{ margin: 0, fontSize: 11, color: 'var(--text-secondary, #A79D8D)' }}>
                 @{currentUser.username} ({currentUser.role.toUpperCase()})
               </p>
             </div>
@@ -159,7 +169,7 @@ export function UserProfileModal({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#94A3B8',
+              color: 'var(--text-secondary, #A79D8D)',
               cursor: 'pointer',
               padding: 4,
             }}
@@ -175,9 +185,9 @@ export function UserProfileModal({
               style={{
                 padding: '10px 14px',
                 borderRadius: 8,
-                background: 'rgba(239, 68, 68, 0.12)',
-                border: '1px solid rgba(239, 68, 68, 0.25)',
-                color: '#F87171',
+                background: 'rgba(217, 121, 112, 0.15)',
+                border: '1px solid rgba(217, 121, 112, 0.3)',
+                color: '#D97970',
                 fontSize: 12,
                 display: 'flex',
                 alignItems: 'center',
@@ -194,9 +204,9 @@ export function UserProfileModal({
               style={{
                 padding: '10px 14px',
                 borderRadius: 8,
-                background: 'rgba(16, 185, 129, 0.12)',
-                border: '1px solid rgba(16, 185, 129, 0.25)',
-                color: '#34D399',
+                background: 'rgba(126, 170, 131, 0.15)',
+                border: '1px solid rgba(126, 170, 131, 0.3)',
+                color: '#7EAA83',
                 fontSize: 12,
                 display: 'flex',
                 alignItems: 'center',
@@ -217,9 +227,9 @@ export function UserProfileModal({
                 height: 96,
                 borderRadius: '50%',
                 overflow: 'hidden',
-                background: '#1E293B',
-                border: '2px solid #38BDF8',
-                boxShadow: '0 4px 14px rgba(56, 189, 248, 0.25)',
+                background: 'var(--bg-primary, #11100E)',
+                border: '3px solid #C6A15B',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -232,7 +242,7 @@ export function UserProfileModal({
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ) : (
-                <User size={48} color="#64748B" />
+                <User size={48} color="#A79D8D" />
               )}
 
               <button
@@ -242,7 +252,7 @@ export function UserProfileModal({
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'rgba(0,0,0,0.4)',
+                  background: 'rgba(0,0,0,0.5)',
                   border: 'none',
                   cursor: 'pointer',
                   display: 'flex',
@@ -254,7 +264,7 @@ export function UserProfileModal({
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '0')}
               >
-                <Camera size={26} color="#FFFFFF" />
+                <Camera size={26} color="#F1E8D8" />
               </button>
             </div>
 
@@ -266,13 +276,14 @@ export function UserProfileModal({
                   fontSize: 12,
                   padding: '6px 12px',
                   borderRadius: 6,
-                  background: '#1E293B',
-                  color: '#38BDF8',
-                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  background: 'rgba(198, 161, 91, 0.15)',
+                  color: '#C6A15B',
+                  border: '1px solid rgba(198, 161, 91, 0.35)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 6,
+                  fontWeight: 600,
                 }}
               >
                 <Upload size={13} />
@@ -286,9 +297,9 @@ export function UserProfileModal({
                     fontSize: 12,
                     padding: '6px 10px',
                     borderRadius: 6,
-                    background: '#1E293B',
-                    color: '#94A3B8',
-                    border: '1px solid #334155',
+                    background: '#2B251E',
+                    color: 'var(--text-secondary, #A79D8D)',
+                    border: '1px solid var(--border-subtle, #393128)',
                     cursor: 'pointer',
                   }}
                 >
@@ -308,7 +319,7 @@ export function UserProfileModal({
 
           {/* Form Fields */}
           <div>
-            <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 6, fontWeight: 500 }}>
+            <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 6, fontWeight: 500 }}>
               Nama Lengkap / Tampilan
             </label>
             <input
@@ -321,9 +332,9 @@ export function UserProfileModal({
                 width: '100%',
                 padding: '9px 12px',
                 borderRadius: 8,
-                background: '#162035',
-                border: '1px solid #1E293B',
-                color: '#FFFFFF',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: 'var(--text-primary, #F1E8D8)',
                 fontSize: 13,
                 outline: 'none',
               }}
@@ -331,8 +342,8 @@ export function UserProfileModal({
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 6, fontWeight: 500 }}>
-              Alamat Email (Untuk Notifikasi & Reset Password)
+            <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 6, fontWeight: 500 }}>
+              Alamat Email (Untuk Notifikasi &amp; Reset Password)
             </label>
             <input
               type="email"
@@ -343,9 +354,9 @@ export function UserProfileModal({
                 width: '100%',
                 padding: '9px 12px',
                 borderRadius: 8,
-                background: '#162035',
-                border: '1px solid #1E293B',
-                color: '#FFFFFF',
+                background: 'var(--bg-secondary, #191714)',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: 'var(--text-primary, #F1E8D8)',
                 fontSize: 13,
                 outline: 'none',
               }}

@@ -103,7 +103,7 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
           variant={BackgroundVariant.Dots}
           gap={24}
           size={1.5}
-          color="#1E293B"
+          color="var(--border-subtle, #393128)"
         />
         <Controls
           showInteractive={false}
@@ -111,11 +111,19 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
         />
         <MiniMap
           nodeColor={(n) => {
-            if (n.id === focusPersonId) return '#F59E0B';
-            return '#334155';
+            if (n.id === focusPersonId) return '#C6A15B';
+            return '#393128';
           }}
-          maskColor="rgba(10, 14, 23, 0.7)"
-          style={{ bottom: 20, right: 20, width: 140, height: 90 }}
+          maskColor="rgba(17, 16, 14, 0.75)"
+          style={{
+            bottom: 20,
+            right: 20,
+            width: 140,
+            height: 90,
+            background: 'var(--bg-elevated, #211D18)',
+            border: '1px solid var(--border-subtle, #393128)',
+            borderRadius: 8,
+          }}
         />
       </ReactFlow>
 
@@ -130,12 +138,12 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
           display: 'flex',
           alignItems: 'center',
           gap: 6,
-          background: 'var(--bg-card, rgba(17, 24, 39, 0.9))',
+          background: 'var(--bg-card, #211D18)',
           backdropFilter: 'blur(10px)',
           padding: '5px 10px',
           borderRadius: 999,
-          border: '1px solid var(--border-subtle, #1E293B)',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.25)',
+          border: '1px solid var(--border-subtle, #393128)',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.35)',
           zIndex: 10,
           whiteSpace: 'nowrap',
         }}
@@ -146,18 +154,18 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             display: 'flex',
             alignItems: 'center',
             gap: 5,
-            background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-            color: '#0F172A',
-            padding: '5px 11px',
+            background: 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+            color: '#11100E',
+            padding: '5px 12px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 700,
-            boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
             cursor: 'pointer',
+            border: 'none',
           }}
         >
           <Sparkles size={13} />
-          <span className="hide-on-mobile">Pusatkan ke Fokus</span>
+          <span className="hide-on-mobile">Fokus</span>
           <span className="show-on-mobile">Fokus</span>
         </button>
 
@@ -171,18 +179,17 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             display: 'flex',
             alignItems: 'center',
             gap: 5,
-            background: nuclearFamilyOnly ? 'var(--primary, #10B981)' : 'var(--bg-menu, #162035)',
-            color: nuclearFamilyOnly ? '#FFFFFF' : 'var(--text-primary, #F8FAFC)',
+            background: nuclearFamilyOnly ? 'var(--antique-gold, #C6A15B)' : 'var(--bg-menu, #191714)',
+            color: nuclearFamilyOnly ? '#11100E' : 'var(--ivory, #F1E8D8)',
             padding: '5px 11px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 600,
-            border: nuclearFamilyOnly ? 'none' : '1px solid var(--border-subtle, #334155)',
-            boxShadow: nuclearFamilyOnly ? '0 2px 8px var(--primary-glow, rgba(16, 185, 129, 0.4))' : 'none',
+            border: nuclearFamilyOnly ? 'none' : '1px solid var(--border-subtle, #393128)',
             cursor: 'pointer',
           }}
         >
-          <span className="hide-on-mobile">{nuclearFamilyOnly ? '🌐 Tampilkan Semua Silsilah' : '🏠 Fokus ke Keluarga Inti'}</span>
+          <span className="hide-on-mobile">{nuclearFamilyOnly ? '🌐 Semua' : '🏠 Inti'}</span>
           <span className="show-on-mobile">{nuclearFamilyOnly ? '🌐 Semua' : '🏠 Inti'}</span>
         </button>
 
@@ -192,13 +199,13 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             display: 'flex',
             alignItems: 'center',
             gap: 5,
-            background: 'var(--bg-menu, #162035)',
-            color: 'var(--text-primary, #F8FAFC)',
+            background: 'var(--bg-menu, #191714)',
+            color: 'var(--ivory, #F1E8D8)',
             padding: '5px 10px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 500,
-            border: '1px solid var(--border-subtle, #334155)',
+            border: '1px solid var(--border-subtle, #393128)',
             cursor: 'pointer',
           }}
         >
@@ -215,31 +222,31 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
           position: 'absolute',
           top: 16,
           left: 16,
-          background: 'var(--bg-card, rgba(17, 24, 39, 0.85))',
+          background: 'var(--bg-card, #211D18)',
           backdropFilter: 'blur(8px)',
           padding: '8px 12px',
           borderRadius: 10,
-          border: '1px solid var(--border-subtle, #1E293B)',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+          border: '1px solid var(--border-subtle, #393128)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           gap: 6,
           fontSize: 11,
-          color: 'var(--text-secondary, #94A3B8)',
+          color: 'var(--text-muted, #A79D8D)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 12, height: 3, background: '#3B82F6', borderRadius: 2 }} />
+          <span style={{ width: 12, height: 3, background: 'var(--antique-gold, #C6A15B)', borderRadius: 2 }} />
           <span>Garis Orang Tua – Anak</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 12, height: 3, background: '#F43F5E', borderRadius: 2 }} />
+          <span style={{ width: 12, height: 3, background: 'var(--terracotta, #B96F4B)', borderRadius: 2 }} />
           <span>Garis Pernikahan / Pasangan</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B' }} />
-          <span>Titik Fokus (Label Dihitung Relatif)</span>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--antique-gold, #C6A15B)' }} />
+          <span>Titik Fokus (Label Relatif)</span>
         </div>
       </div>
 
@@ -259,30 +266,30 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
         {isLegendOpen && (
           <div
             style={{
-              background: 'var(--bg-card, rgba(17, 24, 39, 0.95))',
+              background: 'var(--bg-card, #211D18)',
               backdropFilter: 'blur(10px)',
               padding: '8px 12px',
               borderRadius: 10,
-              border: '1px solid var(--border-subtle, #1E293B)',
+              border: '1px solid var(--border-subtle, #393128)',
               boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
               display: 'flex',
               flexDirection: 'column',
               gap: 6,
               fontSize: 11,
-              color: 'var(--text-secondary, #94A3B8)',
+              color: 'var(--text-muted, #A79D8D)',
               marginBottom: 4,
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 12, height: 3, background: '#3B82F6', borderRadius: 2 }} />
+              <span style={{ width: 12, height: 3, background: 'var(--antique-gold, #C6A15B)', borderRadius: 2 }} />
               <span>Orang Tua – Anak</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 12, height: 3, background: '#F43F5E', borderRadius: 2 }} />
+              <span style={{ width: 12, height: 3, background: 'var(--terracotta, #B96F4B)', borderRadius: 2 }} />
               <span>Pernikahan / Pasangan</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B' }} />
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--antique-gold, #C6A15B)' }} />
               <span>Titik Fokus</span>
             </div>
           </div>
@@ -295,9 +302,9 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             gap: 4,
             padding: '5px 10px',
             borderRadius: 999,
-            background: 'var(--bg-menu, #162035)',
-            border: '1px solid var(--border-subtle, #1E293B)',
-            color: 'var(--text-secondary, #94A3B8)',
+            background: 'var(--bg-menu, #191714)',
+            border: '1px solid var(--border-subtle, #393128)',
+            color: 'var(--text-muted, #A79D8D)',
             fontSize: 11,
             fontWeight: 600,
             cursor: 'pointer',

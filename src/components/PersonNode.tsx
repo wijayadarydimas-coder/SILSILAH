@@ -23,34 +23,33 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
   const yearString = ageInfo.formattedLifeSpan;
 
   const getGenderColor = () => {
-    if (person.gender === 'male') return '#3B82F6';
-    if (person.gender === 'female') return '#EC4899';
-    return '#8B5CF6';
+    if (person.gender === 'male') return '#8F6D35';
+    if (person.gender === 'female') return '#B96F4B';
+    return '#A79D8D';
   };
 
   const getRelativeBadgeStyle = () => {
     if (isFocus) {
       return {
-        background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-        color: '#0F172A',
+        background: 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+        color: '#11100E',
         fontWeight: '700',
-        boxShadow: '0 0 12px rgba(245, 158, 11, 0.4)',
       };
     }
     switch (relativeInfo.category) {
       case 'parent':
-        return { background: 'rgba(59, 130, 246, 0.2)', color: '#60A5FA', border: '1px solid rgba(59, 130, 246, 0.4)' };
+        return { background: 'rgba(198, 161, 91, 0.15)', color: '#C6A15B', border: '1px solid rgba(198, 161, 91, 0.35)' };
       case 'child':
-        return { background: 'rgba(16, 185, 129, 0.2)', color: '#34D399', border: '1px solid rgba(16, 185, 129, 0.4)' };
+        return { background: 'rgba(126, 170, 131, 0.15)', color: '#7EAA83', border: '1px solid rgba(126, 170, 131, 0.35)' };
       case 'spouse':
-        return { background: 'rgba(244, 63, 94, 0.2)', color: '#FB7185', border: '1px solid rgba(244, 63, 94, 0.4)' };
+        return { background: 'rgba(185, 111, 75, 0.15)', color: '#B96F4B', border: '1px solid rgba(185, 111, 75, 0.35)' };
       case 'sibling':
-        return { background: 'rgba(139, 92, 246, 0.2)', color: '#A78BFA', border: '1px solid rgba(139, 92, 246, 0.4)' };
+        return { background: 'rgba(215, 164, 90, 0.15)', color: '#D7A45A', border: '1px solid rgba(215, 164, 90, 0.35)' };
       case 'grandparent':
       case 'grandchild':
-        return { background: 'rgba(234, 179, 8, 0.2)', color: '#FACC15', border: '1px solid rgba(234, 179, 8, 0.4)' };
+        return { background: 'rgba(198, 161, 91, 0.12)', color: '#F1E8D8', border: '1px solid rgba(198, 161, 91, 0.25)' };
       default:
-        return { background: 'rgba(148, 163, 184, 0.15)', color: '#94A3B8', border: '1px solid rgba(148, 163, 184, 0.3)' };
+        return { background: 'rgba(167, 157, 141, 0.1)', color: '#A79D8D', border: '1px solid rgba(167, 157, 141, 0.2)' };
     }
   };
 
@@ -59,18 +58,13 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
       style={{
         position: 'relative',
         width: 250,
-        borderRadius: 14,
+        borderRadius: 12,
         background: isFocus
-          ? 'var(--bg-card, #1A263D)'
-          : 'var(--bg-card, #151D2C)',
+          ? 'var(--bg-card, #211D18)'
+          : 'var(--bg-card, #191714)',
         border: isFocus
-          ? '2px solid var(--accent-gold, #F59E0B)'
-          : isDeceased
-          ? '1px solid var(--border-medium, #334155)'
-          : '1px solid var(--border-subtle, #1E293B)',
-        boxShadow: isFocus
-          ? '0 0 24px rgba(245, 158, 11, 0.35), 0 8px 24px rgba(0, 0, 0, 0.25)'
-          : '0 4px 16px rgba(0, 0, 0, 0.18)',
+          ? '2px solid var(--antique-gold, #C6A15B)'
+          : isDeceased,
         padding: '12px 14px',
         transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         cursor: 'default',
@@ -99,11 +93,11 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
         position={Position.Top}
         id="top"
         style={{
-          background: '#3B82F6',
+          background: '#C6A15B',
           width: 8,
           height: 8,
           borderRadius: '50%',
-          border: '2px solid #0A0E17',
+          border: '2px solid #11100E',
         }}
       />
       <Handle
@@ -111,11 +105,11 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
         position={Position.Bottom}
         id="bottom"
         style={{
-          background: '#10B981',
+          background: '#8F6D35',
           width: 8,
           height: 8,
           borderRadius: '50%',
-          border: '2px solid #0A0E17',
+          border: '2px solid #11100E',
         }}
       />
       <Handle
@@ -123,11 +117,11 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
         position={Position.Right}
         id="right"
         style={{
-          background: '#F43F5E',
+          background: '#B96F4B',
           width: 8,
           height: 8,
           borderRadius: '50%',
-          border: '2px solid #0A0E17',
+          border: '2px solid #11100E',
         }}
       />
       <Handle
@@ -135,11 +129,11 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
         position={Position.Left}
         id="left"
         style={{
-          background: '#F43F5E',
+          background: '#B96F4B',
           width: 8,
           height: 8,
           borderRadius: '50%',
-          border: '2px solid #0A0E17',
+          border: '2px solid #11100E',
         }}
       />
 
@@ -172,7 +166,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           {person.verificationStatus === 'verified' && (
-            <span title="Data terverifikasi keluarga" style={{ color: '#10B981', display: 'flex' }}>
+            <span title="Data terverifikasi keluarga" style={{ color: 'var(--success, #7EAA83)', display: 'flex' }}>
               <ShieldCheck size={14} />
             </span>
           )}
@@ -193,9 +187,9 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
             height: 48,
             borderRadius: '50%',
             overflow: 'hidden',
-            border: `2px solid ${isFocus ? '#F59E0B' : getGenderColor()}`,
+            border: `2px solid ${isFocus ? 'var(--antique-gold, #C6A15B)' : getGenderColor()}`,
             flexShrink: 0,
-            background: '#1E293B',
+            background: 'var(--bg-elevated, #211D18)',
             aspectRatio: '1 / 1',
             isolation: 'isolate',
             WebkitMaskImage: '-webkit-radial-gradient(white, black)',
@@ -225,7 +219,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#94A3B8',
+                color: 'var(--text-muted, #A79D8D)',
               }}
             >
               <User size={22} />
@@ -238,10 +232,11 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
             style={{
               fontWeight: 600,
               fontSize: 13.5,
-              color: isFocus ? 'var(--accent-gold, #FDE68A)' : 'var(--text-primary, #F8FAFC)',
+              color: isFocus ? 'var(--antique-gold, #C6A15B)' : 'var(--ivory, #F1E8D8)',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              letterSpacing: '0.01em',
             }}
             title={person.fullName}
           >
@@ -250,7 +245,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           <div
             style={{
               fontSize: 11,
-              color: 'var(--text-secondary, #94A3B8)',
+              color: 'var(--text-muted, #A79D8D)',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -262,7 +257,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           <div
             style={{
               fontSize: 10.5,
-              color: 'var(--text-muted, #64748B)',
+              color: 'rgba(167, 157, 141, 0.7)',
               marginTop: 3,
             }}
           >
@@ -279,7 +274,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           justifyContent: 'space-between',
           marginTop: 12,
           paddingTop: 8,
-          borderTop: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.07))',
+          borderTop: '1px solid var(--border-subtle, #393128)',
         }}
       >
         <div style={{ display: 'flex', gap: 6 }}>
@@ -291,8 +286,9 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
               }}
               title="Jadikan Titik Fokus Navigasi"
               style={{
-                background: 'rgba(245, 158, 11, 0.12)',
-                color: '#FBBF24',
+                background: 'rgba(198, 161, 91, 0.12)',
+                color: 'var(--antique-gold, #C6A15B)',
+                border: '1px solid rgba(198, 161, 91, 0.3)',
                 padding: '4px 8px',
                 borderRadius: 6,
                 fontSize: 10.5,
@@ -300,6 +296,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 4,
+                cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
             >
@@ -309,7 +306,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           ) : (
             <span
               style={{
-                color: '#F59E0B',
+                color: 'var(--antique-gold, #C6A15B)',
                 fontSize: 10.5,
                 fontWeight: 600,
                 display: 'flex',
@@ -317,7 +314,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
                 gap: 3,
               }}
             >
-              ⭐ Fokus Utama
+              ⭐
             </span>
           )}
 
@@ -328,8 +325,9 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
             }}
             title="Buka Lembar Profil Lengkap"
             style={{
-              background: 'rgba(59, 130, 246, 0.12)',
-              color: '#60A5FA',
+              background: 'rgba(73, 55, 42, 0.3)',
+              color: 'var(--ivory, #F1E8D8)',
+              border: '1px solid rgba(57, 49, 40, 0.8)',
               padding: '4px 8px',
               borderRadius: 6,
               fontSize: 10.5,
@@ -337,6 +335,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
               display: 'flex',
               alignItems: 'center',
               gap: 4,
+              cursor: 'pointer',
             }}
           >
             <Eye size={11} />
@@ -352,9 +351,9 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
             }}
             title={isCollapsed ? 'Klik untuk tampilkan kembali cabang keturunan di bawah' : 'Klik untuk menyembunyikan (hide) cabang keturunan di bawah'}
             style={{
-              background: isCollapsed ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.15)',
-              color: isCollapsed ? '#F87171' : '#34D399',
-              border: isCollapsed ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.3)',
+              background: isCollapsed ? 'rgba(185, 111, 75, 0.18)' : 'rgba(126, 170, 131, 0.15)',
+              color: isCollapsed ? 'var(--terracotta, #B96F4B)' : 'var(--success, #7EAA83)',
+              border: isCollapsed ? '1px solid rgba(185, 111, 75, 0.35)' : '1px solid rgba(126, 170, 131, 0.3)',
               padding: '3px 8px',
               borderRadius: 6,
               fontSize: 10,
@@ -362,6 +361,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
               display: 'flex',
               alignItems: 'center',
               gap: 4,
+              cursor: 'pointer',
             }}
           >
             {isCollapsed ? (

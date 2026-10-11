@@ -236,8 +236,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
     >
       <div
         style={{
-          background: 'var(--bg-card, #0F1626)',
-          border: '1px solid var(--border-subtle, #1E293B)',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
           width: '100%',
           maxWidth: 'min(680px, 95vw)',
@@ -255,8 +255,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
-            borderBottom: '1px solid var(--border-subtle, #1E293B)',
-            background: 'var(--bg-menu, #131B2E)',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -265,20 +265,30 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                 width: 32,
                 height: 32,
                 borderRadius: 8,
-                background: 'rgba(245, 158, 11, 0.15)',
+                background: 'rgba(198, 161, 91, 0.15)',
+                border: '1px solid rgba(198, 161, 91, 0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <Shield size={18} color="#F59E0B" />
+              <Shield size={18} color="#C6A15B" />
             </div>
             <div>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)', margin: 0 }}>
-                Kelola Akun &amp; Hak Akses (Superadmin)
+              <h2
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: 'var(--text-primary, #F1E8D8)',
+                  fontFamily: 'Cinzel, serif',
+                  letterSpacing: '0.02em',
+                  margin: 0,
+                }}
+              >
+                Kelola Akun &amp; Hak Akses
               </h2>
-              <p style={{ fontSize: 11.5, color: 'var(--text-secondary, #94A3B8)', margin: 0 }}>
-                Buat dan kelola akun login keluarga langsung ke PostgreSQL
+              <p style={{ fontSize: 11.5, color: 'var(--text-secondary, #A79D8D)', margin: 0 }}>
+                Buat dan kelola akun login keluarga langsung ke basis data
               </p>
             </div>
           </div>
@@ -287,7 +297,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             style={{
               background: 'transparent',
               border: 'none',
-              color: 'var(--text-secondary, #94A3B8)',
+              color: 'var(--text-secondary, #A79D8D)',
               cursor: 'pointer',
               padding: 4,
             }}
@@ -300,8 +310,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
         <div
           style={{
             display: 'flex',
-            borderBottom: '1px solid var(--border-subtle, #1E293B)',
-            background: 'rgba(15, 23, 42, 0.6)',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
             padding: '4px 16px 0 16px',
             gap: 8,
           }}
@@ -311,9 +321,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             style={{
               padding: '10px 16px',
               border: 'none',
-              borderBottom: activeTab === 'list' ? '2px solid var(--primary, #10B981)' : '2px solid transparent',
+              borderBottom: activeTab === 'list' ? '2px solid #C6A15B' : '2px solid transparent',
               background: 'transparent',
-              color: activeTab === 'list' ? 'var(--primary, #34D399)' : 'var(--text-secondary, #94A3B8)',
+              color: activeTab === 'list' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
               fontWeight: activeTab === 'list' ? 700 : 500,
               fontSize: 13,
               cursor: 'pointer',
@@ -334,9 +344,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             style={{
               padding: '10px 16px',
               border: 'none',
-              borderBottom: activeTab === 'create' ? '2px solid var(--primary, #10B981)' : '2px solid transparent',
+              borderBottom: activeTab === 'create' ? '2px solid #C6A15B' : '2px solid transparent',
               background: 'transparent',
-              color: activeTab === 'create' ? 'var(--primary, #34D399)' : 'var(--text-secondary, #94A3B8)',
+              color: activeTab === 'create' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
               fontWeight: activeTab === 'create' ? 700 : 500,
               fontSize: 13,
               cursor: 'pointer',
@@ -350,8 +360,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             <span
               style={{
                 fontSize: 10,
-                background: 'rgba(16, 185, 129, 0.2)',
-                color: '#34D399',
+                background: 'rgba(198, 161, 91, 0.2)',
+                color: '#C6A15B',
+                border: '1px solid rgba(198, 161, 91, 0.4)',
                 padding: '1px 6px',
                 borderRadius: 10,
                 fontWeight: 700,
@@ -445,9 +456,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                         flexWrap: 'wrap',
                         gap: 12,
                         padding: '12px 14px',
-                        background: 'var(--bg-menu, #162035)',
+                        background: 'var(--bg-secondary, #191714)',
                         borderRadius: 10,
-                        border: '1px solid var(--border-subtle, #1E293B)',
+                        border: '1px solid var(--border-subtle, #393128)',
                         opacity: isDeactivated ? 0.65 : 1,
                       }}
                     >
@@ -458,13 +469,14 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             width: 36,
                             height: 36,
                             borderRadius: '50%',
-                            background: isStaticSuperadmin ? 'rgba(245, 158, 11, 0.2)' : 'rgba(56, 189, 248, 0.15)',
+                            background: isStaticSuperadmin ? 'rgba(198, 161, 91, 0.2)' : 'rgba(167, 157, 141, 0.15)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: isStaticSuperadmin ? '#F59E0B' : '#38BDF8',
+                            color: isStaticSuperadmin ? '#C6A15B' : '#F1E8D8',
                             flexShrink: 0,
                             overflow: 'hidden',
+                            border: `1px solid ${isStaticSuperadmin ? '#C6A15B' : 'var(--border-subtle, #393128)'}`,
                           }}
                         >
                           {u.avatarUrl ? (
@@ -479,27 +491,27 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
 
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
+                            <span style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)' }}>
                               {u.displayName}
                             </span>
                             {u.username && (
-                              <span style={{ fontSize: 11, color: '#38BDF8', background: 'rgba(56, 189, 248, 0.1)', padding: '1px 6px', borderRadius: 4 }}>
+                              <span style={{ fontSize: 11, color: '#C6A15B', background: 'rgba(198, 161, 91, 0.1)', padding: '1px 6px', borderRadius: 4, border: '1px solid rgba(198, 161, 91, 0.25)' }}>
                                 @{u.username}
                               </span>
                             )}
                             {isSelf && (
-                              <span style={{ fontSize: 10, color: '#10B981', background: 'rgba(16,185,129,0.1)', padding: '1px 6px', borderRadius: 4, fontWeight: 600 }}>
+                              <span style={{ fontSize: 10, color: '#7EAA83', background: 'rgba(126, 170, 131, 0.15)', padding: '1px 6px', borderRadius: 4, fontWeight: 600 }}>
                                 (Akun Anda)
                               </span>
                             )}
                             {isDeactivated && (
-                              <span style={{ fontSize: 10, color: '#F87171', background: 'rgba(239,68,68,0.15)', padding: '1px 6px', borderRadius: 4, fontWeight: 600 }}>
+                              <span style={{ fontSize: 10, color: '#D97970', background: 'rgba(217, 121, 112, 0.15)', padding: '1px 6px', borderRadius: 4, fontWeight: 600 }}>
                                 Dinonaktifkan
                               </span>
                             )}
                           </div>
 
-                          <div style={{ fontSize: 11.5, color: 'var(--text-secondary, #94A3B8)', display: 'flex', gap: 10, marginTop: 2, flexWrap: 'wrap' }}>
+                          <div style={{ fontSize: 11.5, color: 'var(--text-secondary, #A79D8D)', display: 'flex', gap: 10, marginTop: 2, flexWrap: 'wrap' }}>
                             {u.email && <span>📧 {u.email}</span>}
                             {u.phone && <span>📱 {u.phone}</span>}
                             {!u.email && !u.phone && <span style={{ fontStyle: 'italic', color: '#64748B' }}>Tidak ada kontak terdaftar</span>}
@@ -514,9 +526,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             style={{
                               padding: '5px 10px',
                               borderRadius: 6,
-                              background: 'rgba(245, 158, 11, 0.15)',
-                              color: '#FBBF24',
-                              border: '1px solid rgba(245, 158, 11, 0.3)',
+                              background: 'rgba(198, 161, 91, 0.18)',
+                              color: '#C6A15B',
+                              border: '1px solid rgba(198, 161, 91, 0.4)',
                               fontSize: 11.5,
                               fontWeight: 700,
                             }}
@@ -532,16 +544,16 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                               style={{
                                 padding: '6px 8px',
                                 borderRadius: 6,
-                                background: 'var(--bg-card, #0F1626)',
-                                border: '1px solid var(--border-subtle, #334155)',
-                                color: 'var(--text-primary, #F8FAFC)',
+                                background: 'var(--bg-elevated, #211D18)',
+                                border: '1px solid var(--border-subtle, #393128)',
+                                color: 'var(--text-primary, #F1E8D8)',
                                 fontSize: 11.5,
                                 fontWeight: 600,
                                 cursor: 'pointer',
                               }}
                             >
                               <option value="admin">Admin (Kelola Data)</option>
-                              <option value="client">User (Baca Saja)</option>
+                              <option value="client">Warga (Baca Saja)</option>
                             </select>
 
                             {/* Reset Password Button */}
@@ -555,9 +567,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                               style={{
                                 padding: '6px 8px',
                                 borderRadius: 6,
-                                background: 'rgba(245, 158, 11, 0.12)',
-                                border: '1px solid rgba(245, 158, 11, 0.25)',
-                                color: '#FBBF24',
+                                background: 'rgba(198, 161, 91, 0.15)',
+                                border: '1px solid rgba(198, 161, 91, 0.3)',
+                                color: '#C6A15B',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 4,
@@ -577,9 +589,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                               style={{
                                 padding: '6px 8px',
                                 borderRadius: 6,
-                                background: isDeactivated ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.12)',
-                                border: `1px solid ${isDeactivated ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.25)'}`,
-                                color: isDeactivated ? '#34D399' : '#F87171',
+                                background: isDeactivated ? 'rgba(126, 170, 131, 0.15)' : 'rgba(217, 121, 112, 0.12)',
+                                border: `1px solid ${isDeactivated ? 'rgba(126, 170, 131, 0.3)' : 'rgba(217, 121, 112, 0.25)'}`,
+                                color: isDeactivated ? '#7EAA83' : '#D97970',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 4,
@@ -600,9 +612,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                                 style={{
                                   padding: '6px 8px',
                                   borderRadius: 6,
-                                  background: 'rgba(239, 68, 68, 0.12)',
-                                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                                  color: '#F87171',
+                                  background: 'rgba(217, 121, 112, 0.12)',
+                                  border: '1px solid rgba(217, 121, 112, 0.3)',
+                                  color: '#D97970',
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: 4,
@@ -667,8 +679,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                   {/* Account Summary Box */}
                   <div
                     style={{
-                      background: 'var(--bg-menu, #0F1626)',
-                      border: '1px solid var(--border-subtle, #1E293B)',
+                      background: 'var(--bg-secondary, #191714)',
+                      border: '1px solid var(--border-subtle, #393128)',
                       borderRadius: 8,
                       padding: '12px 14px',
                       display: 'grid',
@@ -678,22 +690,22 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                     }}
                   >
                     <div>
-                      <div style={{ color: '#94A3B8', fontSize: 11 }}>Nama Pengguna</div>
-                      <div style={{ fontWeight: 700, color: '#F8FAFC' }}>{createdSummary.displayName}</div>
+                      <div style={{ color: 'var(--text-muted, #A79D8D)', fontSize: 11 }}>Nama Pengguna</div>
+                      <div style={{ fontWeight: 700, color: 'var(--text-primary, #F1E8D8)' }}>{createdSummary.displayName}</div>
                     </div>
                     <div>
-                      <div style={{ color: '#94A3B8', fontSize: 11 }}>Username Login</div>
-                      <div style={{ fontWeight: 700, color: '#38BDF8' }}>@{createdSummary.username}</div>
+                      <div style={{ color: 'var(--text-muted, #A79D8D)', fontSize: 11 }}>Username Login</div>
+                      <div style={{ fontWeight: 700, color: 'var(--accent-gold, #C6A15B)' }}>@{createdSummary.username}</div>
                     </div>
                     <div>
-                      <div style={{ color: '#94A3B8', fontSize: 11 }}>Kata Sandi (Password)</div>
-                      <div style={{ fontWeight: 700, color: '#FBBF24', letterSpacing: 0.5 }}>
+                      <div style={{ color: 'var(--text-muted, #A79D8D)', fontSize: 11 }}>Kata Sandi (Password)</div>
+                      <div style={{ fontWeight: 700, color: 'var(--accent-warning, #D7A45A)', letterSpacing: 0.5 }}>
                         {createdSummary.password}
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: '#94A3B8', fontSize: 11 }}>Hak Akses (Role)</div>
-                      <div style={{ fontWeight: 700, color: createdSummary.role === 'admin' ? '#A78BFA' : '#34D399' }}>
+                      <div style={{ color: 'var(--text-muted, #A79D8D)', fontSize: 11 }}>Hak Akses (Role)</div>
+                      <div style={{ fontWeight: 700, color: createdSummary.role === 'admin' ? 'var(--accent-gold, #C6A15B)' : 'var(--accent-success, #7EAA83)' }}>
                         {createdSummary.role === 'admin' ? 'Admin (Kelola Data)' : 'User (Baca Saja)'}
                       </div>
                     </div>
@@ -739,8 +751,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                 <form
                   onSubmit={handleCreateUser}
                   style={{
-                    background: 'var(--bg-menu, #131B2E)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
                     borderRadius: 12,
                     padding: 18,
                     display: 'flex',
@@ -749,10 +761,10 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                   }}
                 >
                   <div>
-                    <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)', margin: 0 }}>
+                    <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)', margin: 0 }}>
                       Formulir Buat Akun Login Baru
                     </h3>
-                    <p style={{ fontSize: 12, color: 'var(--text-secondary, #94A3B8)', marginTop: 2, marginBottom: 0 }}>
+                    <p style={{ fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginTop: 2, marginBottom: 0 }}>
                       Superadmin dapat langsung membuatkan akun beserta password tanpa membuka database PostgreSQL.
                     </p>
                   </div>
@@ -760,8 +772,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                   <div className="grid-2-col-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                     {/* Username */}
                     <div>
-                      <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 4 }}>
-                        Username Login <span style={{ color: '#EF4444' }}>*</span>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', display: 'block', marginBottom: 4 }}>
+                        Username Login <span style={{ color: '#D97970' }}>*</span>
                       </label>
                       <div style={{ position: 'relative' }}>
                         <span
@@ -769,7 +781,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             position: 'absolute',
                             left: 10,
                             top: 9,
-                            color: '#64748B',
+                            color: '#A79D8D',
                             fontWeight: 700,
                             fontSize: 13,
                           }}
@@ -786,15 +798,15 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             width: '100%',
                             padding: '9px 12px 9px 28px',
                             borderRadius: 8,
-                            background: 'var(--bg-card, #0F1626)',
-                            border: '1px solid var(--border-subtle, #1E293B)',
-                            color: '#F8FAFC',
+                            background: 'var(--bg-elevated, #211D18)',
+                            border: '1px solid var(--border-subtle, #393128)',
+                            color: 'var(--text-primary, #F1E8D8)',
                             fontSize: 13,
                             outline: 'none',
                           }}
                         />
                       </div>
-                      <span style={{ fontSize: 10.5, color: '#64748B', marginTop: 2, display: 'block' }}>
+                      <span style={{ fontSize: 10.5, color: 'var(--text-secondary, #A79D8D)', marginTop: 2, display: 'block' }}>
                         Hanya huruf, angka, titik, atau garis bawah (_)
                       </span>
                     </div>
@@ -802,8 +814,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                     {/* Password */}
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                        <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8' }}>
-                          Kata Sandi (Password) <span style={{ color: '#EF4444' }}>*</span>
+                        <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)' }}>
+                          Kata Sandi (Password) <span style={{ color: '#D97970' }}>*</span>
                         </label>
                         <button
                           type="button"
@@ -811,7 +823,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                           style={{
                             background: 'transparent',
                             border: 'none',
-                            color: '#38BDF8',
+                            color: '#C6A15B',
                             fontSize: 11,
                             fontWeight: 600,
                             cursor: 'pointer',
@@ -836,9 +848,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             width: '100%',
                             padding: '9px 36px 9px 12px',
                             borderRadius: 8,
-                            background: 'var(--bg-card, #0F1626)',
-                            border: '1px solid var(--border-subtle, #1E293B)',
-                            color: '#F8FAFC',
+                            background: 'var(--bg-elevated, #211D18)',
+                            border: '1px solid var(--border-subtle, #393128)',
+                            color: 'var(--text-primary, #F1E8D8)',
                             fontSize: 13,
                             outline: 'none',
                           }}
@@ -852,7 +864,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                             top: 9,
                             background: 'transparent',
                             border: 'none',
-                            color: '#94A3B8',
+                            color: 'var(--text-secondary, #A79D8D)',
                             cursor: 'pointer',
                             padding: 0,
                           }}
@@ -864,8 +876,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
 
                     {/* Display Name */}
                     <div>
-                      <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 4 }}>
-                        Nama Tampilan / Lengkap <span style={{ color: '#EF4444' }}>*</span>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', display: 'block', marginBottom: 4 }}>
+                        Nama Tampilan / Lengkap <span style={{ color: '#D97970' }}>*</span>
                       </label>
                       <input
                         type="text"
@@ -877,9 +889,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                           width: '100%',
                           padding: '9px 12px',
                           borderRadius: 8,
-                          background: 'var(--bg-card, #0F1626)',
-                          border: '1px solid var(--border-subtle, #1E293B)',
-                          color: '#F8FAFC',
+                          background: 'var(--bg-elevated, #211D18)',
+                          border: '1px solid var(--border-subtle, #393128)',
+                          color: 'var(--text-primary, #F1E8D8)',
                           fontSize: 13,
                           outline: 'none',
                         }}
@@ -888,7 +900,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
 
                     {/* Role */}
                     <div>
-                      <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 4 }}>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', display: 'block', marginBottom: 4 }}>
                         Hak Akses (Role)
                       </label>
                       <select
@@ -898,23 +910,23 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                           width: '100%',
                           padding: '9px 12px',
                           borderRadius: 8,
-                          background: 'var(--bg-card, #0F1626)',
-                          border: '1px solid var(--border-subtle, #1E293B)',
-                          color: '#F8FAFC',
+                          background: 'var(--bg-elevated, #211D18)',
+                          border: '1px solid var(--border-subtle, #393128)',
+                          color: 'var(--text-primary, #F1E8D8)',
                           fontSize: 13,
                           outline: 'none',
                           cursor: 'pointer',
                           fontWeight: 600,
                         }}
                       >
-                        <option value="client">User (Baca Saja - Anggota Keluarga)</option>
-                        <option value="admin">Admin (Editor - Kelola & Edit Data Pohon)</option>
+                        <option value="client">Warga (Baca Saja - Anggota Keluarga)</option>
+                        <option value="admin">Admin (Editor - Kelola &amp; Edit Data Pohon)</option>
                       </select>
                     </div>
 
                     {/* Email (Optional) */}
                     <div>
-                      <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 4 }}>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', display: 'block', marginBottom: 4 }}>
                         Alamat Email (Opsional)
                       </label>
                       <input
@@ -926,9 +938,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                           width: '100%',
                           padding: '9px 12px',
                           borderRadius: 8,
-                          background: 'var(--bg-card, #0F1626)',
-                          border: '1px solid var(--border-subtle, #1E293B)',
-                          color: '#F8FAFC',
+                          background: 'var(--bg-elevated, #211D18)',
+                          border: '1px solid var(--border-subtle, #393128)',
+                          color: 'var(--text-primary, #F1E8D8)',
                           fontSize: 13,
                           outline: 'none',
                         }}
@@ -995,12 +1007,12 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
         >
           <div
             style={{
-              background: 'var(--bg-card, #0F1626)',
-              border: '1px solid var(--border-subtle, #1E293B)',
+              background: 'var(--bg-elevated, #211D18)',
+              border: '1px solid var(--border-subtle, #393128)',
               borderRadius: 14,
               width: '100%',
               maxWidth: 440,
-              boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
               overflow: 'hidden',
             }}
           >
@@ -1010,19 +1022,19 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '14px 18px',
-                borderBottom: '1px solid var(--border-subtle, #1E293B)',
-                background: 'var(--bg-menu, #131B2E)',
+                borderBottom: '1px solid var(--border-subtle, #393128)',
+                background: 'var(--bg-secondary, #191714)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <KeyRound size={17} color="#FBBF24" />
-                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: '#F8FAFC', margin: 0 }}>
+                <KeyRound size={17} color="#C6A15B" />
+                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)', margin: 0, fontFamily: 'Cinzel, serif' }}>
                   Atur Ulang Kata Sandi
                 </h3>
               </div>
               <button
                 onClick={() => setResetModalUser(null)}
-                style={{ background: 'transparent', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary, #A79D8D)', cursor: 'pointer' }}
               >
                 <X size={18} />
               </button>
@@ -1030,19 +1042,19 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
 
             <form onSubmit={handleSaveResetPassword} style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <div style={{ fontSize: 13, color: '#F8FAFC', fontWeight: 600 }}>
-                  Pengguna: <span style={{ color: '#38BDF8' }}>{resetModalUser.displayName}</span>{' '}
-                  {resetModalUser.username && <span style={{ color: '#94A3B8', fontSize: 12 }}>(@{resetModalUser.username})</span>}
+                <div style={{ fontSize: 13, color: 'var(--text-primary, #F1E8D8)', fontWeight: 600 }}>
+                  Pengguna: <span style={{ color: '#C6A15B' }}>{resetModalUser.displayName}</span>{' '}
+                  {resetModalUser.username && <span style={{ color: 'var(--text-secondary, #A79D8D)', fontSize: 12 }}>(@{resetModalUser.username})</span>}
                 </div>
-                <p style={{ fontSize: 11.5, color: '#94A3B8', marginTop: 3, marginBottom: 0 }}>
+                <p style={{ fontSize: 11.5, color: 'var(--text-secondary, #A79D8D)', marginTop: 3, marginBottom: 0 }}>
                   Masukkan kata sandi baru untuk akun ini. Pengguna dapat langsung masuk dengan sandi baru ini.
                 </p>
               </div>
 
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8' }}>
-                    Kata Sandi Baru <span style={{ color: '#EF4444' }}>*</span>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)' }}>
+                    Kata Sandi Baru <span style={{ color: '#D97970' }}>*</span>
                   </label>
                   <button
                     type="button"
@@ -1050,7 +1062,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      color: '#38BDF8',
+                      color: '#C6A15B',
                       fontSize: 11,
                       fontWeight: 600,
                       cursor: 'pointer',
@@ -1070,9 +1082,9 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                       width: '100%',
                       padding: '9px 36px 9px 12px',
                       borderRadius: 8,
-                      background: 'var(--bg-menu, #162035)',
-                      border: '1px solid var(--border-subtle, #1E293B)',
-                      color: '#F8FAFC',
+                      background: 'var(--bg-secondary, #191714)',
+                      border: '1px solid var(--border-subtle, #393128)',
+                      color: 'var(--text-primary, #F1E8D8)',
                       fontSize: 13,
                       outline: 'none',
                     }}
@@ -1086,7 +1098,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                       top: 9,
                       background: 'transparent',
                       border: 'none',
-                      color: '#94A3B8',
+                      color: 'var(--text-secondary, #A79D8D)',
                       cursor: 'pointer',
                     }}
                   >

@@ -148,9 +148,9 @@ export function Navbar({
   };
 
   const getRoleBadge = (role: UserRole) => {
-    if (role === 'superadmin') return { label: 'Superadmin', bg: 'rgba(245, 158, 11, 0.2)', text: '#FBBF24' };
-    if (role === 'admin') return { label: 'Admin', bg: 'rgba(59, 130, 246, 0.2)', text: '#60A5FA' };
-    return { label: 'User (Read-only)', bg: 'rgba(148, 163, 184, 0.2)', text: '#94A3B8' };
+    if (role === 'superadmin') return { label: 'Superadmin', bg: 'rgba(198, 161, 91, 0.18)', text: 'var(--antique-gold, #C6A15B)' };
+    if (role === 'admin') return { label: 'Admin', bg: 'rgba(143, 109, 53, 0.2)', text: '#D7A45A' };
+    return { label: 'Warga Trah (Read)', bg: 'rgba(167, 157, 141, 0.15)', text: 'var(--text-muted, #A79D8D)' };
   };
 
   const roleBadge = getRoleBadge(currentRole);
@@ -160,8 +160,8 @@ export function Navbar({
   return (
     <header
       style={{
-        background: 'var(--bg-navbar, #0D1322)',
-        borderBottom: '1px solid var(--border-subtle, #1E293B)',
+        background: 'var(--bg-navbar, #151310)',
+        borderBottom: '1px solid var(--border-subtle, #393128)',
         padding: '10px 20px',
         display: 'flex',
         alignItems: 'center',
@@ -179,45 +179,47 @@ export function Navbar({
               width: 38,
               height: 38,
               borderRadius: 10,
-              background: 'var(--primary-glow, rgba(16, 185, 129, 0.1))',
-              border: '1px solid var(--primary, rgba(16, 185, 129, 0.3))',
+              background: 'rgba(198, 161, 91, 0.12)',
+              border: '1px solid rgba(198, 161, 91, 0.35)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: 4,
+              padding: 5,
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/logo.svg" alt="Silsilah Logo" style={{ width: '100%', height: '100%' }} />
+            <img src="/assets/javanese-darkpro-mark.svg" alt="Silsilah Logo" style={{ width: '100%', height: '100%' }} />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '0.05em', color: 'var(--text-primary, #F8FAFC)' }}>
+              <span style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 17, fontWeight: 800, letterSpacing: '0.08em', color: 'var(--ivory, #F1E8D8)' }}>
                 SILSILAH
               </span>
               <span
                 style={{
                   fontSize: 10,
-                  background: 'var(--primary-glow, rgba(16, 185, 129, 0.15))',
-                  color: 'var(--primary, #34D399)',
-                  padding: '2px 6px',
+                  background: 'rgba(198, 161, 91, 0.15)',
+                  color: 'var(--antique-gold, #C6A15B)',
+                  border: '1px solid rgba(198, 161, 91, 0.3)',
+                  padding: '1px 6px',
                   borderRadius: 4,
                   fontWeight: 700,
+                  letterSpacing: '0.03em',
                 }}
               >
-                v1.0 Pro
+                DDW
               </span>
             </div>
-            <div style={{ fontSize: 11.5, color: 'var(--text-secondary, #94A3B8)', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontWeight: 500, color: 'var(--text-secondary, #E2E8F0)' }}>{workspace.name}</span>
+            <div style={{ fontSize: 11.5, color: 'var(--text-muted, #A79D8D)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontWeight: 500, color: 'var(--ivory, #F1E8D8)' }}>{workspace.name}</span>
               {isSuperadmin && onOpenWorkspaceSettings && (
                 <button
                   onClick={onOpenWorkspaceSettings}
                   title="Ubah Nama Keluarga / Ruang Silsilah (Superadmin)"
                   style={{
-                    background: 'rgba(245, 158, 11, 0.15)',
-                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                    color: '#FBBF24',
+                    background: 'rgba(198, 161, 91, 0.12)',
+                    border: '1px solid rgba(198, 161, 91, 0.3)',
+                    color: 'var(--antique-gold, #C6A15B)',
                     borderRadius: 4,
                     cursor: 'pointer',
                     fontSize: 10.5,
@@ -241,10 +243,10 @@ export function Navbar({
           className="hide-on-mobile"
           style={{
             display: 'flex',
-            background: 'var(--bg-menu, #162035)',
+            background: 'var(--bg-menu, #191714)',
             padding: 3,
             borderRadius: 8,
-            border: '1px solid var(--border-subtle, #1E293B)',
+            border: '1px solid var(--border-subtle, #393128)',
           }}
         >
           <button
@@ -254,13 +256,15 @@ export function Navbar({
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              padding: '5px 10px',
+              padding: '5px 11px',
               borderRadius: 6,
               fontSize: 12,
               fontWeight: 600,
-              background: viewMode === 'canvas' ? 'var(--primary, #10B981)' : 'transparent',
-              color: viewMode === 'canvas' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
+              background: viewMode === 'canvas' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'transparent',
+              color: viewMode === 'canvas' ? '#11100E' : 'var(--text-muted, #A79D8D)',
+              boxShadow: viewMode === 'canvas' ? '0 2px 8px rgba(198, 161, 91, 0.3)' : 'none',
               transition: 'all 0.15s ease',
+              cursor: 'pointer',
             }}
           >
             <ListTree size={14} />
@@ -273,13 +277,15 @@ export function Navbar({
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              padding: '5px 10px',
+              padding: '5px 11px',
               borderRadius: 6,
               fontSize: 12,
               fontWeight: 600,
-              background: viewMode === 'list' ? 'var(--primary, #10B981)' : 'transparent',
-              color: viewMode === 'list' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
+              background: viewMode === 'list' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'transparent',
+              color: viewMode === 'list' ? '#11100E' : 'var(--text-muted, #A79D8D)',
+              boxShadow: viewMode === 'list' ? '0 2px 8px rgba(198, 161, 91, 0.3)' : 'none',
               transition: 'all 0.15s ease',
+              cursor: 'pointer',
             }}
           >
             <LayoutGrid size={14} />
@@ -305,9 +311,9 @@ export function Navbar({
               width: '100%',
               padding: '7px 12px 7px 32px',
               borderRadius: 8,
-              background: 'var(--bg-menu, #162035)',
-              border: '1px solid var(--border-subtle, #1E293B)',
-              color: 'var(--text-primary, #F8FAFC)',
+              background: 'var(--bg-menu, #191714)',
+              border: '1px solid var(--border-subtle, #393128)',
+              color: 'var(--ivory, #F1E8D8)',
               fontSize: 12.5,
               outline: 'none',
             }}
@@ -323,10 +329,10 @@ export function Navbar({
               left: 0,
               right: 0,
               marginTop: 6,
-              background: 'var(--bg-card, #131B2E)',
-              border: '1px solid var(--border-subtle, #1E293B)',
+              background: 'var(--bg-card, #211D18)',
+              border: '1px solid var(--border-subtle, #393128)',
               borderRadius: 10,
-              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
               overflow: 'hidden',
               zIndex: 100,
             }}
@@ -341,10 +347,10 @@ export function Navbar({
                   gap: 10,
                   padding: '8px 12px',
                   cursor: 'pointer',
-                  borderBottom: '1px solid var(--border-subtle, rgba(255,255,255,0.05))',
+                  borderBottom: '1px solid var(--border-subtle, #393128)',
                   transition: 'background 0.15s',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-menu, #1E293B)')}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-elevated, #2B251E)')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
                 <div
@@ -353,7 +359,7 @@ export function Navbar({
                     height: 26,
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    background: 'var(--border-medium, #334155)',
+                    background: 'var(--border-medium, #49372A)',
                     flexShrink: 0,
                   }}
                 >
@@ -361,14 +367,14 @@ export function Navbar({
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={p.photoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', background: 'var(--border-medium, #334155)' }} />
+                    <div style={{ width: '100%', height: '100%', background: 'var(--border-medium, #49372A)' }} />
                   )}
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary, #F8FAFC)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ivory, #F1E8D8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {p.fullName}
                   </div>
-                  <div style={{ fontSize: 10.5, color: 'var(--text-secondary, #94A3B8)' }}>
+                  <div style={{ fontSize: 10.5, color: 'var(--text-muted, #A79D8D)' }}>
                     {p.displayName || (p.gender === 'male' ? 'Laki-laki' : 'Perempuan')}
                   </div>
                 </div>
@@ -392,11 +398,12 @@ export function Navbar({
               gap: 6,
               padding: '7px 12px',
               borderRadius: 8,
-              background: isSidebarOpen ? 'var(--primary-glow, rgba(16, 185, 129, 0.2))' : 'var(--bg-menu, #162035)',
-              color: isSidebarOpen ? 'var(--primary, #34D399)' : 'var(--text-secondary, #94A3B8)',
-              border: isSidebarOpen ? '1px solid var(--primary, rgba(16, 185, 129, 0.4))' : '1px solid var(--border-subtle, #1E293B)',
+              background: isSidebarOpen ? 'rgba(198, 161, 91, 0.15)' : 'var(--bg-menu, #191714)',
+              color: isSidebarOpen ? 'var(--antique-gold, #C6A15B)' : 'var(--text-muted, #A79D8D)',
+              border: isSidebarOpen ? '1px solid rgba(198, 161, 91, 0.35)' : '1px solid var(--border-subtle, #393128)',
               fontSize: 12,
               fontWeight: 600,
+              cursor: 'pointer',
             }}
           >
             <Users size={14} />
@@ -416,11 +423,12 @@ export function Navbar({
               gap: 6,
               padding: '7px 12px',
               borderRadius: 8,
-              background: 'var(--bg-menu, #162035)',
-              color: 'var(--primary, #38BDF8)',
-              border: '1px solid var(--border-subtle, #1E293B)',
+              background: 'var(--bg-menu, #191714)',
+              color: 'var(--antique-gold, #C6A15B)',
+              border: '1px solid var(--border-subtle, #393128)',
               fontSize: 12,
               fontWeight: 600,
+              cursor: 'pointer',
             }}
           >
             <Palette size={14} />
@@ -439,11 +447,12 @@ export function Navbar({
             gap: 6,
             padding: '7px 12px',
             borderRadius: 8,
-            background: 'var(--bg-menu, #162035)',
-            color: 'var(--text-secondary, #94A3B8)',
-            border: '1px solid var(--border-subtle, #1E293B)',
+            background: 'var(--bg-menu, #191714)',
+            color: 'var(--text-muted, #A79D8D)',
+            border: '1px solid var(--border-subtle, #393128)',
             fontSize: 12,
             fontWeight: 500,
+            cursor: 'pointer',
           }}
         >
           <History size={14} />
@@ -462,11 +471,12 @@ export function Navbar({
               gap: 6,
               padding: '7px 12px',
               borderRadius: 8,
-              background: 'rgba(245, 158, 11, 0.12)',
-              color: '#FBBF24',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
+              background: 'rgba(198, 161, 91, 0.12)',
+              color: 'var(--antique-gold, #C6A15B)',
+              border: '1px solid rgba(198, 161, 91, 0.35)',
               fontSize: 12,
               fontWeight: 600,
+              cursor: 'pointer',
             }}
           >
             <Shield size={14} />
@@ -486,11 +496,12 @@ export function Navbar({
               gap: 6,
               padding: '7px 12px',
               borderRadius: 8,
-              background: 'var(--bg-menu, #162035)',
-              color: 'var(--accent-gold, #F59E0B)',
-              border: '1px solid var(--border-subtle, #1E293B)',
+              background: 'var(--bg-menu, #191714)',
+              color: 'var(--antique-gold, #C6A15B)',
+              border: '1px solid var(--border-subtle, #393128)',
               fontSize: 12,
               fontWeight: 500,
+              cursor: 'pointer',
             }}
           >
             <KeyRound size={14} />
@@ -509,11 +520,12 @@ export function Navbar({
             gap: 6,
             padding: '7px 12px',
             borderRadius: 8,
-            background: 'var(--community-btn, #162035)',
-            color: 'var(--community-btn-text, #38BDF8)',
-            border: '1px solid var(--community-btn-border, #1E293B)',
+            background: 'var(--bg-menu, #191714)',
+            color: 'var(--ivory, #F1E8D8)',
+            border: '1px solid var(--border-subtle, #393128)',
             fontSize: 12,
             fontWeight: 500,
+            cursor: 'pointer',
             transition: 'all 0.2s ease',
           }}
         >
@@ -533,9 +545,9 @@ export function Navbar({
             width: 34,
             height: 34,
             borderRadius: 8,
-            background: 'var(--community-btn, #162035)',
-            color: 'var(--community-btn-text, #38BDF8)',
-            border: '1px solid var(--community-btn-border, #1E293B)',
+            background: 'var(--bg-menu, #191714)',
+            color: 'var(--ivory, #F1E8D8)',
+            border: '1px solid var(--border-subtle, #393128)',
             cursor: 'pointer',
           }}
         >
@@ -554,9 +566,9 @@ export function Navbar({
             width: 34,
             height: 34,
             borderRadius: 8,
-            background: isMobileSearchOpen ? 'var(--primary-glow, rgba(16, 185, 129, 0.2))' : 'var(--bg-menu, #162035)',
-            color: isMobileSearchOpen ? 'var(--primary, #34D399)' : 'var(--text-secondary, #94A3B8)',
-            border: '1px solid var(--border-subtle, #1E293B)',
+            background: isMobileSearchOpen ? 'rgba(198, 161, 91, 0.15)' : 'var(--bg-menu, #191714)',
+            color: isMobileSearchOpen ? 'var(--antique-gold, #C6A15B)' : 'var(--text-muted, #A79D8D)',
+            border: '1px solid var(--border-subtle, #393128)',
             cursor: 'pointer',
           }}
         >
@@ -566,8 +578,8 @@ export function Navbar({
         {/* 1-Click Dark Mode / White Mode Toggle Icon (All screens) */}
         <button
           onClick={toggleThemeMode}
-          title={isLightMode ? 'Beralih ke Dark Mode (Emerald)' : 'Beralih ke White Mode (Clean Porcelain)'}
-          aria-label={isLightMode ? 'Beralih ke Dark Mode' : 'Beralih ke White Mode'}
+          title={isLightMode ? 'Beralih ke Dark Pro Mataram' : 'Beralih ke White Mode (Wulan Purnama)'}
+          aria-label={isLightMode ? 'Beralih ke Dark Pro' : 'Beralih ke White Mode'}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -575,9 +587,9 @@ export function Navbar({
             width: 34,
             height: 34,
             borderRadius: 8,
-            background: isLightMode ? '#FEF08A' : 'var(--bg-menu, #162035)',
-            color: isLightMode ? '#854D0E' : '#FBBF24',
-            border: isLightMode ? '1px solid #FDE047' : '1px solid var(--border-subtle, #1E293B)',
+            background: isLightMode ? '#F1E8D8' : 'var(--bg-menu, #191714)',
+            color: isLightMode ? '#8F6D35' : 'var(--antique-gold, #C6A15B)',
+            border: isLightMode ? '1px solid #C6A15B' : '1px solid var(--border-subtle, #393128)',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
           }}
@@ -644,8 +656,9 @@ export function Navbar({
               gap: 6,
               padding: '5px 8px',
               borderRadius: 8,
-              background: 'var(--bg-menu, #162035)',
-              border: '1px solid var(--border-subtle, #1E293B)',
+              background: 'var(--bg-menu, #191714)',
+              border: '1px solid var(--border-subtle, #393128)',
+              cursor: 'pointer',
             }}
           >
             <div
@@ -654,7 +667,7 @@ export function Navbar({
                 height: 24,
                 borderRadius: '50%',
                 overflow: 'hidden',
-                background: 'var(--border-medium, #334155)',
+                background: 'var(--border-medium, #49372A)',
                 flexShrink: 0,
               }}
             >
@@ -662,18 +675,15 @@ export function Navbar({
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={currentUser.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <UserCheck size={16} />
+                <UserCheck size={16} color="var(--antique-gold, #C6A15B)" />
               )}
             </div>
             <div className="hide-on-mobile" style={{ textAlign: 'left' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: roleBadge.text }}>
                 {roleBadge.label}
               </div>
-              <div style={{ fontSize: 10, color: 'var(--text-muted, #64748B)' }}>
-                {currentUser ? currentUser.displayName.split(' ')[0] : 'Tamu'}
-              </div>
             </div>
-            <ChevronDown size={13} color="var(--text-secondary, #94A3B8)" />
+            <ChevronDown size={13} color="var(--text-muted, #A79D8D)" />
           </button>
 
           {isUserMenuOpen && (
@@ -684,20 +694,20 @@ export function Navbar({
                 right: 0,
                 marginTop: 6,
                 width: 240,
-                background: 'var(--bg-card, #131B2E)',
-                border: '1px solid var(--border-subtle, #1E293B)',
+                background: 'var(--bg-card, #211D18)',
+                border: '1px solid var(--border-subtle, #393128)',
                 borderRadius: 10,
-                boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                 padding: 6,
                 zIndex: 100,
               }}
             >
               {/* Profile summary */}
-              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-subtle, #1E293B)', marginBottom: 6 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
+              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-subtle, #393128)', marginBottom: 6 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ivory, #F1E8D8)' }}>
                   {currentUser?.displayName || 'Pengguna'}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--text-secondary, #94A3B8)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
                   <span>{currentUser?.email || (currentUser?.username ? `@${currentUser.username}` : '')}</span>
                   <span style={{ fontSize: 10, padding: '1px 5px', borderRadius: 4, background: roleBadge.bg, color: roleBadge.text, fontWeight: 700 }}>
                     {roleBadge.label}
@@ -717,11 +727,12 @@ export function Navbar({
                     padding: '8px 10px',
                     borderRadius: 6,
                     fontSize: 12,
-                    color: '#38BDF8',
+                    color: 'var(--antique-gold, #C6A15B)',
                     fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
+                    cursor: 'pointer',
                   }}
                 >
                   <Camera size={14} /> 👤 Edit Profil & Foto Akun
@@ -737,11 +748,12 @@ export function Navbar({
                     padding: '8px 10px',
                     borderRadius: 6,
                     fontSize: 12,
-                    color: '#FBBF24',
+                    color: '#D7A45A',
                     fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
+                    cursor: 'pointer',
                   }}
                 >
                   🔑 Ganti Kata Sandi (Password)
@@ -757,11 +769,12 @@ export function Navbar({
                     padding: '8px 10px',
                     borderRadius: 6,
                     fontSize: 12,
-                    color: '#34D399',
+                    color: 'var(--ivory, #F1E8D8)',
                     fontWeight: 500,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
+                    cursor: 'pointer',
                   }}
                 >
                   🔐 Masuk / Ganti Akun
@@ -778,11 +791,12 @@ export function Navbar({
                       padding: '8px 10px',
                       borderRadius: 6,
                       fontSize: 12,
-                      color: '#EF4444',
+                      color: 'var(--danger, #D97970)',
                       fontWeight: 600,
                       display: 'flex',
                       alignItems: 'center',
                       gap: 6,
+                      cursor: 'pointer',
                     }}
                   >
                     <LogOut size={13} />
@@ -940,9 +954,9 @@ export function Navbar({
             style={{
               width: 'min(340px, 86vw)',
               height: '100%',
-              background: 'var(--bg-menu, #0F172A)',
-              borderLeft: '1px solid var(--border-subtle, #1E293B)',
-              boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.75)',
+              background: 'var(--bg-secondary, #191714)',
+              borderLeft: '1px solid var(--border-subtle, #393128)',
+              boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.85)',
               display: 'flex',
               flexDirection: 'column',
               overflowY: 'auto',
@@ -956,18 +970,18 @@ export function Navbar({
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '16px 18px',
-                borderBottom: '1px solid var(--border-subtle, #1E293B)',
-                background: 'var(--bg-card, #131B2E)',
+                borderBottom: '1px solid var(--border-subtle, #393128)',
+                background: 'var(--bg-card, #211D18)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/assets/logo.svg" alt="Logo" style={{ width: 26, height: 26 }} />
+                <img src="/assets/javanese-darkpro-mark.svg" alt="Logo" style={{ width: 28, height: 28 }} />
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary, #F8FAFC)' }}>
+                  <div style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 16, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.06em' }}>
                     SILSILAH
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-secondary, #94A3B8)' }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>
                     {workspace.name}
                   </div>
                 </div>
@@ -977,7 +991,7 @@ export function Navbar({
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: 'var(--text-secondary, #94A3B8)',
+                  color: 'var(--text-muted, #A79D8D)',
                   cursor: 'pointer',
                   padding: 4,
                 }}
@@ -992,8 +1006,8 @@ export function Navbar({
                 margin: 14,
                 padding: '12px 14px',
                 borderRadius: 12,
-                background: 'var(--bg-card, rgba(19, 27, 46, 0.7))',
-                border: '1px solid var(--border-subtle, #1E293B)',
+                background: 'var(--bg-card, #211D18)',
+                border: '1px solid var(--border-subtle, #393128)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1003,7 +1017,7 @@ export function Navbar({
                     height: 38,
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    background: '#334155',
+                    background: 'var(--border-medium, #49372A)',
                     flexShrink: 0,
                   }}
                 >
@@ -1011,11 +1025,11 @@ export function Navbar({
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={currentUser.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <UserCheck size={20} />
+                    <UserCheck size={20} color="var(--antique-gold, #C6A15B)" />
                   )}
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {currentUser?.displayName || 'Pengguna'}
                   </div>
                   <div style={{ fontSize: 10.5, color: roleBadge.text, fontWeight: 700, marginTop: 2 }}>
@@ -1034,9 +1048,9 @@ export function Navbar({
                     flex: 1,
                     padding: '7px 8px',
                     borderRadius: 6,
-                    background: 'var(--bg-menu, #162035)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
-                    color: '#38BDF8',
+                    background: 'var(--bg-menu, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--antique-gold, #C6A15B)',
                     fontSize: 11,
                     fontWeight: 600,
                     display: 'flex',
@@ -1057,9 +1071,9 @@ export function Navbar({
                     flex: 1,
                     padding: '7px 8px',
                     borderRadius: 6,
-                    background: 'var(--bg-menu, #162035)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
-                    color: '#FBBF24',
+                    background: 'var(--bg-menu, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: '#D7A45A',
                     fontSize: 11,
                     fontWeight: 600,
                     display: 'flex',
@@ -1076,7 +1090,7 @@ export function Navbar({
 
             {/* Navigation Mode Switcher */}
             <div style={{ padding: '0 14px 10px 14px' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary, #94A3B8)', marginBottom: 6, textTransform: 'uppercase' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted, #A79D8D)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Mode Tampilan Silsilah
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -1094,9 +1108,9 @@ export function Navbar({
                     borderRadius: 8,
                     fontSize: 12,
                     fontWeight: 600,
-                    background: viewMode === 'canvas' ? 'var(--primary, #10B981)' : 'var(--bg-card, #131B2E)',
-                    color: viewMode === 'canvas' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
+                    background: viewMode === 'canvas' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'var(--bg-card, #211D18)',
+                    color: viewMode === 'canvas' ? '#11100E' : 'var(--text-muted, #A79D8D)',
+                    border: '1px solid var(--border-subtle, #393128)',
                     cursor: 'pointer',
                   }}
                 >
@@ -1117,9 +1131,9 @@ export function Navbar({
                     borderRadius: 8,
                     fontSize: 12,
                     fontWeight: 600,
-                    background: viewMode === 'list' ? 'var(--primary, #10B981)' : 'var(--bg-card, #131B2E)',
-                    color: viewMode === 'list' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
+                    background: viewMode === 'list' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'var(--bg-card, #211D18)',
+                    color: viewMode === 'list' ? '#11100E' : 'var(--text-muted, #A79D8D)',
+                    border: '1px solid var(--border-subtle, #393128)',
                     cursor: 'pointer',
                   }}
                 >
@@ -1131,7 +1145,7 @@ export function Navbar({
 
             {/* Main Menu Items */}
             <div style={{ padding: '6px 14px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary, #94A3B8)', marginBottom: 2, textTransform: 'uppercase' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted, #A79D8D)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Fitur & Alat
               </div>
 
@@ -1147,16 +1161,16 @@ export function Navbar({
                     gap: 10,
                     padding: '10px 12px',
                     borderRadius: 8,
-                    background: isSidebarOpen ? 'var(--primary-glow, rgba(16, 185, 129, 0.15))' : 'var(--bg-card, #131B2E)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
-                    color: isSidebarOpen ? 'var(--primary, #34D399)' : 'var(--text-primary, #F8FAFC)',
+                    background: isSidebarOpen ? 'rgba(198, 161, 91, 0.15)' : 'var(--bg-card, #211D18)',
+                    border: isSidebarOpen ? '1px solid rgba(198, 161, 91, 0.35)' : '1px solid var(--border-subtle, #393128)',
+                    color: isSidebarOpen ? 'var(--antique-gold, #C6A15B)' : 'var(--ivory, #F1E8D8)',
                     fontSize: 13,
                     fontWeight: 600,
                     textAlign: 'left',
                     cursor: 'pointer',
                   }}
                 >
-                  <Users size={16} color="var(--primary, #34D399)" />
+                  <Users size={16} color="var(--antique-gold, #C6A15B)" />
                   <span>{isSidebarOpen ? 'Tutup Panel Anggota' : 'Buka Panel Anggota'}</span>
                 </button>
               )}
@@ -1172,17 +1186,17 @@ export function Navbar({
                   gap: 10,
                   padding: '10px 12px',
                   borderRadius: 8,
-                  background: 'var(--bg-card, #131B2E)',
-                  border: '1px solid var(--border-subtle, #1E293B)',
-                  color: 'var(--text-primary, #F8FAFC)',
+                  background: 'var(--bg-card, #211D18)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  color: 'var(--ivory, #F1E8D8)',
                   fontSize: 13,
                   fontWeight: 600,
                   textAlign: 'left',
                   cursor: 'pointer',
                 }}
               >
-                <MessageSquare size={16} color="#38BDF8" />
-                <span>Chat Komunitas Keluarga</span>
+                <MessageSquare size={16} color="var(--antique-gold, #C6A15B)" />
+                <span>Chat Komunitas Trah</span>
               </button>
 
               {onOpenThemeCustomizer && (
@@ -1197,16 +1211,16 @@ export function Navbar({
                     gap: 10,
                     padding: '10px 12px',
                     borderRadius: 8,
-                    background: 'var(--bg-card, #131B2E)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
-                    color: 'var(--text-primary, #F8FAFC)',
+                    background: 'var(--bg-card, #211D18)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--ivory, #F1E8D8)',
                     fontSize: 13,
                     fontWeight: 600,
                     textAlign: 'left',
                     cursor: 'pointer',
                   }}
                 >
-                  <Palette size={16} color="#A78BFA" />
+                  <Palette size={16} color="var(--antique-gold, #C6A15B)" />
                   <span>Kustom Tema Warna RGB</span>
                 </button>
               )}
@@ -1222,16 +1236,16 @@ export function Navbar({
                   gap: 10,
                   padding: '10px 12px',
                   borderRadius: 8,
-                  background: 'var(--bg-card, #131B2E)',
-                  border: '1px solid var(--border-subtle, #1E293B)',
-                  color: 'var(--text-primary, #F8FAFC)',
+                  background: 'var(--bg-card, #211D18)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  color: 'var(--ivory, #F1E8D8)',
                   fontSize: 13,
                   fontWeight: 600,
                   textAlign: 'left',
                   cursor: 'pointer',
                 }}
               >
-                <History size={16} color="#94A3B8" />
+                <History size={16} color="var(--text-muted, #A79D8D)" />
                 <span>Riwayat Audit Log</span>
               </button>
 
@@ -1247,16 +1261,16 @@ export function Navbar({
                     gap: 10,
                     padding: '10px 12px',
                     borderRadius: 8,
-                    background: 'rgba(245, 158, 11, 0.1)',
-                    border: '1px solid rgba(245, 158, 11, 0.25)',
-                    color: '#FBBF24',
+                    background: 'rgba(198, 161, 91, 0.12)',
+                    border: '1px solid rgba(198, 161, 91, 0.3)',
+                    color: 'var(--antique-gold, #C6A15B)',
                     fontSize: 13,
                     fontWeight: 600,
                     textAlign: 'left',
                     cursor: 'pointer',
                   }}
                 >
-                  <Shield size={16} color="#FBBF24" />
+                  <Shield size={16} color="var(--antique-gold, #C6A15B)" />
                   <span>Kelola Akun (Superadmin)</span>
                 </button>
               )}
@@ -1273,16 +1287,16 @@ export function Navbar({
                     gap: 10,
                     padding: '10px 12px',
                     borderRadius: 8,
-                    background: 'var(--bg-card, #131B2E)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
-                    color: 'var(--accent-gold, #F59E0B)',
+                    background: 'var(--bg-card, #211D18)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--antique-gold, #C6A15B)',
                     fontSize: 13,
                     fontWeight: 600,
                     textAlign: 'left',
                     cursor: 'pointer',
                   }}
                 >
-                  <KeyRound size={16} color="#F59E0B" />
+                  <KeyRound size={16} color="var(--antique-gold, #C6A15B)" />
                   <span>Permintaan Lupa Password</span>
                 </button>
               )}
@@ -1299,16 +1313,16 @@ export function Navbar({
                     gap: 10,
                     padding: '10px 12px',
                     borderRadius: 8,
-                    background: 'var(--bg-card, #131B2E)',
-                    border: '1px solid var(--border-subtle, #1E293B)',
-                    color: 'var(--text-primary, #F8FAFC)',
+                    background: 'var(--bg-card, #211D18)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--ivory, #F1E8D8)',
                     fontSize: 13,
                     fontWeight: 600,
                     textAlign: 'left',
                     cursor: 'pointer',
                   }}
                 >
-                  <Edit3 size={16} color="#34D399" />
+                  <Edit3 size={16} color="var(--antique-gold, #C6A15B)" />
                   <span>Ubah Judul / Nama Ruang</span>
                 </button>
               )}
@@ -1318,8 +1332,8 @@ export function Navbar({
             <div
               style={{
                 padding: '14px',
-                borderTop: '1px solid var(--border-subtle, #1E293B)',
-                background: 'var(--bg-card, #131B2E)',
+                borderTop: '1px solid var(--border-subtle, #393128)',
+                background: 'var(--bg-card, #211D18)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 8,
@@ -1336,9 +1350,9 @@ export function Navbar({
                   gap: 8,
                   padding: '9px 12px',
                   borderRadius: 8,
-                  background: 'var(--bg-menu, #162035)',
-                  border: '1px solid var(--border-subtle, #1E293B)',
-                  color: '#34D399',
+                  background: 'var(--bg-menu, #191714)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  color: 'var(--ivory, #F1E8D8)',
                   fontSize: 12.5,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -1359,9 +1373,9 @@ export function Navbar({
                     gap: 8,
                     padding: '9px 12px',
                     borderRadius: 8,
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    color: '#EF4444',
+                    background: 'rgba(217, 121, 112, 0.1)',
+                    border: '1px solid rgba(217, 121, 112, 0.3)',
+                    color: 'var(--danger, #D97970)',
                     fontSize: 12.5,
                     fontWeight: 700,
                     cursor: 'pointer',

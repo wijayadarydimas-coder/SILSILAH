@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="goldMark" x1="20" y1="18" x2="105" y2="110" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8C987"/>
+      <stop offset="0.6" stop-color="#C6A15B"/>
+      <stop offset="1" stop-color="#8F6D35"/>
+    </linearGradient>
+    <radialGradient id="markGlow" cx="64" cy="64" r="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C6A15B" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#11100E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="5" y="5" width="118" height="118" rx="28" fill="#191714" stroke="#393128" stroke-width="2"/>
+  <circle cx="64" cy="64" r="48" fill="url(#markGlow)"/>
+  <!-- Javanese Tree of Life (Kayon / Kalpataru inspired lineage structure) -->
+  <path d="M64 34V58M34 76V62H94V76M64 58V76" stroke="url(#goldMark)" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="64" cy="26" r="10" fill="#C6A15B" stroke="#F1E8D8" stroke-width="1.8"/>
+  <circle cx="34" cy="86" r="10" fill="#B96F4B" stroke="#F1E8D8" stroke-width="1.8"/>
+  <circle cx="64" cy="86" r="10" fill="#C6A15B" stroke="#F1E8D8" stroke-width="1.8"/>
+  <circle cx="94" cy="86" r="10" fill="#B96F4B" stroke="#F1E8D8" stroke-width="1.8"/>
+  <!-- Subtle Sulur Base Curves -->
+  <path d="M22 106C32 98 40 102 48 107M80 107C88 101 96 98 106 106" stroke="#8F6D35" stroke-width="2" stroke-linecap="round"/>
+</svg>

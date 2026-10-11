@@ -81,14 +81,14 @@ export function PhoneCountryInput({
             alignItems: 'center',
             gap: 6,
             fontSize: 12,
-            color: '#94A3B8',
+            color: 'var(--text-secondary, #A79D8D)',
             marginBottom: 2,
             fontWeight: 500,
           }}
         >
-          <Phone size={13} color="#10B981" />
+          <Phone size={13} color="#C6A15B" />
           <span>{label}</span>
-          {required && <span style={{ color: '#EF4444' }}>*</span>}
+          {required && <span style={{ color: '#D97970' }}>*</span>}
         </label>
       )}
 
@@ -103,9 +103,9 @@ export function PhoneCountryInput({
             width: 130,
             padding: '9px 8px',
             borderRadius: 8,
-            background: '#162035',
-            border: '1px solid #1E293B',
-            color: '#F8FAFC',
+            background: 'var(--bg-elevated, #211D18)',
+            border: '1px solid var(--border-subtle, #393128)',
+            color: 'var(--text-primary, #F1E8D8)',
             fontSize: 12.5,
             fontWeight: 600,
             cursor: disabled ? 'not-allowed' : 'pointer',
@@ -114,7 +114,7 @@ export function PhoneCountryInput({
           }}
         >
           {COUNTRY_CODES.map((item) => (
-            <option key={item.code} value={item.code}>
+            <option key={item.code} value={item.code} style={{ background: '#211D18', color: '#F1E8D8' }}>
               {item.flag} {item.code} ({item.country.split(' ')[0]})
             </option>
           ))}
@@ -133,9 +133,9 @@ export function PhoneCountryInput({
               width: '100%',
               padding: '9px 12px',
               borderRadius: 8,
-              background: '#162035',
-              border: '1px solid #1E293B',
-              color: '#F8FAFC',
+              background: 'var(--bg-elevated, #211D18)',
+              border: '1px solid var(--border-subtle, #393128)',
+              color: 'var(--text-primary, #F1E8D8)',
               fontSize: 13,
               outline: 'none',
               cursor: disabled ? 'not-allowed' : 'text',
@@ -151,17 +151,17 @@ export function PhoneCountryInput({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: 'rgba(16, 185, 129, 0.08)',
-            border: '1px solid rgba(16, 185, 129, 0.25)',
+            background: 'rgba(198, 161, 91, 0.1)',
+            border: '1px solid rgba(198, 161, 91, 0.25)',
             borderRadius: 6,
             padding: '4px 8px',
             marginTop: 3,
             fontSize: 11,
-            color: '#34D399',
+            color: '#C6A15B',
           }}
         >
           <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981' }} />
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#C6A15B' }} />
             Tertaut WhatsApp: <strong>{value}</strong>
           </span>
           <a
@@ -170,7 +170,7 @@ export function PhoneCountryInput({
             rel="noopener noreferrer"
             title="Uji coba tautan WhatsApp"
             style={{
-              color: '#38BDF8',
+              color: '#F1E8D8',
               display: 'flex',
               alignItems: 'center',
               gap: 3,

@@ -129,12 +129,12 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
     >
       <div
         style={{
-          background: '#0F1626',
-          border: '1px solid #1E293B',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
           width: '100%',
           maxWidth: 'min(440px, 94vw)',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -147,24 +147,42 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
-            borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {mode === 'login' ? <Lock size={18} color="#10B981" /> : <KeyRound size={18} color="#F59E0B" />}
-            <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
+            {mode === 'login' ? <Lock size={18} color="#C6A15B" /> : <KeyRound size={18} color="#C6A15B" />}
+            <h2
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: 'var(--text-primary, #F1E8D8)',
+                fontFamily: 'Cinzel, serif',
+                letterSpacing: '0.02em',
+                margin: 0,
+              }}
+            >
               {mode === 'login' ? 'Masuk ke Sistem SILSILAH' : 'Ganti Kata Sandi Akun'}
             </h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94A3B8', cursor: 'pointer' }}>
+          <button
+            onClick={onClose}
+            style={{
+              color: 'var(--text-secondary, #A79D8D)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 4,
+            }}
+          >
             <X size={20} />
           </button>
         </div>
 
         {/* Tab switcher if authenticated */}
         {currentUser && (
-          <div style={{ display: 'flex', borderBottom: '1px solid #1E293B', background: '#111827' }}>
+          <div style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle, #393128)', background: 'var(--bg-secondary, #191714)' }}>
             <button
               onClick={() => {
                 setMode('login');
@@ -175,8 +193,8 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                 padding: '10px',
                 fontSize: 12.5,
                 fontWeight: 600,
-                color: mode === 'login' ? '#10B981' : '#94A3B8',
-                borderBottom: mode === 'login' ? '2px solid #10B981' : 'none',
+                color: mode === 'login' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
+                borderBottom: mode === 'login' ? '2px solid #C6A15B' : 'none',
                 background: 'transparent',
                 cursor: 'pointer',
               }}
@@ -193,8 +211,8 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                 padding: '10px',
                 fontSize: 12.5,
                 fontWeight: 600,
-                color: mode === 'change_password' ? '#F59E0B' : '#94A3B8',
-                borderBottom: mode === 'change_password' ? '2px solid #F59E0B' : 'none',
+                color: mode === 'change_password' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
+                borderBottom: mode === 'change_password' ? '2px solid #C6A15B' : 'none',
                 background: 'transparent',
                 cursor: 'pointer',
               }}
@@ -209,9 +227,9 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           {errorMsg && (
             <div
               style={{
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#FCA5A5',
+                background: 'rgba(217, 121, 112, 0.15)',
+                border: '1px solid rgba(217, 121, 112, 0.3)',
+                color: '#D97970',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -228,9 +246,9 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           {successMsg && (
             <div
               style={{
-                background: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#34D399',
+                background: 'rgba(126, 170, 131, 0.15)',
+                border: '1px solid rgba(126, 170, 131, 0.3)',
+                color: '#7EAA83',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 12.5,
@@ -248,7 +266,7 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           {mode === 'login' && (
             <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
                   Username
                 </label>
                 <input
@@ -261,16 +279,16 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
                   Password
                 </label>
                 <input
@@ -283,9 +301,9 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />
@@ -298,11 +316,11 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#F59E0B',
+                    color: '#C6A15B',
                     fontSize: 12,
                     cursor: 'pointer',
                     padding: 0,
-                    fontWeight: 500,
+                    fontWeight: 600,
                   }}
                 >
                   Lupa kata sandi?
@@ -322,12 +340,12 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                 style={{
                   marginTop: 6,
                   padding: '8px 10px',
-                  background: 'rgba(15, 23, 42, 0.6)',
+                  background: 'rgba(25, 23, 20, 0.6)',
                   borderRadius: 8,
-                  border: '1px solid #1E293B',
+                  border: '1px solid var(--border-subtle, #393128)',
                   textAlign: 'center',
                   fontSize: 11,
-                  color: '#94A3B8',
+                  color: 'var(--text-secondary, #A79D8D)',
                   lineHeight: 1.4,
                 }}
               >
@@ -339,12 +357,12 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           {/* MODE 2: CHANGE PASSWORD */}
           {mode === 'change_password' && (
             <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ fontSize: 12, color: '#94A3B8' }}>
-                Akun aktif: <b>{currentUser?.displayName || 'Belum Masuk'}</b> ({currentUser?.role ? currentUser.role.toUpperCase() : 'TAMU'})
+              <div style={{ fontSize: 12, color: 'var(--text-secondary, #A79D8D)' }}>
+                Akun aktif: <b style={{ color: '#F1E8D8' }}>{currentUser?.displayName || 'Belum Masuk'}</b> ({currentUser?.role ? currentUser.role.toUpperCase() : 'TAMU'})
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
                   Kata Sandi Lama
                 </label>
                 <input
@@ -357,16 +375,16 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
                   Kata Sandi Baru
                 </label>
                 <input
@@ -379,16 +397,16 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
                   Ulangi Kata Sandi Baru
                 </label>
                 <input
@@ -401,9 +419,9 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />

@@ -135,15 +135,15 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
       >
         <div
           style={{
-            background: '#0F1626',
-            border: '1px solid #1E293B',
+            background: 'var(--bg-elevated, #211D18)',
+            border: '1px solid var(--border-subtle, #393128)',
             borderRadius: 16,
             width: '100%',
             maxWidth: 'min(760px, 95vw)',
             maxHeight: '90vh',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+            boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)',
             overflow: 'hidden',
           }}
         >
@@ -154,17 +154,26 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: '16px 20px',
-              borderBottom: '1px solid #1E293B',
-              background: '#131B2E',
+              borderBottom: '1px solid var(--border-subtle, #393128)',
+              background: 'var(--bg-secondary, #191714)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <KeyRound size={20} color="#F59E0B" />
+              <KeyRound size={20} color="#C6A15B" />
               <div>
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#F8FAFC' }}>
+                <h2
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: 'var(--text-primary, #F1E8D8)',
+                    fontFamily: 'Cinzel, serif',
+                    letterSpacing: '0.02em',
+                    margin: 0,
+                  }}
+                >
                   Laporan Permintaan Lupa Kata Sandi
                 </h2>
-                <span style={{ fontSize: 11.5, color: '#94A3B8' }}>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary, #A79D8D)' }}>
                   Total Permintaan: {requests.length} | Pending: {pendingCount}
                 </span>
               </div>
@@ -181,9 +190,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                   gap: 6,
                   padding: '6px 12px',
                   borderRadius: 8,
-                  background: 'rgba(59, 130, 246, 0.15)',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
-                  color: '#60A5FA',
+                  background: 'rgba(198, 161, 91, 0.15)',
+                  border: '1px solid rgba(198, 161, 91, 0.3)',
+                  color: '#C6A15B',
                   fontSize: 12,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -199,9 +208,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                 style={{
                   padding: 6,
                   borderRadius: 6,
-                  background: '#162035',
-                  border: '1px solid #1E293B',
-                  color: '#94A3B8',
+                  background: 'var(--bg-elevated, #211D18)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  color: 'var(--text-secondary, #A79D8D)',
                   cursor: 'pointer',
                   display: 'flex',
                 }}
@@ -209,7 +218,7 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                 <RefreshCw size={15} />
               </button>
 
-              <button onClick={onClose} style={{ color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <button onClick={onClose} style={{ color: 'var(--text-secondary, #A79D8D)', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
                 <X size={20} />
               </button>
             </div>
@@ -219,8 +228,8 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
           <div
             style={{
               padding: '10px 20px',
-              background: '#111827',
-              borderBottom: '1px solid #1E293B',
+              background: 'var(--bg-secondary, #191714)',
+              borderBottom: '1px solid var(--border-subtle, #393128)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -234,9 +243,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                   borderRadius: 6,
                   fontSize: 11.5,
                   fontWeight: 600,
-                  background: filter === 'all' ? '#1E293B' : 'transparent',
-                  color: filter === 'all' ? '#F8FAFC' : '#94A3B8',
-                  border: 'none',
+                  background: filter === 'all' ? 'var(--bg-elevated, #211D18)' : 'transparent',
+                  color: filter === 'all' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
+                  border: filter === 'all' ? '1px solid var(--border-subtle, #393128)' : 'none',
                   cursor: 'pointer',
                 }}
               >
@@ -249,9 +258,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                   borderRadius: 6,
                   fontSize: 11.5,
                   fontWeight: 600,
-                  background: filter === 'pending' ? 'rgba(245, 158, 11, 0.2)' : 'transparent',
-                  color: filter === 'pending' ? '#FBBF24' : '#94A3B8',
-                  border: 'none',
+                  background: filter === 'pending' ? 'rgba(198, 161, 91, 0.15)' : 'transparent',
+                  color: filter === 'pending' ? '#C6A15B' : 'var(--text-secondary, #A79D8D)',
+                  border: filter === 'pending' ? '1px solid rgba(198, 161, 91, 0.3)' : 'none',
                   cursor: 'pointer',
                 }}
               >
@@ -264,9 +273,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                   borderRadius: 6,
                   fontSize: 11.5,
                   fontWeight: 600,
-                  background: filter === 'resolved' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
-                  color: filter === 'resolved' ? '#34D399' : '#94A3B8',
-                  border: 'none',
+                  background: filter === 'resolved' ? 'rgba(126, 170, 131, 0.15)' : 'transparent',
+                  color: filter === 'resolved' ? '#7EAA83' : 'var(--text-secondary, #A79D8D)',
+                  border: filter === 'resolved' ? '1px solid rgba(126, 170, 131, 0.3)' : 'none',
                   cursor: 'pointer',
                 }}
               >
@@ -274,7 +283,7 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
               </button>
             </div>
 
-            <span style={{ fontSize: 11, color: '#64748B' }}>
+            <span style={{ fontSize: 11, color: 'var(--text-secondary, #A79D8D)' }}>
               Format WhatsApp otomatis dicatat untuk dihubungi Admin
             </span>
           </div>
@@ -284,9 +293,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
             {msg && (
               <div
                 style={{
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  border: '1px solid rgba(16, 185, 129, 0.3)',
-                  color: '#34D399',
+                  background: 'rgba(126, 170, 131, 0.15)',
+                  border: '1px solid rgba(126, 170, 131, 0.3)',
+                  color: '#7EAA83',
                   padding: '10px 14px',
                   borderRadius: 8,
                   fontSize: 12.5,
@@ -301,7 +310,7 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
             )}
 
             {filtered.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px', color: '#64748B', fontSize: 13 }}>
+              <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary, #A79D8D)', fontSize: 13 }}>
                 Tidak ada data permintaan reset kata sandi pada kategori ini.
               </div>
             ) : (
@@ -317,9 +326,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                   <div
                     key={r.id}
                     style={{
-                      background: '#162035',
+                      background: 'var(--bg-secondary, #191714)',
                       borderRadius: 10,
-                      border: '1px solid #1E293B',
+                      border: '1px solid var(--border-subtle, #393128)',
                       padding: '12px 14px',
                       display: 'flex',
                       alignItems: 'center',
@@ -329,11 +338,11 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                   >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: 13.5, fontWeight: 700, color: '#F8FAFC' }}>
+                        <span style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)' }}>
                           @{r.username}
                         </span>
                         {r.displayName && (
-                          <span style={{ fontSize: 12, color: '#94A3B8' }}>({r.displayName})</span>
+                          <span style={{ fontSize: 12, color: 'var(--text-secondary, #A79D8D)' }}>({r.displayName})</span>
                         )}
                         <span
                           style={{
@@ -341,18 +350,19 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                             padding: '2px 8px',
                             borderRadius: 999,
                             fontWeight: 600,
-                            background: isPending ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                            color: isPending ? '#FBBF24' : '#34D399',
+                            background: isPending ? 'rgba(198, 161, 91, 0.15)' : 'rgba(126, 170, 131, 0.15)',
+                            color: isPending ? '#C6A15B' : '#7EAA83',
+                            border: `1px solid ${isPending ? 'rgba(198, 161, 91, 0.3)' : 'rgba(126, 170, 131, 0.3)'}`,
                           }}
                         >
                           {isPending ? 'Pending' : 'Selesai'}
                         </span>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 4, fontSize: 12, color: '#94A3B8' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 4, fontSize: 12, color: 'var(--text-secondary, #A79D8D)' }}>
                         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                          {isWhatsapp ? <Phone size={12} color="#34D399" /> : <Mail size={12} color="#60A5FA" />}
-                          <b style={{ color: '#F1F5F9' }}>{r.contactValue}</b> ({isWhatsapp ? 'WhatsApp' : 'Email'})
+                          {isWhatsapp ? <Phone size={12} color="#C6A15B" /> : <Mail size={12} color="#C6A15B" />}
+                          <b style={{ color: 'var(--text-primary, #F1E8D8)' }}>{r.contactValue}</b> ({isWhatsapp ? 'WhatsApp' : 'Email'})
                         </span>
                         <span>•</span>
                         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -362,7 +372,7 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                       </div>
 
                       {r.notes && (
-                        <div style={{ fontSize: 11, color: '#64748B', marginTop: 4, fontStyle: 'italic' }}>
+                        <div style={{ fontSize: 11, color: '#A79D8D', marginTop: 4, fontStyle: 'italic' }}>
                           Catatan: {r.notes}
                         </div>
                       )}
@@ -373,15 +383,11 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                         <>
                           <button
                             onClick={() => handleResolve(r.id, r.username)}
+                            className="btn-primary"
                             style={{
                               padding: '6px 12px',
-                              borderRadius: 6,
-                              background: '#10B981',
-                              color: 'white',
-                              border: 'none',
                               fontSize: 11.5,
                               fontWeight: 600,
-                              cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
                               gap: 4,
@@ -395,9 +401,9 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                             style={{
                               padding: '6px 8px',
                               borderRadius: 6,
-                              background: 'rgba(239, 68, 68, 0.15)',
-                              color: '#F87171',
-                              border: '1px solid rgba(239, 68, 68, 0.3)',
+                              background: 'rgba(217, 121, 112, 0.15)',
+                              color: '#D97970',
+                              border: '1px solid rgba(217, 121, 112, 0.3)',
                               fontSize: 11.5,
                               cursor: 'pointer',
                             }}
@@ -406,7 +412,7 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                           </button>
                         </>
                       ) : (
-                        <span style={{ fontSize: 11.5, color: '#34D399', fontWeight: 600 }}>
+                        <span style={{ fontSize: 11.5, color: '#7EAA83', fontWeight: 600 }}>
                           ✓ Telah Ditangani
                         </span>
                       )}

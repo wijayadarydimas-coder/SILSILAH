@@ -293,15 +293,15 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
     >
       <div
         style={{
-          background: '#0F1626',
-          border: '1px solid #1E293B',
+          background: 'var(--bg-elevated, #211D18)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
           width: '100%',
           maxWidth: 'min(620px, 95vw)',
           maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
           overflow: 'hidden',
         }}
       >
@@ -312,17 +312,35 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '16px 20px',
-            borderBottom: '1px solid #1E293B',
-            background: '#131B2E',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-secondary, #191714)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <User size={20} color="#10B981" />
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: '#F8FAFC' }}>
+            <User size={20} color="#C6A15B" />
+            <h2
+              style={{
+                fontSize: 16,
+                fontWeight: 700,
+                color: 'var(--text-primary, #F1E8D8)',
+                fontFamily: 'Cinzel, serif',
+                letterSpacing: '0.02em',
+                margin: 0,
+              }}
+            >
               {isEditing ? 'Edit Data Anggota Silsilah' : 'Tambah Anggota Baru'}
             </h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94A3B8' }}>
+          <button
+            onClick={onClose}
+            style={{
+              color: 'var(--text-secondary, #A79D8D)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 4,
+            }}
+          >
             <X size={20} />
           </button>
         </div>
@@ -342,9 +360,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             {errorMsg && (
               <div
                 style={{
-                  background: 'rgba(239, 68, 68, 0.15)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  color: '#FCA5A5',
+                  background: 'rgba(217, 121, 112, 0.15)',
+                  border: '1px solid rgba(217, 121, 112, 0.3)',
+                  color: '#D97970',
                   padding: '10px 14px',
                   borderRadius: 8,
                   fontSize: 13,
@@ -357,7 +375,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             {/* Nama Lengkap & Panggilan */}
             <div className="grid-2-col-responsive">
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 6 }}>
                   Nama Lengkap *
                 </label>
                 <input
@@ -370,16 +388,16 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 6 }}>
                   Nama Panggilan / Kartu
                 </label>
                 <input
@@ -391,9 +409,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 />
@@ -403,7 +421,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             {/* Gender & Status Verifikasi */}
             <div className="grid-2-col-responsive">
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 6 }}>
                   Jenis Kelamin
                 </label>
                 <select
@@ -413,9 +431,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 >
@@ -427,7 +445,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 6 }}>
                   Status Verifikasi
                 </label>
                 <select
@@ -437,9 +455,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     width: '100%',
                     padding: '8px 12px',
                     borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 13,
                   }}
                 >
@@ -450,9 +468,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             </div>
 
             {/* FOTO & SETTING PAS LINGKARAN */}
-            <div style={{ background: '#131B2E', padding: 14, borderRadius: 10, border: '1px solid #1E293B' }}>
+            <div style={{ background: 'var(--bg-secondary, #191714)', padding: 14, borderRadius: 10, border: '1px solid var(--border-subtle, #393128)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8' }}>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)' }}>
                   FOTO PROFIL &amp; PENGATURAN PAS KE LINGKARAN
                 </span>
                 <button
@@ -462,13 +480,14 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
-                    background: 'rgba(59, 130, 246, 0.15)',
-                    color: '#60A5FA',
-                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                    background: 'rgba(198, 161, 91, 0.15)',
+                    color: '#C6A15B',
+                    border: '1px solid rgba(198, 161, 91, 0.35)',
                     padding: '4px 10px',
                     borderRadius: 6,
                     fontSize: 11.5,
                     fontWeight: 600,
+                    cursor: 'pointer',
                   }}
                 >
                   <Upload size={13} /> Upload dari Komputer
@@ -490,8 +509,8 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     height: 84,
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    border: '3px solid #10B981',
-                    background: '#1E293B',
+                    border: '3px solid #C6A15B',
+                    background: 'var(--bg-primary, #11100E)',
                     flexShrink: 0,
                     display: 'flex',
                     alignItems: 'center',
@@ -519,14 +538,14 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                       }}
                     />
                   ) : (
-                    <User size={34} color="#64748B" />
+                    <User size={34} color="#A79D8D" />
                   )}
                 </div>
 
                 {/* SLIDERS & CONTROLS */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#94A3B8' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-secondary, #A79D8D)' }}>
                       <span>Ukuran / Zoom Foto (Pas Lingkaran):</span>
                       <span>{Math.round(photoZoom * 100)}%</span>
                     </div>
@@ -537,13 +556,13 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                       step="0.05"
                       value={photoZoom}
                       onChange={(e) => setPhotoZoom(parseFloat(e.target.value))}
-                      style={{ width: '100%', accentColor: '#10B981' }}
+                      style={{ width: '100%', accentColor: '#C6A15B' }}
                     />
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10.5, color: '#94A3B8' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10.5, color: 'var(--text-secondary, #A79D8D)' }}>
                         <span>Geser Vertikal (Y):</span>
                         <span>{photoOffsetY}px</span>
                       </div>
@@ -554,12 +573,12 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                         step="2"
                         value={photoOffsetY}
                         onChange={(e) => setPhotoOffsetY(parseInt(e.target.value, 10))}
-                        style={{ width: '100%', accentColor: '#3B82F6' }}
+                        style={{ width: '100%', accentColor: '#C6A15B' }}
                       />
                     </div>
 
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10.5, color: '#94A3B8' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10.5, color: 'var(--text-secondary, #A79D8D)' }}>
                         <span>Geser Horisontal (X):</span>
                         <span>{photoOffsetX}px</span>
                       </div>
@@ -570,7 +589,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                         step="2"
                         value={photoOffsetX}
                         onChange={(e) => setPhotoOffsetX(parseInt(e.target.value, 10))}
-                        style={{ width: '100%', accentColor: '#3B82F6' }}
+                        style={{ width: '100%', accentColor: '#C6A15B' }}
                       />
                     </div>
                   </div>
@@ -592,9 +611,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     width: '100%',
                     padding: '7px 10px',
                     borderRadius: 6,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
+                    background: 'var(--bg-elevated, #211D18)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
                     fontSize: 12,
                   }}
                 />
@@ -602,15 +621,15 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             </div>
 
             {/* TAUTKAN DENGAN AKUN PENGGUNA */}
-            <div style={{ background: '#131B2E', padding: 14, borderRadius: 10, border: '1px solid #1E293B' }}>
+            <div style={{ background: 'var(--bg-secondary, #191714)', padding: 14, borderRadius: 10, border: '1px solid var(--border-subtle, #393128)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Link size={15} color="#3B82F6" />
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8' }}>
-                  TAUTKAN KE AKUN PENGGUNA (USER)
+                <Link size={15} color="#C6A15B" />
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)' }}>
+                  TAUTKAN KE AKUN PENGGUNA (WARGA)
                 </span>
               </div>
-              <p style={{ fontSize: 11.5, color: '#64748B', marginBottom: 8 }}>
-                Pilih akun pengguna (User) yang merupakan representasi dari anggota keluarga ini.
+              <p style={{ fontSize: 11.5, color: 'var(--text-secondary, #A79D8D)', marginBottom: 8 }}>
+                Pilih akun pengguna yang merupakan representasi dari anggota keluarga ini.
               </p>
               <select
                 value={linkedUserId}
@@ -619,32 +638,33 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                   width: '100%',
                   padding: '8px 12px',
                   borderRadius: 8,
-                  background: '#162035',
-                  border: '1px solid #1E293B',
-                  color: '#F8FAFC',
+                  background: 'var(--bg-elevated, #211D18)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  color: 'var(--text-primary, #F1E8D8)',
                   fontSize: 13,
                 }}
               >
                 <option value="">-- Tidak ditautkan ke akun pengguna --</option>
                 {users.map((u) => (
                   <option key={u.id} value={u.id}>
-                    {u.displayName} ({u.username || u.email}) - Role: {u.role === 'client' ? 'USER' : u.role.toUpperCase()}
+                    {u.displayName} ({u.username || u.email}) - Role: {u.role === 'client' ? 'WARGA' : u.role.toUpperCase()}
                   </option>
                 ))}
               </select>
             </div>
 
             {/* Tanggal Lahir & Wafat */}
-            <div style={{ background: '#131B2E', padding: 14, borderRadius: 10, border: '1px solid #1E293B' }}>
+            <div style={{ background: 'var(--bg-secondary, #191714)', padding: 14, borderRadius: 10, border: '1px solid var(--border-subtle, #393128)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Calendar size={14} color="#10B981" /> TANGGAL KEHIDUPAN
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Calendar size={14} color="#C6A15B" /> TANGGAL KEHIDUPAN
                 </span>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#CBD5E1', cursor: 'pointer' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-primary, #F1E8D8)', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={isDeceased}
                     onChange={(e) => setIsDeceased(e.target.checked)}
+                    style={{ accentColor: '#C6A15B' }}
                   />
                   Sudah Meninggal Dunia (Wafat)
                 </label>
@@ -652,7 +672,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
 
               <div className={isDeceased ? 'grid-2-col-responsive' : ''}>
                 <div>
-                  <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
+                  <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
                     Tanggal Lahir
                   </label>
                   <input
@@ -663,9 +683,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                       width: '100%',
                       padding: '8px 12px',
                       borderRadius: 8,
-                      background: '#162035',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
+                      background: 'var(--bg-elevated, #211D18)',
+                      border: '1px solid var(--border-subtle, #393128)',
+                      color: 'var(--text-primary, #F1E8D8)',
                       fontSize: 13,
                       colorScheme: 'dark',
                     }}
@@ -674,7 +694,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
 
                 {isDeceased && (
                   <div>
-                    <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
+                    <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
                       Tanggal Wafat
                     </label>
                     <input
@@ -685,9 +705,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                         width: '100%',
                         padding: '8px 12px',
                         borderRadius: 8,
-                        background: '#162035',
-                        border: '1px solid #1E293B',
-                        color: '#F8FAFC',
+                        background: 'var(--bg-elevated, #211D18)',
+                        border: '1px solid var(--border-subtle, #393128)',
+                        color: 'var(--text-primary, #F1E8D8)',
                         fontSize: 13,
                         colorScheme: 'dark',
                       }}
@@ -699,7 +719,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
 
             {/* Biografi */}
             <div>
-              <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
+              <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', marginBottom: 6 }}>
                 Catatan Biografi Singkat
               </label>
               <textarea
@@ -711,9 +731,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                   width: '100%',
                   padding: '8px 12px',
                   borderRadius: 8,
-                  background: '#162035',
-                  border: '1px solid #1E293B',
-                  color: '#F8FAFC',
+                  background: 'var(--bg-secondary, #191714)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  color: 'var(--text-primary, #F1E8D8)',
                   fontSize: 13,
                   resize: 'vertical',
                 }}
@@ -721,18 +741,18 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             </div>
 
             {/* Kontak & Domisili */}
-            <div style={{ background: '#131B2E', padding: 14, borderRadius: 10, border: '1px solid #1E293B' }}>
-              <span style={{ fontSize: 12.5, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 12 }}>
+            <div style={{ background: 'var(--bg-secondary, #191714)', padding: 14, borderRadius: 10, border: '1px solid var(--border-subtle, #393128)' }}>
+              <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', display: 'block', marginBottom: 12 }}>
                 KONTAK &amp; DOMISILI
               </span>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {/* Domisili / Alamat dengan Rekomendasi Hierarki Otomatis */}
                 <div style={{ position: 'relative' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
-                    <MapPin size={13} color="#EC4899" />
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
+                    <MapPin size={13} color="#C6A15B" />
                     Domisili / Alamat
-                    {isSearchingLocation && <Loader2 size={12} className="animate-spin" color="#EC4899" />}
+                    {isSearchingLocation && <Loader2 size={12} className="animate-spin" color="#C6A15B" />}
                   </label>
                   <div className="grid-2-col-responsive">
                     <select
@@ -748,9 +768,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                       style={{
                         padding: '8px 10px',
                         borderRadius: 8,
-                        background: '#162035',
-                        border: '1px solid #1E293B',
-                        color: '#F8FAFC',
+                        background: 'var(--bg-elevated, #211D18)',
+                        border: '1px solid var(--border-subtle, #393128)',
+                        color: 'var(--text-primary, #F1E8D8)',
                         fontSize: 12.5,
                       }}
                     >
@@ -773,9 +793,9 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                           width: '100%',
                           padding: '8px 12px',
                           borderRadius: 8,
-                          background: '#162035',
-                          border: '1px solid #1E293B',
-                          color: '#F8FAFC',
+                          background: 'var(--bg-elevated, #211D18)',
+                          border: '1px solid var(--border-subtle, #393128)',
+                          color: 'var(--text-primary, #F1E8D8)',
                           fontSize: 12.5,
                         }}
                       />
@@ -788,8 +808,8 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                             top: '100%',
                             left: 0,
                             right: 0,
-                            background: '#0F1626',
-                            border: '1px solid #334155',
+                            background: 'var(--bg-elevated, #211D18)',
+                            border: '1px solid var(--border-subtle, #393128)',
                             borderRadius: 8,
                             boxShadow: '0 12px 30px rgba(0,0,0,0.85)',
                             zIndex: 60,
@@ -804,22 +824,22 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                               onClick={() => handleSelectLocation(loc)}
                               style={{
                                 padding: '8px 12px',
-                                borderBottom: idx < locationSuggestions.length - 1 ? '1px solid #1E293B' : 'none',
+                                borderBottom: idx < locationSuggestions.length - 1 ? '1px solid var(--border-subtle, #393128)' : 'none',
                                 cursor: 'pointer',
                                 display: 'flex',
                                 alignItems: 'flex-start',
                                 gap: 8,
                                 transition: 'background 0.15s',
                               }}
-                              onMouseEnter={(e) => (e.currentTarget.style.background = '#1E293B')}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = '#2B251E')}
                               onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                             >
-                              <MapPin size={13} color="#EC4899" style={{ marginTop: 2, flexShrink: 0 }} />
+                              <MapPin size={13} color="#C6A15B" style={{ marginTop: 2, flexShrink: 0 }} />
                               <div>
-                                <div style={{ fontSize: 12.5, fontWeight: 600, color: '#F8FAFC' }}>
+                                <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary, #F1E8D8)' }}>
                                   {loc.title}
                                 </div>
-                                <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 1 }}>
+                                <div style={{ fontSize: 11, color: 'var(--text-secondary, #A79D8D)', marginTop: 1 }}>
                                   {loc.subtitle}
                                 </div>
                               </div>
@@ -848,8 +868,8 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 {/* Email & Instagram */}
                 <div className="grid-2-col-responsive">
                   <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
-                      <Mail size={13} color="#3B82F6" />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
+                      <Mail size={13} color="#C6A15B" />
                       Alamat Email
                     </label>
                     <input
@@ -861,30 +881,30 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                         width: '100%',
                         padding: '8px 12px',
                         borderRadius: 8,
-                        background: '#162035',
-                        border: '1px solid #1E293B',
-                        color: '#F8FAFC',
+                        background: 'var(--bg-elevated, #211D18)',
+                        border: '1px solid var(--border-subtle, #393128)',
+                        color: 'var(--text-primary, #F1E8D8)',
                         fontSize: 13,
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
-                      <Share2 size={13} color="#E1306C" />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4 }}>
+                      <Share2 size={13} color="#C6A15B" />
                       Akun Instagram / Sosmed
                     </label>
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        background: '#162035',
-                        border: '1px solid #1E293B',
+                        background: 'var(--bg-elevated, #211D18)',
+                        border: '1px solid var(--border-subtle, #393128)',
                         borderRadius: 8,
                         padding: '0 10px',
                       }}
                     >
-                      <span style={{ color: '#E1306C', fontSize: 13, fontWeight: 700, marginRight: 4 }}>@</span>
+                      <span style={{ color: '#C6A15B', fontSize: 13, fontWeight: 700, marginRight: 4 }}>@</span>
                       <input
                         type="text"
                         value={instagram.replace(/^@+/, '')}
@@ -896,7 +916,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                           background: 'transparent',
                           border: 'none',
                           outline: 'none',
-                          color: '#F8FAFC',
+                          color: 'var(--text-primary, #F1E8D8)',
                           fontSize: 13,
                         }}
                       />
@@ -911,8 +931,8 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
           <div
             style={{
               padding: '14px 20px',
-              borderTop: '1px solid #1E293B',
-              background: '#131B2E',
+              borderTop: '1px solid var(--border-subtle, #393128)',
+              background: 'var(--bg-secondary, #191714)',
               display: 'flex',
               justifyContent: 'flex-end',
               gap: 10,
@@ -924,10 +944,12 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
               style={{
                 padding: '8px 16px',
                 borderRadius: 8,
-                background: '#1E293B',
-                color: '#CBD5E1',
+                background: '#2B251E',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: 'var(--text-primary, #F1E8D8)',
                 fontSize: 13,
                 fontWeight: 600,
+                cursor: 'pointer',
               }}
             >
               Batal

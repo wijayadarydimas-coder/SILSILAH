@@ -227,19 +227,19 @@ export function buildTreeLayout({
       type: 'smoothstep',
       animated: isHighlighted,
       style: {
-        stroke: isHighlighted ? '#10B981' : isNonBio ? '#94A3B8' : '#3B82F6',
-        strokeWidth: isHighlighted ? 2.5 : 1.8,
+        stroke: isHighlighted ? '#C6A15B' : isNonBio ? '#A79D8D' : '#8F6D35',
+        strokeWidth: isHighlighted ? 2.5 : 1.6,
         strokeDasharray: isNonBio ? '5,5' : undefined,
       },
       markerEnd: {
         type: MarkerType.ArrowClosed,
-        color: isHighlighted ? '#10B981' : isNonBio ? '#94A3B8' : '#3B82F6',
+        color: isHighlighted ? '#C6A15B' : isNonBio ? '#A79D8D' : '#8F6D35',
         width: 14,
         height: 14,
       },
       label: isNonBio ? rel.parentageType : undefined,
-      labelStyle: { fill: '#94A3B8', fontSize: 11, fontWeight: 500 },
-      labelBgStyle: { fill: '#1E293B', fillOpacity: 0.8 },
+      labelStyle: { fill: '#A79D8D', fontSize: 11, fontWeight: 500 },
+      labelBgStyle: { fill: '#191714', fillOpacity: 0.9 },
     });
   });
 
@@ -259,13 +259,13 @@ export function buildTreeLayout({
       targetHandle: 'left',
       type: 'straight',
       style: {
-        stroke: isFocusCouple ? '#F43F5E' : '#E11D48',
+        stroke: isFocusCouple ? '#C6A15B' : '#B96F4B',
         strokeWidth: 2,
         strokeDasharray: part.status === 'past' ? '4,4' : undefined,
       },
       label: part.status === 'past' ? 'Mantan' : '💍',
-      labelStyle: { fill: '#FDA4AF', fontSize: 12 },
-      labelBgStyle: { fill: '#1E293B', fillOpacity: 0.85 },
+      labelStyle: { fill: '#F1E8D8', fontSize: 12 },
+      labelBgStyle: { fill: '#191714', fillOpacity: 0.9 },
     });
   });
 

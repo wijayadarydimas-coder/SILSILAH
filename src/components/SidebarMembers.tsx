@@ -95,10 +95,10 @@ export function SidebarMembers({
           style={{
             width: 'min(310px, calc(100vw - 44px))',
             height: '100%',
-            background: 'var(--bg-menu, rgba(15, 22, 38, 0.95))',
+            background: 'var(--bg-secondary, #191714)',
             backdropFilter: 'blur(12px)',
-            borderRight: '1px solid #1E293B',
-            boxShadow: '10px 0 30px rgba(0, 0, 0, 0.6)',
+            borderRight: '1px solid var(--border-subtle, #393128)',
+            boxShadow: '10px 0 30px rgba(0, 0, 0, 0.75)',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -107,24 +107,25 @@ export function SidebarMembers({
         <div
           style={{
             padding: '16px',
-            borderBottom: '1px solid var(--border-subtle, #1E293B)',
-            background: 'var(--bg-menu, #131B2E)',
+            borderBottom: '1px solid var(--border-subtle, #393128)',
+            background: 'var(--bg-card, #211D18)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Users size={18} color="var(--primary, #10B981)" />
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)' }}>
-              Daftar Anggota Keluarga
+            <Users size={18} color="var(--antique-gold, #C6A15B)" />
+            <h2 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 13.5, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
+              Daftar Trah Keluarga
             </h2>
           </div>
           <span
             style={{
               fontSize: 11,
-              background: 'var(--primary-glow, rgba(16, 185, 129, 0.15))',
-              color: 'var(--primary, #34D399)',
+              background: 'rgba(198, 161, 91, 0.15)',
+              color: 'var(--antique-gold, #C6A15B)',
+              border: '1px solid rgba(198, 161, 91, 0.3)',
               padding: '2px 8px',
               borderRadius: 999,
               fontWeight: 600,
@@ -135,8 +136,8 @@ export function SidebarMembers({
         </div>
 
         {/* Tab Filters & Search */}
-        <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--border-subtle, #1E293B)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{ display: 'flex', background: 'var(--bg-menu, #162035)', padding: 2, borderRadius: 8, border: '1px solid var(--border-subtle, transparent)' }}>
+        <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--border-subtle, #393128)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', background: 'var(--bg-card, #211D18)', padding: 2, borderRadius: 8, border: '1px solid var(--border-subtle, #393128)' }}>
             <button
               onClick={() => setFilterMode('all')}
               style={{
@@ -145,8 +146,10 @@ export function SidebarMembers({
                 borderRadius: 6,
                 fontSize: 11.5,
                 fontWeight: 600,
-                background: filterMode === 'all' ? 'var(--primary, #10B981)' : 'transparent',
-                color: filterMode === 'all' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
+                background: filterMode === 'all' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'transparent',
+                color: filterMode === 'all' ? '#11100E' : 'var(--text-muted, #A79D8D)',
+                border: 'none',
+                cursor: 'pointer',
               }}
             >
               Semua ({people.length})
@@ -159,16 +162,18 @@ export function SidebarMembers({
                 borderRadius: 6,
                 fontSize: 11.5,
                 fontWeight: 600,
-                background: filterMode === 'clients' ? '#3B82F6' : 'transparent',
-                color: filterMode === 'clients' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
+                background: filterMode === 'clients' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'transparent',
+                color: filterMode === 'clients' ? '#11100E' : 'var(--text-muted, #A79D8D)',
+                border: 'none',
+                cursor: 'pointer',
               }}
             >
-              Akun User
+              Akun Warga
             </button>
           </div>
 
           <div style={{ position: 'relative' }}>
-            <Search size={14} color="var(--text-secondary, #94A3B8)" style={{ position: 'absolute', left: 10, top: 9 }} />
+            <Search size={14} color="var(--antique-gold, #C6A15B)" style={{ position: 'absolute', left: 10, top: 9 }} />
             <input
               type="text"
               value={searchQuery}
@@ -178,10 +183,11 @@ export function SidebarMembers({
                 width: '100%',
                 padding: '6px 10px 6px 30px',
                 borderRadius: 6,
-                background: 'var(--bg-menu, #162035)',
-                border: '1px solid var(--border-subtle, #1E293B)',
-                color: 'var(--text-primary, #F8FAFC)',
+                background: 'var(--bg-card, #211D18)',
+                border: '1px solid var(--border-subtle, #393128)',
+                color: 'var(--ivory, #F1E8D8)',
                 fontSize: 12,
+                outline: 'none',
               }}
             />
           </div>
@@ -198,20 +204,6 @@ export function SidebarMembers({
           )}
         </div>
 
-        {/* Drag Instruction Banner */}
-        <div
-          style={{
-            padding: '8px 14px',
-            background: 'rgba(59, 130, 246, 0.08)',
-            borderBottom: '1px solid #1E293B',
-            fontSize: 11,
-            color: '#93C5FD',
-            lineHeight: 1.4,
-          }}
-        >
-          💡 <b>Drag &amp; Drop:</b> Tarik kartu nama di bawah ke kanvas atau ke anggota lain untuk menghubungkan relasi secara instan!
-        </div>
-
         {/* Member Cards List */}
         <div
           style={{
@@ -224,7 +216,7 @@ export function SidebarMembers({
           }}
         >
           {filtered.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '30px 10px', color: '#64748B', fontSize: 12 }}>
+            <div style={{ textAlign: 'center', padding: '30px 10px', color: 'var(--text-muted, #A79D8D)', fontSize: 12 }}>
               {people.length === 0 ? (
                 <div>
                   <p style={{ marginBottom: 10 }}>Belum ada anggota silsilah.</p>
@@ -250,8 +242,8 @@ export function SidebarMembers({
                   onDragStart={(e) => handleDragStart(e, person)}
                   onClick={() => onSelectPerson(person.id)}
                   style={{
-                    background: isFocus ? 'rgba(245, 158, 11, 0.1)' : '#162035',
-                    border: isFocus ? '1px solid #F59E0B' : '1px solid #1E293B',
+                    background: isFocus ? 'rgba(198, 161, 91, 0.12)' : 'var(--bg-card, #211D18)',
+                    border: isFocus ? '1px solid var(--antique-gold, #C6A15B)' : '1px solid var(--border-subtle, #393128)',
                     borderRadius: 10,
                     padding: '8px 10px',
                     display: 'flex',
@@ -261,14 +253,14 @@ export function SidebarMembers({
                     transition: 'all 0.15s ease',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isFocus) e.currentTarget.style.borderColor = '#334155';
+                    if (!isFocus) e.currentTarget.style.borderColor = 'var(--antique-gold, #C6A15B)';
                   }}
                   onMouseLeave={(e) => {
-                    if (!isFocus) e.currentTarget.style.borderColor = '#1E293B';
+                    if (!isFocus) e.currentTarget.style.borderColor = 'var(--border-subtle, #393128)';
                   }}
                 >
                   {canEdit && (
-                    <span title="Tarik kartu untuk menghubungkan relasi" style={{ color: '#64748B', cursor: 'grab' }}>
+                    <span title="Tarik kartu untuk menghubungkan relasi" style={{ color: 'var(--text-muted, #A79D8D)', cursor: 'grab' }}>
                       <GripVertical size={14} />
                     </span>
                   )}
@@ -279,8 +271,8 @@ export function SidebarMembers({
                       height: 36,
                       borderRadius: '50%',
                       overflow: 'hidden',
-                      background: '#1E293B',
-                      border: `2px solid ${isFocus ? '#F59E0B' : person.gender === 'male' ? '#3B82F6' : '#EC4899'}`,
+                      background: 'var(--bg-elevated, #211D18)',
+                      border: `2px solid ${isFocus ? 'var(--antique-gold, #C6A15B)' : person.gender === 'male' ? '#8F6D35' : '#B96F4B'}`,
                       flexShrink: 0,
                     }}
                   >
@@ -297,7 +289,7 @@ export function SidebarMembers({
                         }}
                       />
                     ) : (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94A3B8' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted, #A79D8D)' }}>
                         <User size={16} />
                       </div>
                     )}
@@ -309,7 +301,7 @@ export function SidebarMembers({
                         style={{
                           fontSize: 12.5,
                           fontWeight: 600,
-                          color: isFocus ? '#FDE68A' : '#F8FAFC',
+                          color: isFocus ? 'var(--antique-gold, #C6A15B)' : 'var(--ivory, #F1E8D8)',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -317,11 +309,11 @@ export function SidebarMembers({
                       >
                         {person.fullName}
                       </span>
-                      {person.verificationStatus === 'verified' && <ShieldCheck size={12} color="#10B981" />}
+                      {person.verificationStatus === 'verified' && <ShieldCheck size={12} color="var(--success, #7EAA83)" />}
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <span style={{ fontSize: 10.5, color: '#94A3B8' }}>
+                      <span style={{ fontSize: 10.5, color: 'var(--text-muted, #A79D8D)' }}>
                         {calculateAge(person.birthDate, person.deathDate, person.isDeceased).formattedLifeSpan}
                       </span>
                       {linkedUser && (
@@ -329,8 +321,9 @@ export function SidebarMembers({
                           title={`Ditautkan ke akun: ${linkedUser.displayName}`}
                           style={{
                             fontSize: 9.5,
-                            background: 'rgba(59, 130, 246, 0.2)',
-                            color: '#60A5FA',
+                            background: 'rgba(198, 161, 91, 0.15)',
+                            color: 'var(--antique-gold, #C6A15B)',
+                            border: '1px solid rgba(198, 161, 91, 0.25)',
                             padding: '1px 5px',
                             borderRadius: 4,
                             display: 'flex',
@@ -338,7 +331,7 @@ export function SidebarMembers({
                             gap: 2,
                           }}
                         >
-                          <Link size={9} /> User
+                          <Link size={9} /> Warga
                         </span>
                       )}
                     </div>
@@ -354,13 +347,15 @@ export function SidebarMembers({
                       style={{
                         padding: '4px 6px',
                         borderRadius: 6,
-                        background: 'var(--primary-glow, rgba(16, 185, 129, 0.12))',
-                        color: 'var(--primary, #34D399)',
+                        background: 'rgba(198, 161, 91, 0.12)',
+                        color: 'var(--antique-gold, #C6A15B)',
+                        border: '1px solid rgba(198, 161, 91, 0.3)',
                         fontSize: 10.5,
                         fontWeight: 600,
                         display: 'flex',
                         alignItems: 'center',
                         gap: 3,
+                        cursor: 'pointer',
                       }}
                     >
                       <GitMerge size={12} />
@@ -380,8 +375,8 @@ export function SidebarMembers({
         style={{
           width: isOpen ? 24 : 32,
           height: isOpen ? 60 : 76,
-          background: isOpen ? 'var(--bg-menu, #131B2E)' : 'var(--primary, #10B981)',
-          border: '1px solid var(--border-subtle, #1E293B)',
+          background: isOpen ? 'var(--bg-secondary, #191714)' : 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
+          border: '1px solid var(--border-subtle, #393128)',
           borderLeft: 'none',
           borderRadius: '0 8px 8px 0',
           display: 'flex',
@@ -389,10 +384,10 @@ export function SidebarMembers({
           alignItems: 'center',
           justifyContent: 'center',
           gap: 3,
-          color: isOpen ? 'var(--primary, #10B981)' : '#FFFFFF',
+          color: isOpen ? 'var(--antique-gold, #C6A15B)' : '#11100E',
           alignSelf: 'center',
           cursor: 'pointer',
-          boxShadow: '4px 0 12px var(--primary-glow, rgba(0,0,0,0.5))',
+          boxShadow: '4px 0 14px rgba(0,0,0,0.5)',
           transition: 'all 0.2s ease',
         }}
       >
