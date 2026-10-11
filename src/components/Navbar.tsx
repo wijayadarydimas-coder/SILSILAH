@@ -25,6 +25,8 @@ import {
   LogOut,
   Sun,
   Moon,
+  Menu,
+  X,
 } from 'lucide-react';
 import { PRESET_THEMES, applyThemeColors, THEME_STORAGE_KEY } from '@/components/ThemeCustomizerModal';
 
@@ -35,7 +37,7 @@ interface NavbarProps {
   onOpenAuditLog: () => void;
   onOpenAccountMgmt: () => void;
   onOpenProfile: (id: string) => void;
-  onOpenAuth: (mode: 'login' | 'register' | 'change_password') => void;
+  onOpenAuth: (mode: 'login' | 'change_password') => void;
   onOpenWorkspaceSettings?: () => void;
   onOpenThemeCustomizer?: () => void;
   onToggleSidebarMembers?: () => void;
@@ -76,6 +78,8 @@ export function Navbar({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -232,8 +236,9 @@ export function Navbar({
           </div>
         </div>
 
-        {/* View Mode Toggle: Canvas vs List */}
+        {/* View Mode Toggle: Canvas vs List (Desktop & Tablet) */}
         <div
+          className="hide-on-mobile"
           style={{
             display: 'flex',
             background: 'var(--bg-menu, #162035)',
@@ -283,8 +288,8 @@ export function Navbar({
         </div>
       </div>
 
-      {/* Global Member Search Bar */}
-      <div ref={searchRef} style={{ position: 'relative', width: 280 }}>
+      {/* Global Member Search Bar (Desktop & Tablet) */}
+      <div ref={searchRef} className="hide-on-mobile" style={{ position: 'relative', width: 'clamp(180px, 20vw, 280px)' }}>
         <div style={{ position: 'relative' }}>
           <Search size={15} color="var(--text-secondary, #94A3B8)" style={{ position: 'absolute', left: 10, top: 10 }} />
           <input
@@ -374,11 +379,12 @@ export function Navbar({
       </div>
 
       {/* Right Controls */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        {/* Toggle Sidebar Members */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        {/* Toggle Sidebar Members (Desktop) */}
         {onToggleSidebarMembers && (
           <button
             onClick={onToggleSidebarMembers}
+            className="hide-on-tablet"
             title="Buka/Tutup Panel Anggota (Drag & Drop Relasi)"
             style={{
               display: 'flex',
@@ -398,10 +404,11 @@ export function Navbar({
           </button>
         )}
 
-        {/* Theme Customizer RGB */}
+        {/* Theme Customizer RGB (Desktop) */}
         {onOpenThemeCustomizer && (
           <button
             onClick={onOpenThemeCustomizer}
+            className="hide-on-tablet"
             title="Kustom Tema Warna RGB Komponen"
             style={{
               display: 'flex',
@@ -421,31 +428,10 @@ export function Navbar({
           </button>
         )}
 
-        {/* 1-Click Dark Mode / White Mode Toggle Icon */}
-        <button
-          onClick={toggleThemeMode}
-          title={isLightMode ? 'Beralih ke Dark Mode (Emerald)' : 'Beralih ke White Mode (Clean Porcelain)'}
-          aria-label={isLightMode ? 'Beralih ke Dark Mode' : 'Beralih ke White Mode'}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            background: isLightMode ? '#FEF08A' : 'var(--bg-menu, #162035)',
-            color: isLightMode ? '#854D0E' : '#FBBF24',
-            border: isLightMode ? '1px solid #FDE047' : '1px solid var(--border-subtle, #1E293B)',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          {isLightMode ? <Moon size={15} /> : <Sun size={15} />}
-        </button>
-
-        {/* Audit Log Button */}
+        {/* Audit Log Button (Desktop) */}
         <button
           onClick={onOpenAuditLog}
+          className="hide-on-tablet"
           title="Buka Riwayat Audit Log"
           style={{
             display: 'flex',
@@ -464,10 +450,11 @@ export function Navbar({
           Audit Log
         </button>
 
-        {/* Account Management (Superadmin Only) */}
+        {/* Account Management (Superadmin Only - Desktop) */}
         {isSuperadmin && (
           <button
             onClick={onOpenAccountMgmt}
+            className="hide-on-tablet"
             title="Kelola Akun & Hak Akses Ruang Keluarga"
             style={{
               display: 'flex',
@@ -487,10 +474,11 @@ export function Navbar({
           </button>
         )}
 
-        {/* Password Reset Requests (Admin & Superadmin) */}
+        {/* Password Reset Requests (Admin & Superadmin - Desktop) */}
         {canEdit && onOpenResetAdmin && (
           <button
             onClick={onOpenResetAdmin}
+            className="hide-on-tablet"
             title="Daftar Permintaan Lupa Kata Sandi (Unduh / Cetak PDF)"
             style={{
               display: 'flex',
@@ -510,10 +498,10 @@ export function Navbar({
           </button>
         )}
 
-        {/* Chat Komunitas Button (Customizable Color) */}
+        {/* Chat Komunitas Button (Desktop & Tablet) */}
         <button
           onClick={onOpenCommunityChat}
-          className="btn-secondary"
+          className="hide-on-mobile btn-secondary"
           title="Buka Obrolan Komunitas Keluarga"
           style={{
             display: 'flex',
@@ -530,22 +518,105 @@ export function Navbar({
           }}
         >
           <MessageSquare size={14} />
-          Chat Komunitas
+          <span>Chat Komunitas</span>
         </button>
 
-        {/* Add Member Button (Admin / Superadmin only) */}
+        {/* Chat Komunitas Icon Button (Mobile) */}
+        <button
+          onClick={onOpenCommunityChat}
+          className="show-on-mobile btn-secondary"
+          title="Buka Obrolan Komunitas"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 34,
+            height: 34,
+            borderRadius: 8,
+            background: 'var(--community-btn, #162035)',
+            color: 'var(--community-btn-text, #38BDF8)',
+            border: '1px solid var(--community-btn-border, #1E293B)',
+            cursor: 'pointer',
+          }}
+        >
+          <MessageSquare size={16} />
+        </button>
+
+        {/* Mobile Search Trigger Button (Mobile only) */}
+        <button
+          onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+          className="show-on-mobile btn-secondary"
+          title="Cari Anggota"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 34,
+            height: 34,
+            borderRadius: 8,
+            background: isMobileSearchOpen ? 'var(--primary-glow, rgba(16, 185, 129, 0.2))' : 'var(--bg-menu, #162035)',
+            color: isMobileSearchOpen ? 'var(--primary, #34D399)' : 'var(--text-secondary, #94A3B8)',
+            border: '1px solid var(--border-subtle, #1E293B)',
+            cursor: 'pointer',
+          }}
+        >
+          <Search size={16} />
+        </button>
+
+        {/* 1-Click Dark Mode / White Mode Toggle Icon (All screens) */}
+        <button
+          onClick={toggleThemeMode}
+          title={isLightMode ? 'Beralih ke Dark Mode (Emerald)' : 'Beralih ke White Mode (Clean Porcelain)'}
+          aria-label={isLightMode ? 'Beralih ke Dark Mode' : 'Beralih ke White Mode'}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 34,
+            height: 34,
+            borderRadius: 8,
+            background: isLightMode ? '#FEF08A' : 'var(--bg-menu, #162035)',
+            color: isLightMode ? '#854D0E' : '#FBBF24',
+            border: isLightMode ? '1px solid #FDE047' : '1px solid var(--border-subtle, #1E293B)',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          {isLightMode ? <Moon size={16} /> : <Sun size={16} />}
+        </button>
+
+        {/* Add Member Button - Full on Desktop/Tablet, Compact on Mobile */}
         {canEdit ? (
-          <button
-            onClick={onOpenAddMember}
-            className="btn-primary"
-            style={{ padding: '7px 14px', fontSize: 12.5 }}
-          >
-            <Plus size={15} />
-            Tambah Anggota
-          </button>
+          <>
+            <button
+              onClick={onOpenAddMember}
+              className="btn-primary hide-on-mobile"
+              style={{ padding: '7px 14px', fontSize: 12.5 }}
+            >
+              <Plus size={15} />
+              Tambah Anggota
+            </button>
+            <button
+              onClick={onOpenAddMember}
+              className="btn-primary show-on-mobile"
+              title="Tambah Anggota Baru"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 34,
+                height: 34,
+                padding: 0,
+                borderRadius: 8,
+              }}
+            >
+              <Plus size={17} />
+            </button>
+          </>
         ) : (
           <div
             title="Akun User hanya memiliki hak baca (Read-only)"
+            className="hide-on-mobile"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -570,8 +641,8 @@ export function Navbar({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 8,
-              padding: '5px 10px',
+              gap: 6,
+              padding: '5px 8px',
               borderRadius: 8,
               background: 'var(--bg-menu, #162035)',
               border: '1px solid var(--border-subtle, #1E293B)',
@@ -584,6 +655,7 @@ export function Navbar({
                 borderRadius: '50%',
                 overflow: 'hidden',
                 background: 'var(--border-medium, #334155)',
+                flexShrink: 0,
               }}
             >
               {currentUser?.avatarUrl ? (
@@ -593,7 +665,7 @@ export function Navbar({
                 <UserCheck size={16} />
               )}
             </div>
-            <div style={{ textAlign: 'left' }}>
+            <div className="hide-on-mobile" style={{ textAlign: 'left' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: roleBadge.text }}>
                 {roleBadge.label}
               </div>
@@ -642,7 +714,7 @@ export function Navbar({
                   style={{
                     width: '100%',
                     textAlign: 'left',
-                    padding: '7px 10px',
+                    padding: '8px 10px',
                     borderRadius: 6,
                     fontSize: 12,
                     color: '#38BDF8',
@@ -662,7 +734,7 @@ export function Navbar({
                   style={{
                     width: '100%',
                     textAlign: 'left',
-                    padding: '7px 10px',
+                    padding: '8px 10px',
                     borderRadius: 6,
                     fontSize: 12,
                     color: '#FBBF24',
@@ -682,7 +754,7 @@ export function Navbar({
                   style={{
                     width: '100%',
                     textAlign: 'left',
-                    padding: '7px 10px',
+                    padding: '8px 10px',
                     borderRadius: 6,
                     fontSize: 12,
                     color: '#34D399',
@@ -694,26 +766,6 @@ export function Navbar({
                 >
                   🔐 Masuk / Ganti Akun
                 </button>
-                <button
-                  onClick={() => {
-                    setIsUserMenuOpen(false);
-                    onOpenAuth('register');
-                  }}
-                  style={{
-                    width: '100%',
-                    textAlign: 'left',
-                    padding: '7px 10px',
-                    borderRadius: 6,
-                    fontSize: 12,
-                    color: '#60A5FA',
-                    fontWeight: 500,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                  }}
-                >
-                  ✨ Daftar Akun Baru (User)
-                </button>
                 {onLogout && (
                   <button
                     onClick={() => {
@@ -723,7 +775,7 @@ export function Navbar({
                     style={{
                       width: '100%',
                       textAlign: 'left',
-                      padding: '7px 10px',
+                      padding: '8px 10px',
                       borderRadius: 6,
                       fontSize: 12,
                       color: '#EF4444',
@@ -741,7 +793,588 @@ export function Navbar({
             </div>
           )}
         </div>
+
+        {/* Hamburger Menu Toggle (Tablet & Mobile) */}
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="show-on-tablet btn-secondary"
+          title="Buka Menu Lengkap"
+          aria-label="Menu Aplikasi"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 34,
+            height: 34,
+            padding: 0,
+            borderRadius: 8,
+            color: 'var(--text-primary, #F8FAFC)',
+            background: 'var(--bg-menu, #162035)',
+            border: '1px solid var(--border-subtle, #1E293B)',
+          }}
+        >
+          <Menu size={18} />
+        </button>
       </div>
+
+      {/* Mobile Search Row Banner (when activated on mobile) */}
+      {isMobileSearchOpen && (
+        <div
+          className="show-on-mobile"
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            background: 'var(--bg-card, #0B1120)',
+            borderBottom: '1px solid var(--border-subtle, #1E293B)',
+            padding: '10px 14px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+            zIndex: 90,
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ position: 'relative', flex: 1 }}>
+              <Search size={15} color="var(--text-secondary, #94A3B8)" style={{ position: 'absolute', left: 10, top: 10 }} />
+              <input
+                type="text"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari anggota silsilah..."
+                style={{
+                  width: '100%',
+                  padding: '8px 12px 8px 34px',
+                  borderRadius: 8,
+                  background: 'var(--bg-menu, #162035)',
+                  border: '1px solid var(--border-subtle, #1E293B)',
+                  color: 'var(--text-primary, #F8FAFC)',
+                  fontSize: 13,
+                  outline: 'none',
+                }}
+              />
+            </div>
+            <button
+              onClick={() => {
+                setIsMobileSearchOpen(false);
+                setSearchQuery('');
+              }}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-secondary, #94A3B8)',
+                padding: '6px 8px',
+                cursor: 'pointer',
+              }}
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {searchResults.length > 0 && (
+            <div
+              style={{
+                marginTop: 6,
+                background: 'var(--bg-menu, #131B2E)',
+                border: '1px solid var(--border-subtle, #1E293B)',
+                borderRadius: 8,
+                overflow: 'hidden',
+                maxHeight: 220,
+                overflowY: 'auto',
+              }}
+            >
+              {searchResults.map((p) => (
+                <div
+                  key={p.id}
+                  onClick={() => {
+                    handleSelectSearchPerson(p.id);
+                    setIsMobileSearchOpen(false);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '8px 12px',
+                    borderBottom: '1px solid rgba(255,255,255,0.05)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ width: 26, height: 26, borderRadius: '50%', overflow: 'hidden', background: '#334155' }}>
+                    {p.photoUrl ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={p.photoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', background: '#334155' }} />
+                    )}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary, #F8FAFC)' }}>{p.fullName}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary, #94A3B8)' }}>{p.displayName || p.gender}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Comprehensive Responsive Mobile/Tablet Menu Drawer */}
+      {isMobileMenuOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 2000,
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsMobileMenuOpen(false);
+          }}
+        >
+          <div
+            style={{
+              width: 'min(340px, 86vw)',
+              height: '100%',
+              background: 'var(--bg-menu, #0F172A)',
+              borderLeft: '1px solid var(--border-subtle, #1E293B)',
+              boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.75)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflowY: 'auto',
+              padding: 0,
+            }}
+          >
+            {/* Drawer Header */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '16px 18px',
+                borderBottom: '1px solid var(--border-subtle, #1E293B)',
+                background: 'var(--bg-card, #131B2E)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/assets/logo.svg" alt="Logo" style={{ width: 26, height: 26 }} />
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary, #F8FAFC)' }}>
+                    SILSILAH
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--text-secondary, #94A3B8)' }}>
+                    {workspace.name}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-secondary, #94A3B8)',
+                  cursor: 'pointer',
+                  padding: 4,
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* User Profile Card */}
+            <div
+              style={{
+                margin: 14,
+                padding: '12px 14px',
+                borderRadius: 12,
+                background: 'var(--bg-card, rgba(19, 27, 46, 0.7))',
+                border: '1px solid var(--border-subtle, #1E293B)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    background: '#334155',
+                    flexShrink: 0,
+                  }}
+                >
+                  {currentUser?.avatarUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={currentUser.avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <UserCheck size={20} />
+                  )}
+                </div>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-primary, #F8FAFC)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {currentUser?.displayName || 'Pengguna'}
+                  </div>
+                  <div style={{ fontSize: 10.5, color: roleBadge.text, fontWeight: 700, marginTop: 2 }}>
+                    {roleBadge.label}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenUserProfile?.();
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '7px 8px',
+                    borderRadius: 6,
+                    background: 'var(--bg-menu, #162035)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    color: '#38BDF8',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 4,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Camera size={12} /> Edit Profil
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenAuth('change_password');
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '7px 8px',
+                    borderRadius: 6,
+                    background: 'var(--bg-menu, #162035)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    color: '#FBBF24',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 4,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <KeyRound size={12} /> Password
+                </button>
+              </div>
+            </div>
+
+            {/* Navigation Mode Switcher */}
+            <div style={{ padding: '0 14px 10px 14px' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary, #94A3B8)', marginBottom: 6, textTransform: 'uppercase' }}>
+                Mode Tampilan Silsilah
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <button
+                  onClick={() => {
+                    onViewModeChange('canvas');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    padding: '9px 10px',
+                    borderRadius: 8,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    background: viewMode === 'canvas' ? 'var(--primary, #10B981)' : 'var(--bg-card, #131B2E)',
+                    color: viewMode === 'canvas' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <ListTree size={14} />
+                  Pohon
+                </button>
+                <button
+                  onClick={() => {
+                    onViewModeChange('list');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    padding: '9px 10px',
+                    borderRadius: 8,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    background: viewMode === 'list' ? 'var(--primary, #10B981)' : 'var(--bg-card, #131B2E)',
+                    color: viewMode === 'list' ? '#FFFFFF' : 'var(--text-secondary, #94A3B8)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <LayoutGrid size={14} />
+                  Direktori
+                </button>
+              </div>
+            </div>
+
+            {/* Main Menu Items */}
+            <div style={{ padding: '6px 14px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary, #94A3B8)', marginBottom: 2, textTransform: 'uppercase' }}>
+                Fitur & Alat
+              </div>
+
+              {onToggleSidebarMembers && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onToggleSidebarMembers();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    background: isSidebarOpen ? 'var(--primary-glow, rgba(16, 185, 129, 0.15))' : 'var(--bg-card, #131B2E)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    color: isSidebarOpen ? 'var(--primary, #34D399)' : 'var(--text-primary, #F8FAFC)',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Users size={16} color="var(--primary, #34D399)" />
+                  <span>{isSidebarOpen ? 'Tutup Panel Anggota' : 'Buka Panel Anggota'}</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onOpenCommunityChat?.();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  background: 'var(--bg-card, #131B2E)',
+                  border: '1px solid var(--border-subtle, #1E293B)',
+                  color: 'var(--text-primary, #F8FAFC)',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                }}
+              >
+                <MessageSquare size={16} color="#38BDF8" />
+                <span>Chat Komunitas Keluarga</span>
+              </button>
+
+              {onOpenThemeCustomizer && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenThemeCustomizer();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    background: 'var(--bg-card, #131B2E)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    color: 'var(--text-primary, #F8FAFC)',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Palette size={16} color="#A78BFA" />
+                  <span>Kustom Tema Warna RGB</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onOpenAuditLog();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  background: 'var(--bg-card, #131B2E)',
+                  border: '1px solid var(--border-subtle, #1E293B)',
+                  color: 'var(--text-primary, #F8FAFC)',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                }}
+              >
+                <History size={16} color="#94A3B8" />
+                <span>Riwayat Audit Log</span>
+              </button>
+
+              {isSuperadmin && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenAccountMgmt();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    background: 'rgba(245, 158, 11, 0.1)',
+                    border: '1px solid rgba(245, 158, 11, 0.25)',
+                    color: '#FBBF24',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Shield size={16} color="#FBBF24" />
+                  <span>Kelola Akun (Superadmin)</span>
+                </button>
+              )}
+
+              {canEdit && onOpenResetAdmin && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenResetAdmin();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    background: 'var(--bg-card, #131B2E)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    color: 'var(--accent-gold, #F59E0B)',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <KeyRound size={16} color="#F59E0B" />
+                  <span>Permintaan Lupa Password</span>
+                </button>
+              )}
+
+              {isSuperadmin && onOpenWorkspaceSettings && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onOpenWorkspaceSettings();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    background: 'var(--bg-card, #131B2E)',
+                    border: '1px solid var(--border-subtle, #1E293B)',
+                    color: 'var(--text-primary, #F8FAFC)',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Edit3 size={16} color="#34D399" />
+                  <span>Ubah Judul / Nama Ruang</span>
+                </button>
+              )}
+            </div>
+
+            {/* Drawer Footer Actions */}
+            <div
+              style={{
+                padding: '14px',
+                borderTop: '1px solid var(--border-subtle, #1E293B)',
+                background: 'var(--bg-card, #131B2E)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+              }}
+            >
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onOpenAuth('login');
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '9px 12px',
+                  borderRadius: 8,
+                  background: 'var(--bg-menu, #162035)',
+                  border: '1px solid var(--border-subtle, #1E293B)',
+                  color: '#34D399',
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                🔐 Masuk / Ganti Akun
+              </button>
+
+              {onLogout && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onLogout();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '9px 12px',
+                    borderRadius: 8,
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    color: '#EF4444',
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <LogOut size={14} />
+                  Keluar (Logout)
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

@@ -117,23 +117,36 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        width: '100%',
-        maxWidth: 450,
-        background: '#0F1626',
-        borderLeft: '1px solid #1E293B',
-        boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.7)',
-        zIndex: 1000,
-        display: 'flex',
-        flexDirection: 'column',
-        animation: 'slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-      }}
-    >
+    <>
+      {/* Mobile/Tablet Backdrop Overlay */}
+      <div
+        className="show-on-tablet"
+        onClick={onClose}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(3px)',
+          zIndex: 999,
+        }}
+      />
+
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: 'min(450px, 100vw)',
+          background: '#0F1626',
+          borderLeft: '1px solid #1E293B',
+          boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.7)',
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          animation: 'slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
       {/* Header bar */}
       <div
         style={{
@@ -868,5 +881,6 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
         )}
       </div>
     </div>
-  );
+  </>
+);
 }

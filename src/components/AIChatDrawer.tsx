@@ -244,23 +244,34 @@ export function AIChatDrawer() {
 
       {/* Drawer Overlay & Panel */}
       {isOpen && (
-        <div
-          className="no-print"
-          style={{
-            position: 'fixed',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            width: '100%',
-            maxWidth: 440,
-            background: '#0F1626',
-            borderLeft: '1px solid #1E293B',
-            boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.75)',
-            zIndex: 1100,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+        <>
+          <div
+            className="show-on-tablet"
+            onClick={() => setIsOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.6)',
+              backdropFilter: 'blur(3px)',
+              zIndex: 1099,
+            }}
+          />
+          <div
+            className="no-print"
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: 'min(440px, 100vw)',
+              background: '#0F1626',
+              borderLeft: '1px solid #1E293B',
+              boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.75)',
+              zIndex: 1100,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
           {/* Header */}
           <div
             style={{
@@ -554,7 +565,8 @@ export function AIChatDrawer() {
             </button>
           </div>
         </div>
-      )}
+      </>
+    )}
     </>
   );
 }

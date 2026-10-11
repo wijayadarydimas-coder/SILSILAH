@@ -38,16 +38,12 @@ import {
 } from 'lucide-react';
 
 /**
- * Full-screen Login & Register Portal for clean initial entry
+ * Full-screen Login Portal for clean initial entry
  */
 function FullScreenAuthPortal() {
   const { onLoginSuccess } = useFamilyStore();
-  const [tab, setTab] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [isResetOpen, setIsResetOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -81,46 +77,6 @@ function FullScreenAuthPortal() {
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg('');
-    setSuccessMsg('');
-
-    if (!email.trim() && !phone.trim()) {
-      setErrorMsg('Pendaftaran akun wajib menyertakan nomor WhatsApp atau alamat Email aktif.');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username,
-          displayName,
-          password,
-          email: email.trim() || undefined,
-          phone: phone.trim() || undefined,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMsg(data.error || 'Gagal mendaftar akun baru.');
-      } else {
-        setSuccessMsg('Akun User berhasil dibuat! Mengalihkan ke sistem...');
-        setTimeout(() => {
-          onLoginSuccess(data.user);
-        }, 800);
-      }
-    } catch {
-      setErrorMsg('Koneksi ke server database gagal.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div
       style={{
@@ -132,7 +88,7 @@ function FullScreenAuthPortal() {
         background: '#070B14',
         position: 'relative',
         overflow: 'hidden',
-        padding: 20,
+        padding: '16px',
       }}
     >
       {/* Background SVG illustration */}
@@ -182,13 +138,13 @@ function FullScreenAuthPortal() {
       <div
         style={{
           width: '100%',
-          maxWidth: 460,
+          maxWidth: 'min(440px, 94vw)',
           background: 'rgba(15, 23, 42, 0.85)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: 20,
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 40px rgba(16, 185, 129, 0.1)',
-          padding: '36px 32px',
+          padding: 'clamp(24px, 5vw, 36px) clamp(16px, 5vw, 30px)',
           position: 'relative',
           zIndex: 10,
         }}
@@ -227,63 +183,6 @@ function FullScreenAuthPortal() {
           <p style={{ fontSize: 13, color: '#94A3B8' }}>
             Portal Pohon Silsilah Keluarga Interaktif & Terproteksi
           </p>
-        </div>
-
-        {/* Tab Switcher */}
-        <div
-          style={{
-            display: 'flex',
-            background: '#0D1322',
-            padding: 4,
-            borderRadius: 10,
-            marginBottom: 24,
-            border: '1px solid #1E293B',
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => {
-              setTab('login');
-              setErrorMsg('');
-              setSuccessMsg('');
-            }}
-            style={{
-              flex: 1,
-              padding: '9px 0',
-              borderRadius: 8,
-              fontSize: 12.5,
-              fontWeight: 600,
-              border: 'none',
-              cursor: 'pointer',
-              background: tab === 'login' ? '#10B981' : 'transparent',
-              color: tab === 'login' ? '#FFFFFF' : '#94A3B8',
-              transition: 'all 0.2s',
-            }}
-          >
-            Masuk (Login)
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setTab('register');
-              setErrorMsg('');
-              setSuccessMsg('');
-            }}
-            style={{
-              flex: 1,
-              padding: '9px 0',
-              borderRadius: 8,
-              fontSize: 12.5,
-              fontWeight: 600,
-              border: 'none',
-              cursor: 'pointer',
-              background: tab === 'register' ? '#10B981' : 'transparent',
-              color: tab === 'register' ? '#FFFFFF' : '#94A3B8',
-              transition: 'all 0.2s',
-            }}
-          >
-            Daftar Akun Baru (Client)
-          </button>
         </div>
 
         {/* Alerts */}
@@ -328,7 +227,7 @@ function FullScreenAuthPortal() {
         )}
 
         {/* Form */}
-        <form onSubmit={tab === 'login' ? handleLogin : handleRegister}>
+        <form onSubmit={handleLogin}>
           <div style={{ marginBottom: 14 }}>
             <label
               style={{
@@ -348,7 +247,7 @@ function FullScreenAuthPortal() {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="cth: silsilah"
+                placeholder="cth: silsilah atau nama_user"
                 style={{
                   width: '100%',
                   padding: '9px 12px 9px 36px',
@@ -363,94 +262,7 @@ function FullScreenAuthPortal() {
             </div>
           </div>
 
-          {tab === 'register' && (
-            <div style={{ marginBottom: 14 }}>
-              <label
-                style={{
-                  display: 'block',
-                  fontSize: 11.5,
-                  fontWeight: 600,
-                  color: '#CBD5E1',
-                  marginBottom: 6,
-                }}
-              >
-                Nama Lengkap / Panggilan
-              </label>
-              <div style={{ position: 'relative' }}>
-                <UserPlus size={15} color="#64748B" style={{ position: 'absolute', left: 12, top: 11 }} />
-                <input
-                  type="text"
-                  required
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="cth: Nama Anda"
-                  style={{
-                    width: '100%',
-                    padding: '9px 12px 9px 36px',
-                    borderRadius: 8,
-                    background: '#0D1322',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
-                    fontSize: 13,
-                    outline: 'none',
-                  }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Additional fields for register: WhatsApp & Email */}
-          {tab === 'register' && (
-            <>
-              <div style={{ marginBottom: 14 }}>
-                <PhoneCountryInput
-                  label="Nomor WhatsApp"
-                  value={phone}
-                  onChange={(val) => setPhone(val)}
-                  placeholder="81234567890"
-                  showWhatsAppPreview={true}
-                />
-              </div>
-
-              <div style={{ marginBottom: 14 }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    color: '#CBD5E1',
-                    marginBottom: 6,
-                  }}
-                >
-                  Alamat Email (Token Verifikasi Otomatis)
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <Mail size={15} color="#64748B" style={{ position: 'absolute', left: 12, top: 11 }} />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="cth: nama@email.com"
-                    style={{
-                      width: '100%',
-                      padding: '9px 12px 9px 36px',
-                      borderRadius: 8,
-                      background: '#0D1322',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
-                      fontSize: 13,
-                      outline: 'none',
-                    }}
-                  />
-                </div>
-                <span style={{ fontSize: 10.5, color: '#64748B', display: 'block', marginTop: 4 }}>
-                  *Wajib mengisi salah satu atau keduanya (WhatsApp / Email).
-                </span>
-              </div>
-            </>
-          )}
-
-          <div style={{ marginBottom: tab === 'login' ? 8 : 20 }}>
+          <div style={{ marginBottom: 8 }}>
             <label
               style={{
                 display: 'block',
@@ -484,25 +296,23 @@ function FullScreenAuthPortal() {
             </div>
           </div>
 
-          {tab === 'login' && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>
-              <button
-                type="button"
-                onClick={() => setIsResetOpen(true)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#F59E0B',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                  padding: 0,
-                  fontWeight: 500,
-                }}
-              >
-                Lupa kata sandi?
-              </button>
-            </div>
-          )}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>
+            <button
+              type="button"
+              onClick={() => setIsResetOpen(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#F59E0B',
+                fontSize: 12,
+                cursor: 'pointer',
+                padding: 0,
+                fontWeight: 500,
+              }}
+            >
+              Lupa kata sandi?
+            </button>
+          </div>
 
           <button
             type="submit"
@@ -525,49 +335,25 @@ function FullScreenAuthPortal() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            <span>{loading ? 'Memproses...' : tab === 'login' ? 'Masuk ke Silsilah' : 'Daftar Akun User'}</span>
+            <span>{loading ? 'Memproses...' : 'Masuk ke Silsilah'}</span>
             <ArrowRight size={15} />
           </button>
 
-          {/* Quick toggle link */}
-          <div style={{ textAlign: 'center', marginTop: 14 }}>
-            {tab === 'login' ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setTab('register');
-                  setErrorMsg('');
-                  setSuccessMsg('');
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#94A3B8',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                }}
-              >
-                Belum punya akun? <span style={{ color: '#10B981', fontWeight: 600 }}>Daftar Akun Baru</span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  setTab('login');
-                  setErrorMsg('');
-                  setSuccessMsg('');
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#94A3B8',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                }}
-              >
-                Sudah punya akun? <span style={{ color: '#10B981', fontWeight: 600 }}>Masuk ke Silsilah</span>
-              </button>
-            )}
+          {/* Admin Managed Note */}
+          <div
+            style={{
+              marginTop: 18,
+              padding: '10px 14px',
+              background: 'rgba(15, 23, 42, 0.6)',
+              borderRadius: 8,
+              border: '1px solid #1E293B',
+              textAlign: 'center',
+              fontSize: 11.5,
+              color: '#94A3B8',
+              lineHeight: 1.45,
+            }}
+          >
+            🔒 Pendaftaran akun baru dikelola langsung oleh <strong>Admin / Superadmin</strong> keluarga.
           </div>
         </form>
 
@@ -627,7 +413,7 @@ function SilsilahDashboard() {
 
   // Auth modal state (for changing password / switching account)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register' | 'change_password'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'change_password'>('login');
 
   const handleOpenAddMember = () => {
     setEditPersonId(null);
@@ -644,7 +430,7 @@ function SilsilahDashboard() {
     setIsRelationModalOpen(true);
   };
 
-  const handleOpenAuth = (mode: 'login' | 'register' | 'change_password') => {
+  const handleOpenAuth = (mode: 'login' | 'change_password') => {
     setAuthMode(mode);
     setIsAuthModalOpen(true);
   };

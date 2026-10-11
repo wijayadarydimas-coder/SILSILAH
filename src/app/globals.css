@@ -235,3 +235,75 @@ button {
 .pulse-focus {
   animation: pulseGlow 2.5s infinite ease-in-out;
 }
+
+/* Responsive Breakpoints & Mobile Optimization */
+@media (max-width: 640px) {
+  .react-flow__minimap {
+    display: none !important;
+  }
+  .react-flow__controls {
+    bottom: 14px !important;
+    left: 14px !important;
+    transform: scale(0.85);
+    transform-origin: bottom left;
+  }
+}
+
+/* Responsive Visibility Helpers */
+.show-on-mobile {
+  display: none !important;
+}
+.hide-on-mobile {
+  display: flex !important;
+}
+
+@media (max-width: 768px) {
+  .show-on-mobile {
+    display: flex !important;
+  }
+  .hide-on-mobile {
+    display: none !important;
+  }
+}
+
+.show-on-tablet {
+  display: none !important;
+}
+.hide-on-tablet {
+  display: flex !important;
+}
+
+@media (max-width: 1024px) {
+  .show-on-tablet {
+    display: flex !important;
+  }
+  .hide-on-tablet {
+    display: none !important;
+  }
+}
+
+/* Grid & Modal Responsive Helpers */
+.grid-2-col-responsive {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .grid-2-col-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
+/* Responsive Toolbar */
+.toolbar-canvas-responsive {
+  max-width: calc(100vw - 24px);
+  overflow-x: auto;
+}
+@media (max-width: 640px) {
+  .toolbar-canvas-responsive {
+    top: 10px !important;
+    padding: 4px 8px !important;
+    gap: 4px !important;
+  }
+}

@@ -2,24 +2,21 @@
 
 import React, { useState } from 'react';
 import { useFamilyStore } from '@/lib/store';
-import { X, Lock, User, UserPlus, KeyRound, AlertTriangle, CheckCircle, Shield, Mail, Phone } from 'lucide-react';
+import { X, Lock, KeyRound, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ResetPasswordModal } from '@/components/ResetPasswordModal';
 
 interface AuthModalProps {
   isOpen: boolean;
-  initialMode?: 'login' | 'register' | 'change_password';
+  initialMode?: 'login' | 'change_password';
   onClose: () => void;
 }
 
 export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalProps) {
-  const { currentUser, onLoginSuccess, isAuthenticated, refreshUsers } = useFamilyStore();
+  const { currentUser, onLoginSuccess } = useFamilyStore();
 
-  const [mode, setMode] = useState<'login' | 'register' | 'change_password'>(initialMode);
+  const [mode, setMode] = useState<'login' | 'change_password'>(initialMode === 'change_password' ? 'change_password' : 'login');
   const [username, setUsername] = useState('');
-  const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [isResetOpen, setIsResetOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -31,7 +28,7 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
 
   // Sync mode if initialMode changes
   React.useEffect(() => {
-    setMode(initialMode);
+    setMode(initialMode === 'change_password' ? 'change_password' : 'login');
     setErrorMsg('');
     setSuccessMsg('');
   }, [initialMode, isOpen]);
@@ -59,57 +56,6 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
         setTimeout(() => {
           onClose();
         }, 1000);
-      }
-    } catch {
-      setErrorMsg('Koneksi ke PostgreSQL gagal.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg('');
-    setSuccessMsg('');
-
-    if (!email.trim() && !phone.trim()) {
-      setErrorMsg('Pendaftaran akun wajib menyertakan nomor WhatsApp atau alamat Email.');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username,
-          displayName,
-          password,
-          email: email.trim() || undefined,
-          phone: phone.trim() || undefined,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMsg(data.error || 'Gagal mendaftar.');
-      } else {
-        if (isAuthenticated) {
-          setSuccessMsg(`✓ Akun "${data.user.displayName}" berhasil didaftarkan! Anda tetap berada pada akun Anda saat ini.`);
-          refreshUsers();
-          setUsername('');
-          setPassword('');
-          setDisplayName('');
-          setEmail('');
-          setPhone('');
-        } else {
-          setSuccessMsg('Akun User berhasil dibuat! Anda otomatis masuk.');
-          onLoginSuccess(data.user);
-          setTimeout(() => {
-            onClose();
-          }, 1200);
-        }
       }
     } catch {
       setErrorMsg('Koneksi ke PostgreSQL gagal.');
@@ -187,7 +133,7 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           border: '1px solid #1E293B',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 440,
+          maxWidth: 'min(440px, 94vw)',
           boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
           overflow: 'hidden',
           display: 'flex',
@@ -206,22 +152,18 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {mode === 'login' && <Lock size={18} color="#10B981" />}
-            {mode === 'register' && <UserPlus size={18} color="#3B82F6" />}
-            {mode === 'change_password' && <KeyRound size={18} color="#F59E0B" />}
+            {mode === 'login' ? <Lock size={18} color="#10B981" /> : <KeyRound size={18} color="#F59E0B" />}
             <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC' }}>
-              {mode === 'login' && 'Masuk ke Sistem SILSILAH'}
-              {mode === 'register' && 'Daftar Akun Baru'}
-              {mode === 'change_password' && 'Ganti Kata Sandi Akun'}
+              {mode === 'login' ? 'Masuk ke Sistem SILSILAH' : 'Ganti Kata Sandi Akun'}
             </h2>
           </div>
-          <button onClick={onClose} style={{ color: '#94A3B8' }}>
+          <button onClick={onClose} style={{ color: '#94A3B8', cursor: 'pointer' }}>
             <X size={20} />
           </button>
         </div>
 
-        {/* Tab switcher if not changing password */}
-        {mode !== 'change_password' && (
+        {/* Tab switcher if authenticated */}
+        {currentUser && (
           <div style={{ display: 'flex', borderBottom: '1px solid #1E293B', background: '#111827' }}>
             <button
               onClick={() => {
@@ -231,29 +173,33 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
               style={{
                 flex: 1,
                 padding: '10px',
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: 600,
                 color: mode === 'login' ? '#10B981' : '#94A3B8',
                 borderBottom: mode === 'login' ? '2px solid #10B981' : 'none',
+                background: 'transparent',
+                cursor: 'pointer',
               }}
             >
-              Masuk
+              Masuk / Ganti Akun
             </button>
             <button
               onClick={() => {
-                setMode('register');
+                setMode('change_password');
                 setErrorMsg('');
               }}
               style={{
                 flex: 1,
                 padding: '10px',
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: 600,
-                color: mode === 'register' ? '#3B82F6' : '#94A3B8',
-                borderBottom: mode === 'register' ? '2px solid #3B82F6' : 'none',
+                color: mode === 'change_password' ? '#F59E0B' : '#94A3B8',
+                borderBottom: mode === 'change_password' ? '2px solid #F59E0B' : 'none',
+                background: 'transparent',
+                cursor: 'pointer',
               }}
             >
-              Daftar Baru
+              Ganti Kata Sandi
             </button>
           </div>
         )}
@@ -309,7 +255,7 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Contoh: silsilah"
+                  placeholder="Contoh: silsilah atau nama_user"
                   required
                   style={{
                     width: '100%',
@@ -371,149 +317,26 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
               >
                 {loading ? 'Memverifikasi...' : 'Masuk Akun'}
               </button>
-            </form>
-          )}
-
-          {/* MODE 2: REGISTER */}
-          {mode === 'register' && (
-            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
-                  Username Baru
-                </label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Nama login unik..."
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
-                    fontSize: 13,
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
-                  Nama Lengkap / Tampilan
-                </label>
-                <input
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Contoh: Budi Santoso"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
-                    fontSize: 13,
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
-                    Nomor WhatsApp
-                  </label>
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="08123456789"
-                    style={{
-                      width: '100%',
-                      padding: '8px 12px',
-                      borderRadius: 8,
-                      background: '#162035',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
-                      fontSize: 13,
-                    }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
-                    Alamat Email
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="email@keluarga.com"
-                    style={{
-                      width: '100%',
-                      padding: '8px 12px',
-                      borderRadius: 8,
-                      background: '#162035',
-                      border: '1px solid #1E293B',
-                      color: '#F8FAFC',
-                      fontSize: 13,
-                    }}
-                  />
-                </div>
-              </div>
-              <span style={{ fontSize: 11, color: '#64748B', marginTop: -6 }}>
-                *Wajib mengisi salah satu atau keduanya (WhatsApp / Email) untuk keamanan akun.
-              </span>
-
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94A3B8', marginBottom: 4 }}>
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimal 4 karakter..."
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    background: '#162035',
-                    border: '1px solid #1E293B',
-                    color: '#F8FAFC',
-                    fontSize: 13,
-                  }}
-                />
-              </div>
 
               <div
                 style={{
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  border: '1px solid rgba(59, 130, 246, 0.25)',
+                  marginTop: 6,
                   padding: '8px 10px',
+                  background: 'rgba(15, 23, 42, 0.6)',
                   borderRadius: 8,
-                  fontSize: 11.5,
-                  color: '#93C5FD',
+                  border: '1px solid #1E293B',
+                  textAlign: 'center',
+                  fontSize: 11,
+                  color: '#94A3B8',
+                  lineHeight: 1.4,
                 }}
               >
-                ℹ️ Status awal pendaftar adalah <b>User (Read-Only)</b>. Superadmin berwenang menaikkan role menjadi Admin di menu Kelola Akun.
+                🔒 Pendaftaran akun baru dikelola langsung oleh <strong>Admin / Superadmin</strong> di menu Kelola Akun.
               </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary"
-                style={{ marginTop: 6, justifyContent: 'center', opacity: loading ? 0.7 : 1 }}
-              >
-                {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
-              </button>
             </form>
           )}
 
-          {/* MODE 3: CHANGE PASSWORD */}
+          {/* MODE 2: CHANGE PASSWORD */}
           {mode === 'change_password' && (
             <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontSize: 12, color: '#94A3B8' }}>

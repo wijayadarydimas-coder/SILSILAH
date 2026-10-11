@@ -126,7 +126,7 @@ export function RelationModal({ isOpen, selectedPersonId, onClose }: RelationMod
           border: '1px solid #1E293B',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 580,
+          maxWidth: 'min(580px, 95vw)',
           maxHeight: '90vh',
           display: 'flex',
           flexDirection: 'column',

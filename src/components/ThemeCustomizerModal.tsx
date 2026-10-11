@@ -233,7 +233,7 @@ export function ThemeCustomizerModal({ isOpen, onClose }: ThemeCustomizerModalPr
           border: '1px solid #1E293B',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 480,
+          maxWidth: 'min(480px, 94vw)',
           boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
           overflow: 'hidden',
           display: 'flex',

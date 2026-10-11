@@ -139,7 +139,7 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
             border: '1px solid #1E293B',
             borderRadius: 16,
             width: '100%',
-            maxWidth: 720,
+            maxWidth: 'min(760px, 95vw)',
             maxHeight: '90vh',
             display: 'flex',
             flexDirection: 'column',

@@ -37,6 +37,7 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
   } = useFamilyStore();
 
   const [nuclearFamilyOnly, setNuclearFamilyOnly] = React.useState(false);
+  const [isLegendOpen, setIsLegendOpen] = React.useState(false);
   const { fitView, setCenter } = useReactFlow();
 
   const handleSelectFocus = useCallback(
@@ -120,21 +121,23 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
 
       {/* Floating Toolbar: Quick Navigation Controls */}
       <div
+        className="toolbar-canvas-responsive"
         style={{
           position: 'absolute',
-          top: 16,
+          top: 14,
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
-          background: 'var(--bg-card, rgba(17, 24, 39, 0.85))',
+          gap: 6,
+          background: 'var(--bg-card, rgba(17, 24, 39, 0.9))',
           backdropFilter: 'blur(10px)',
-          padding: '6px 12px',
+          padding: '5px 10px',
           borderRadius: 999,
           border: '1px solid var(--border-subtle, #1E293B)',
           boxShadow: '0 8px 30px rgba(0, 0, 0, 0.25)',
           zIndex: 10,
+          whiteSpace: 'nowrap',
         }}
       >
         <button
@@ -142,18 +145,20 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 6,
+            gap: 5,
             background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
             color: '#0F172A',
-            padding: '5px 12px',
+            padding: '5px 11px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 700,
             boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
+            cursor: 'pointer',
           }}
         >
           <Sparkles size={13} />
-          Pusatkan ke Fokus
+          <span className="hide-on-mobile">Pusatkan ke Fokus</span>
+          <span className="show-on-mobile">Fokus</span>
         </button>
 
         <button
@@ -168,15 +173,17 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             gap: 5,
             background: nuclearFamilyOnly ? 'var(--primary, #10B981)' : 'var(--bg-menu, #162035)',
             color: nuclearFamilyOnly ? '#FFFFFF' : 'var(--text-primary, #F8FAFC)',
-            padding: '5px 12px',
+            padding: '5px 11px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 600,
             border: nuclearFamilyOnly ? 'none' : '1px solid var(--border-subtle, #334155)',
             boxShadow: nuclearFamilyOnly ? '0 2px 8px var(--primary-glow, rgba(16, 185, 129, 0.4))' : 'none',
+            cursor: 'pointer',
           }}
         >
-          <span>{nuclearFamilyOnly ? '🌐 Tampilkan Semua Silsilah' : '🏠 Fokus ke Keluarga Inti'}</span>
+          <span className="hide-on-mobile">{nuclearFamilyOnly ? '🌐 Tampilkan Semua Silsilah' : '🏠 Fokus ke Keluarga Inti'}</span>
+          <span className="show-on-mobile">{nuclearFamilyOnly ? '🌐 Semua' : '🏠 Inti'}</span>
         </button>
 
         <button
@@ -192,15 +199,18 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
             fontSize: 12,
             fontWeight: 500,
             border: '1px solid var(--border-subtle, #334155)',
+            cursor: 'pointer',
           }}
         >
           <Maximize2 size={13} />
-          Lihat Semua
+          <span className="hide-on-mobile">Lihat Semua</span>
+          <span className="show-on-mobile">Fit</span>
         </button>
       </div>
 
-      {/* Floating Canvas Legend */}
+      {/* Floating Canvas Legend - Desktop */}
       <div
+        className="hide-on-mobile"
         style={{
           position: 'absolute',
           top: 16,
@@ -231,6 +241,72 @@ function InnerTreeCanvas({ onOpenProfile, onAddRelation, onNodeDrop }: TreeCanva
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B' }} />
           <span>Titik Fokus (Label Dihitung Relatif)</span>
         </div>
+      </div>
+
+      {/* Floating Canvas Legend - Mobile Toggle */}
+      <div
+        className="show-on-mobile"
+        style={{
+          position: 'absolute',
+          bottom: 14,
+          right: 14,
+          zIndex: 15,
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          gap: 6,
+        }}
+      >
+        {isLegendOpen && (
+          <div
+            style={{
+              background: 'var(--bg-card, rgba(17, 24, 39, 0.95))',
+              backdropFilter: 'blur(10px)',
+              padding: '8px 12px',
+              borderRadius: 10,
+              border: '1px solid var(--border-subtle, #1E293B)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              fontSize: 11,
+              color: 'var(--text-secondary, #94A3B8)',
+              marginBottom: 4,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 12, height: 3, background: '#3B82F6', borderRadius: 2 }} />
+              <span>Orang Tua – Anak</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 12, height: 3, background: '#F43F5E', borderRadius: 2 }} />
+              <span>Pernikahan / Pasangan</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B' }} />
+              <span>Titik Fokus</span>
+            </div>
+          </div>
+        )}
+        <button
+          onClick={() => setIsLegendOpen(!isLegendOpen)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 10px',
+            borderRadius: 999,
+            background: 'var(--bg-menu, #162035)',
+            border: '1px solid var(--border-subtle, #1E293B)',
+            color: 'var(--text-secondary, #94A3B8)',
+            fontSize: 11,
+            fontWeight: 600,
+            cursor: 'pointer',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+          }}
+        >
+          <Info size={12} />
+          <span>Keterangan</span>
+        </button>
       </div>
     </div>
   );

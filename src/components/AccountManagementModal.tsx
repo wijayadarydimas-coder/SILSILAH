@@ -107,7 +107,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
           border: '1px solid #1E293B',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 620,
+          maxWidth: 'min(640px, 95vw)',
           maxHeight: '90vh',
           display: 'flex',
           flexDirection: 'column',
@@ -194,6 +194,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: 10,
                       padding: '12px 14px',
                       background: '#162035',
                       borderRadius: 10,
@@ -220,7 +222,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                       <span style={{ fontSize: 11.5, color: '#94A3B8' }}>{u.email}</span>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                       {u.role === 'superadmin' || u.username === 'silsilah' ? (
                         <span
                           style={{
@@ -315,7 +317,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             </div>
 
             <form onSubmit={handleInvite} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 8 }}>
                 <input
                   type="email"
                   value={inviteEmail}

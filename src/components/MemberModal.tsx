@@ -297,7 +297,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
           border: '1px solid #1E293B',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 600,
+          maxWidth: 'min(620px, 95vw)',
           maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
@@ -355,7 +355,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             )}
 
             {/* Nama Lengkap & Panggilan */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className="grid-2-col-responsive">
               <div>
                 <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
                   Nama Lengkap *
@@ -401,7 +401,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
             </div>
 
             {/* Gender & Status Verifikasi */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className="grid-2-col-responsive">
               <div>
                 <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>
                   Jenis Kelamin
@@ -482,7 +482,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
                 {/* CIRCULAR PREVIEW FRAME */}
                 <div
                   style={{
@@ -650,7 +650,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 </label>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: isDeceased ? '1fr 1fr' : '1fr', gap: 12 }}>
+              <div className={isDeceased ? 'grid-2-col-responsive' : ''}>
                 <div>
                   <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
                     Tanggal Lahir
@@ -734,7 +734,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                     Domisili / Alamat
                     {isSearchingLocation && <Loader2 size={12} className="animate-spin" color="#EC4899" />}
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div className="grid-2-col-responsive">
                     <select
                       value={selectedCity}
                       onChange={(e) => {
@@ -846,7 +846,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 </div>
 
                 {/* Email & Instagram */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="grid-2-col-responsive">
                   <div>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94A3B8', marginBottom: 4 }}>
                       <Mail size={13} color="#3B82F6" />

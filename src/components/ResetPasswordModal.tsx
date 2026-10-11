@@ -111,7 +111,7 @@ export function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps)
           border: '1px solid #1E293B',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 450,
+          maxWidth: 'min(450px, 94vw)',
           boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
           overflow: 'hidden',
           display: 'flex',

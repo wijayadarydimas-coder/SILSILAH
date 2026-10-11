@@ -62,31 +62,47 @@ export function SidebarMembers({
   };
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        zIndex: 40,
-        display: 'flex',
-        transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        transform: isOpen ? 'translateX(0)' : 'translateX(-310px)',
-      }}
-    >
-      {/* Main Panel Content */}
-      <aside
+    <>
+      {/* Mobile backdrop overlay */}
+      {isOpen && (
+        <div
+          className="show-on-mobile"
+          onClick={onToggle}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.55)',
+            backdropFilter: 'blur(3px)',
+            zIndex: 38,
+          }}
+        />
+      )}
+
+      <div
         style={{
-          width: 310,
-          height: '100%',
-          background: 'var(--bg-menu, rgba(15, 22, 38, 0.95))',
-          backdropFilter: 'blur(12px)',
-          borderRight: '1px solid #1E293B',
-          boxShadow: '10px 0 30px rgba(0, 0, 0, 0.6)',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          zIndex: 40,
           display: 'flex',
-          flexDirection: 'column',
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          transform: isOpen ? 'translateX(0)' : 'translateX(calc(-100% + 32px))',
         }}
       >
+        {/* Main Panel Content */}
+        <aside
+          style={{
+            width: 'min(310px, calc(100vw - 44px))',
+            height: '100%',
+            background: 'var(--bg-menu, rgba(15, 22, 38, 0.95))',
+            backdropFilter: 'blur(12px)',
+            borderRight: '1px solid #1E293B',
+            boxShadow: '10px 0 30px rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
         {/* Header */}
         <div
           style={{
@@ -390,5 +406,6 @@ export function SidebarMembers({
         )}
       </button>
     </div>
-  );
+  </>
+);
 }
