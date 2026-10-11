@@ -121,6 +121,8 @@ export interface AuditLog {
     | 'CHANGE_ROLE'
     | 'TOGGLE_USER_STATUS'
     | 'INVITE_USER'
+    | 'CREATE_USER'
+    | 'RESET_USER_PASSWORD'
     | 'UPDATE_WORKSPACE'
     | 'LINK_CLIENT'
     | 'DELETE_USER'

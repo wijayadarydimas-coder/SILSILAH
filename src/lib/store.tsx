@@ -59,6 +59,15 @@ interface FamilyStoreContextType {
   linkClientToPerson: (personId: string, userId: string) => Promise<{ success: boolean; error?: string }>;
   updateUserRole: (userId: string, role: UserRole) => Promise<{ success: boolean; error?: string }>;
   toggleUserStatus: (userId: string) => Promise<{ success: boolean; error?: string }>;
+  createUser: (userData: {
+    username: string;
+    password: string;
+    displayName: string;
+    role: UserRole;
+    email?: string;
+    phone?: string;
+  }) => Promise<{ success: boolean; error?: string; user?: UserAccount }>;
+  resetUserPassword: (targetUserId: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   inviteUser: (email: string, role: UserRole, displayName: string) => { success: boolean; error?: string };
   deleteUser: (userId: string) => Promise<{ success: boolean; error?: string }>;
 
@@ -509,6 +518,74 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
     return { success: true };
   };
 
+  const createUser = async (userData: {
+    username: string;
+    password: string;
+    displayName: string;
+    role: UserRole;
+    email?: string;
+    phone?: string;
+  }) => {
+    if (currentRole !== 'superadmin') {
+      return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang membuat akun login baru.' };
+    }
+
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actorUserId: currentUser?.id || 'usr-superadmin',
+          ...userData,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Gagal membuat akun ke database.' };
+      }
+
+      await refreshUsers();
+      logAction(
+        'CREATE_USER',
+        'user',
+        data.user.id,
+        `Superadmin membuat akun baru: ${data.user.displayName} (@${data.user.username})`
+      );
+      return { success: true, user: data.user };
+    } catch {
+      return { success: false, error: 'Koneksi ke server database gagal.' };
+    }
+  };
+
+  const resetUserPassword = async (targetUserId: string, newPassword: string) => {
+    if (currentRole !== 'superadmin') {
+      return { success: false, error: 'Akses ditolak: Hanya Superadmin yang berwenang mengatur ulang kata sandi pengguna.' };
+    }
+
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actorUserId: currentUser?.id || 'usr-superadmin',
+          targetUserId,
+          newPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Gagal mengatur ulang kata sandi akun.' };
+      }
+
+      logAction('RESET_USER_PASSWORD', 'user', targetUserId, `Superadmin mengatur ulang kata sandi akun pengguna (${targetUserId}).`);
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Koneksi ke server database gagal.' };
+    }
+  };
+
   const updateWorkspace = async (name: string, description?: string) => {
     if (currentRole !== 'superadmin') {
       return { success: false, error: 'Hanya Superadmin yang berwenang mengubah nama ruang keluarga.' };
@@ -620,6 +697,8 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
         linkClientToPerson,
         updateUserRole,
         toggleUserStatus,
+        createUser,
+        resetUserPassword,
         inviteUser,
         deleteUser,
         deleteAuditLog,

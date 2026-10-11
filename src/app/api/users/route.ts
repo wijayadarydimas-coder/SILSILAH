@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db/client';
+import bcrypt from 'bcryptjs';
 
 export async function GET() {
   try {
@@ -24,9 +25,128 @@ export async function GET() {
   }
 }
 
+export async function POST(req: NextRequest) {
+  try {
+    const { actorUserId, username, password, displayName, email, phone, role } = await req.json();
+
+    // Verify actor is Superadmin
+    const actorRes = await query(
+      "SELECT id, role, username FROM users WHERE id = $1 OR username = $1",
+      [actorUserId || 'usr-superadmin']
+    );
+    const actor = actorRes.rows[0];
+    const isSuperadmin =
+      (actor && (actor.role === 'superadmin' || actor.username === 'silsilah')) ||
+      actorUserId === 'usr-superadmin-static';
+
+    if (!isSuperadmin) {
+      return NextResponse.json(
+        { error: 'Akses ditolak: Hanya Superadmin yang berwenang membuat akun login baru.' },
+        { status: 403 }
+      );
+    }
+
+    if (!username || !password) {
+      return NextResponse.json({ error: 'Username dan password wajib diisi.' }, { status: 400 });
+    }
+
+    const trimmedUser = username.trim().toLowerCase();
+
+    // Disallow using or overwriting the static superadmin username
+    if (trimmedUser === 'silsilah') {
+      return NextResponse.json(
+        { error: 'Username "silsilah" adalah Superadmin statis yang dilindungi.' },
+        { status: 400 }
+      );
+    }
+
+    if (trimmedUser.length < 3) {
+      return NextResponse.json({ error: 'Username minimal 3 karakter.' }, { status: 400 });
+    }
+
+    // Only allow alphanumeric, underscore, dot, dash
+    if (!/^[a-zA-Z0-9_.-]+$/.test(trimmedUser)) {
+      return NextResponse.json(
+        { error: 'Username hanya boleh berisi huruf, angka, garis bawah (_), titik (.), atau tanda hubung (-).' },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 4) {
+      return NextResponse.json({ error: 'Password minimal 4 karakter.' }, { status: 400 });
+    }
+
+    // Check if username already taken
+    const existing = await query('SELECT id FROM users WHERE LOWER(username) = $1', [trimmedUser]);
+    if (existing.rows.length > 0) {
+      return NextResponse.json(
+        { error: `Username "${trimmedUser}" sudah digunakan. Silakan pilih username lain.` },
+        { status: 400 }
+      );
+    }
+
+    const trimmedEmail = email?.trim()?.toLowerCase() || null;
+    const trimmedPhone = phone?.trim() || null;
+    const finalDisplayName = displayName?.trim() || username.trim();
+    const assignedRole = role === 'admin' ? 'admin' : 'client';
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const newId = `usr-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+
+    const insertRes = await query(
+      `INSERT INTO users (id, username, display_name, email, phone, password_hash, role, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'active')
+       RETURNING id, username, display_name, email, phone, role, status, created_at`,
+      [newId, trimmedUser, finalDisplayName, trimmedEmail, trimmedPhone, passwordHash, assignedRole]
+    );
+
+    const newUser = insertRes.rows[0];
+
+    // Log to PostgreSQL audit log (non-blocking)
+    try {
+      const wsRes = await query('SELECT id FROM workspaces LIMIT 1');
+      const wsId = wsRes.rows[0]?.id;
+      if (wsId) {
+        const logId = `log-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+        await query(
+          `INSERT INTO audit_logs (id, workspace_id, actor_user_id, actor_name, actor_role, action, target_type, target_id, timestamp, summary)
+           VALUES ($1, $2, $3, $4, 'superadmin', 'CREATE_USER', 'user', $5, NOW(), $6)`,
+          [
+            logId,
+            wsId,
+            actor?.id || 'usr-superadmin-static',
+            actor?.display_name || 'Superadmin SILSILAH',
+            newUser.id,
+            `Superadmin membuat akun baru: ${newUser.display_name} (@${newUser.username}) dengan hak akses ${assignedRole === 'admin' ? 'Admin' : 'User'}.`,
+          ]
+        );
+      }
+    } catch (auditErr) {
+      console.warn('Non-blocking audit log creation error:', auditErr);
+    }
+
+    return NextResponse.json({
+      success: true,
+      user: {
+        id: newUser.id,
+        username: newUser.username,
+        displayName: newUser.display_name,
+        email: newUser.email,
+        phone: newUser.phone,
+        role: newUser.role,
+        status: newUser.status,
+        createdAt: newUser.created_at,
+      },
+    });
+  } catch (error: any) {
+    console.error('Create user error:', error);
+    return NextResponse.json({ error: 'Gagal membuat akun ke database PostgreSQL.' }, { status: 500 });
+  }
+}
+
 export async function PATCH(req: NextRequest) {
   try {
-    const { actorUserId, targetUserId, newRole, newStatus, avatarUrl, displayName, email, phone } = await req.json();
+    const { actorUserId, targetUserId, newRole, newStatus, avatarUrl, displayName, email, phone, newPassword } = await req.json();
 
     const actorRes = await query(
       "SELECT id, role, username FROM users WHERE id = $1 OR username = $1",
@@ -109,6 +229,47 @@ export async function PATCH(req: NextRequest) {
       }
       if (newStatus) {
         await query('UPDATE users SET status = $1 WHERE id = $2', [newStatus, targetUser.id]);
+      }
+    }
+
+    // Password reset: allowed for superadmin
+    if (newPassword) {
+      if (!isSuperadmin) {
+        return NextResponse.json(
+          { error: 'Akses ditolak: Hanya Superadmin yang berwenang mengubah password pengguna lain.' },
+          { status: 403 }
+        );
+      }
+      if (newPassword.length < 4) {
+        return NextResponse.json(
+          { error: 'Password baru minimal 4 karakter.' },
+          { status: 400 }
+        );
+      }
+      const passwordHash = await bcrypt.hash(newPassword, 10);
+      await query('UPDATE users SET password_hash = $1 WHERE id = $2', [passwordHash, targetUser.id]);
+
+      // Audit log (non-blocking)
+      try {
+        const wsRes = await query('SELECT id FROM workspaces LIMIT 1');
+        const wsId = wsRes.rows[0]?.id;
+        if (wsId) {
+          const logId = `log-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+          await query(
+            `INSERT INTO audit_logs (id, workspace_id, actor_user_id, actor_name, actor_role, action, target_type, target_id, timestamp, summary)
+             VALUES ($1, $2, $3, $4, 'superadmin', 'RESET_USER_PASSWORD', 'user', $5, NOW(), $6)`,
+            [
+              logId,
+              wsId,
+              actor.id,
+              actor.display_name || 'Superadmin SILSILAH',
+              targetUser.id,
+              `Superadmin mengatur ulang kata sandi (password) untuk akun: ${targetUser.display_name} (@${targetUser.username}).`,
+            ]
+          );
+        }
+      } catch (auditErr) {
+        console.warn('Non-blocking audit log password reset error:', auditErr);
       }
     }
 
