@@ -199,7 +199,7 @@ export function SidebarMembers({
               style={{ padding: '6px 12px', fontSize: 12, justifyContent: 'center' }}
             >
               <Plus size={14} />
-              + Tambah Anggota Baru
+              Tambah Anggota Baru
             </button>
           )}
         </div>
