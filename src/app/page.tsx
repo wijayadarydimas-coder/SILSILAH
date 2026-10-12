@@ -529,7 +529,6 @@ function SilsilahDashboard() {
                 padding: '34px 38px',
                 textAlign: 'center',
                 maxWidth: 450,
-                boxShadow: '0 25px 50px rgba(0,0,0,0.65), 0 0 30px rgba(198, 161, 91, 0.08)',
                 zIndex: 20,
               }}
             >
@@ -544,7 +543,6 @@ function SilsilahDashboard() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 16px auto',
-                  boxShadow: '0 0 20px rgba(198, 161, 91, 0.25)',
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
