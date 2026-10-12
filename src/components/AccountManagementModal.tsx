@@ -150,7 +150,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
   const handleCopyCredentials = () => {
     if (!createdSummary) return;
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    const text = `Halo *${createdSummary.displayName}*,\n\nBerikut akun Anda untuk masuk ke sistem Pohon Silsilah Keluarga:\n🌐 Tautan: ${origin}\n👤 Username: *${createdSummary.username}*\n🔑 Kata Sandi: *${createdSummary.password}*\n🛡️ Hak Akses: *${createdSummary.role === 'admin' ? 'Admin (Kelola Data)' : 'User (Baca Saja)'}*\n\nSilakan buka tautan di atas dan gunakan username serta sandi tersebut untuk masuk.`;
+    const text = `Halo *${createdSummary.displayName}*,\n\nBerikut akun Anda untuk masuk ke sistem Pohon Silsilah Keluarga:\n🌐 Tautan: ${origin}\n👤 Username: *${createdSummary.username}*\n🔑 Kata Sandi: *${createdSummary.password}*\n🛡️ Hak Akses: *${createdSummary.role === 'admin' ? 'Admin' : 'User'}*\n\nSilakan buka tautan di atas dan gunakan username serta sandi tersebut untuk masuk.`;
 
     navigator.clipboard.writeText(text);
     setHasCopied(true);
@@ -356,7 +356,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             }}
           >
             <UserPlus size={15} />
-            <span>➕ Buat Akun Baru</span>
+            <span>Buat Akun Baru</span>
             <span
               style={{
                 fontSize: 10,
@@ -533,7 +533,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                               fontWeight: 700,
                             }}
                           >
-                            👑 Superadmin Tetap
+                            Superadmin
                           </span>
                         ) : (
                           <>
@@ -552,8 +552,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                                 cursor: 'pointer',
                               }}
                             >
-                              <option value="admin">Admin (Kelola Data)</option>
-                              <option value="client">Warga (Baca Saja)</option>
+                              <option value="admin">Admin</option>
+                              <option value="client">Warga</option>
                             </select>
 
                             {/* Reset Password Button */}
@@ -706,7 +706,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                     <div>
                       <div style={{ color: 'var(--text-muted, #A79D8D)', fontSize: 11 }}>Hak Akses (Role)</div>
                       <div style={{ fontWeight: 700, color: createdSummary.role === 'admin' ? 'var(--accent-gold, #C6A15B)' : 'var(--accent-success, #7EAA83)' }}>
-                        {createdSummary.role === 'admin' ? 'Admin (Kelola Data)' : 'User (Baca Saja)'}
+                        {createdSummary.role === 'admin' ? 'Admin' : 'User'}
                       </div>
                     </div>
                   </div>
@@ -919,8 +919,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                           fontWeight: 600,
                         }}
                       >
-                        <option value="client">Warga (Baca Saja - Anggota Keluarga)</option>
-                        <option value="admin">Admin (Editor - Kelola &amp; Edit Data Pohon)</option>
+                        <option value="client">Warga</option>
+                        <option value="admin">Admin</option>
                       </select>
                     </div>
 
@@ -980,7 +980,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                       }}
                     >
                       <UserPlus size={16} />
-                      <span>{isSubmitting ? 'Menyimpan...' : '➕ Buat & Simpan Akun'}</span>
+                      <span>{isSubmitting ? 'Menyimpan...' : 'Buat & Simpan Akun'}</span>
                     </button>
                   </div>
                 </form>
