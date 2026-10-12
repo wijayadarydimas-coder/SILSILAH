@@ -282,10 +282,6 @@ export function PasswordResetAdminModal({ isOpen, onClose }: PasswordResetAdminM
                 Selesai Direset
               </button>
             </div>
-
-            <span style={{ fontSize: 11, color: 'var(--text-secondary, #A79D8D)' }}>
-              Format WhatsApp otomatis dicatat untuk dihubungi Admin
-            </span>
           </div>
 
           {/* Content */}
