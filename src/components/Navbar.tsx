@@ -18,6 +18,7 @@ import {
   Lock,
   Palette,
   Users,
+  User,
   Edit3,
   KeyRound,
   MessageSquare,
@@ -262,7 +263,6 @@ export function Navbar({
               fontWeight: 600,
               background: viewMode === 'canvas' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'transparent',
               color: viewMode === 'canvas' ? '#11100E' : 'var(--text-muted, #A79D8D)',
-              boxShadow: viewMode === 'canvas' ? '0 2px 8px rgba(198, 161, 91, 0.3)' : 'none',
               transition: 'all 0.15s ease',
               cursor: 'pointer',
             }}
@@ -283,7 +283,6 @@ export function Navbar({
               fontWeight: 600,
               background: viewMode === 'list' ? 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)' : 'transparent',
               color: viewMode === 'list' ? '#11100E' : 'var(--text-muted, #A79D8D)',
-              boxShadow: viewMode === 'list' ? '0 2px 8px rgba(198, 161, 91, 0.3)' : 'none',
               transition: 'all 0.15s ease',
               cursor: 'pointer',
             }}
@@ -735,7 +734,7 @@ export function Navbar({
                     cursor: 'pointer',
                   }}
                 >
-                  <Camera size={14} /> 👤 Edit Profil & Foto Akun
+                  <Camera size={14} /> Edit Profil & Foto Akun
                 </button>
                 <button
                   onClick={() => {
@@ -756,7 +755,8 @@ export function Navbar({
                     cursor: 'pointer',
                   }}
                 >
-                  🔑 Ganti Kata Sandi (Password)
+                  <KeyRound size={14} />
+                  Ganti Kata Sandi (Password)
                 </button>
                 <button
                   onClick={() => {
@@ -777,7 +777,8 @@ export function Navbar({
                     cursor: 'pointer',
                   }}
                 >
-                  🔐 Masuk / Ganti Akun
+                  <User size={14}/>
+                  Masuk / Ganti Akun
                 </button>
                 {onLogout && (
                   <button
