@@ -64,7 +64,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           : 'var(--bg-card, #191714)',
         border: isFocus
           ? '2px solid var(--antique-gold, #C6A15B)'
-          : isDeceased,
+          : `2px solid ${isDeceased ? '#8F6D35' : 'var(--border-subtle, #35322F)'}`,
         padding: '12px 14px',
         transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         cursor: 'default',
