@@ -164,7 +164,6 @@ button {
 
 .btn-primary:hover {
   filter: brightness(1.12);
-  transform: translateY(-1px);
 }
 
 .btn-primary:active {
