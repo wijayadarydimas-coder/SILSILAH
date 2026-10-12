@@ -154,7 +154,6 @@ export function CommunityChatDrawer({
           height: '100%',
           background: 'var(--bg-secondary, #191714)',
           borderLeft: '1px solid var(--border-subtle, #393128)',
-          boxShadow: '-10px 0 35px rgba(0, 0, 0, 0.7)',
           display: 'flex',
           flexDirection: 'column',
           animation: 'slideInRight 0.25s ease-out',
@@ -182,7 +181,6 @@ export function CommunityChatDrawer({
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#11100E',
-                boxShadow: '0 2px 10px rgba(198, 161, 91, 0.3)',
               }}
             >
               <MessageSquare size={18} />
@@ -367,7 +365,6 @@ export function CommunityChatDrawer({
                         lineHeight: 1.5,
                         wordBreak: 'break-word',
                         whiteSpace: 'pre-wrap',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
                       }}
                     >
                       {msg.message}
@@ -450,7 +447,6 @@ export function CommunityChatDrawer({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(198, 161, 91, 0.3)',
             }}
           >
             <Send size={15} />
