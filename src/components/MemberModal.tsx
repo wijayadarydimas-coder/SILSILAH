@@ -471,7 +471,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Contoh: Raden Bambang"
+                  placeholder="Nama Lengkap Anda"
                   required
                   style={{
                     width: '100%',
@@ -493,7 +493,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Contoh: Om Bambang"
+                  placeholder="cth: Dimas"
                   style={{
                     width: '100%',
                     padding: '8px 12px',
