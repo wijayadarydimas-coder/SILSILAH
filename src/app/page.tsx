@@ -273,7 +273,7 @@ function FullScreenAuthPortal() {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="cth: silsilah atau nama_user"
+                placeholder="username"
                 style={{
                   width: '100%',
                   padding: '9px 12px 9px 36px',
@@ -375,6 +375,20 @@ function FullScreenAuthPortal() {
         >
           <ShieldCheck size={13} color="#C6A15B" />
           <span>Sistem terproteksi PostgreSQL dengan enkripsi kata sandi</span>
+        </div>
+
+        <div
+          style={{
+            marginTop: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            fontSize: 11,
+            color: '#7A7063',
+          }}
+        >
+          <span>Wijaya Code © 2026</span>
         </div>
       </div>
     </div>
