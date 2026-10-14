@@ -192,8 +192,8 @@ export function CommunityChatDrawer({
                   fontSize: 15,
                   fontWeight: 700,
                   color: 'var(--text-primary, #F1E8D8)',
-                  fontFamily: 'Cinzel, serif',
-                  letterSpacing: '0.02em',
+                  fontFamily: 'var(--font-sans)',
+                  letterSpacing: '0.01em',
                 }}
               >
                 Obrolan Komunitas

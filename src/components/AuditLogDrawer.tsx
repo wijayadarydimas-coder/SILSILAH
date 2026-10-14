@@ -78,8 +78,8 @@ export function AuditLogDrawer({ isOpen, onClose }: AuditLogDrawerProps) {
               fontWeight: 700,
               fontSize: 15,
               color: 'var(--text-primary, #F1E8D8)',
-              fontFamily: 'Cinzel, serif',
-              letterSpacing: '0.02em',
+              fontFamily: 'var(--font-sans)',
+              letterSpacing: '0.01em',
               margin: 0,
             }}
           >

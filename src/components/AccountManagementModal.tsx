@@ -20,6 +20,7 @@ import {
   Users,
   User,
   Sparkles,
+  Edit3,
 } from 'lucide-react';
 import { PhoneCountryInput } from '@/components/PhoneCountryInput';
 
@@ -34,6 +35,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
     currentUser,
     currentRole,
     updateUserRole,
+    updateUserDetails,
     toggleUserStatus,
     createUser,
     resetUserPassword,
@@ -42,6 +44,14 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
 
   // Active sub-tab
   const [activeTab, setActiveTab] = useState<'list' | 'create'>('list');
+
+  // Edit user state
+  const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
+  const [editDisplayName, setEditDisplayName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editRole, setEditRole] = useState<UserRole>('client');
+  const [isEditingSaving, setIsEditingSaving] = useState(false);
 
   // Form states for creating new user
   const [newUsername, setNewUsername] = useState('');
@@ -90,6 +100,38 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
     const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     setResetNewPasswordVal(`${prefix}#${randomNum}`);
+  };
+
+  const handleOpenEditUser = (u: UserAccount) => {
+    setEditingUser(u);
+    setEditDisplayName(u.displayName || '');
+    setEditEmail(u.email || '');
+    setEditPhone(u.phone || '');
+    setEditRole(u.role);
+    setErrorMsg('');
+  };
+
+  const handleSaveEditUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUser) return;
+    setIsEditingSaving(true);
+    setErrorMsg('');
+
+    const res = await updateUserDetails(editingUser.id, {
+      displayName: editDisplayName.trim(),
+      email: editEmail.trim(),
+      phone: editPhone.trim(),
+      role: editingUser.username === 'silsilah' ? 'superadmin' : editRole,
+    });
+
+    setIsEditingSaving(false);
+    if (!res.success) {
+      setErrorMsg(res.error || 'Gagal memperbarui data akun.');
+      return;
+    }
+
+    setSuccessMsg(`Data akun @${editingUser.username} berhasil diperbarui.`);
+    setEditingUser(null);
   };
 
   // Submit create user
@@ -244,7 +286,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
           maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
+          boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.5))',
           overflow: 'hidden',
         }}
       >
@@ -280,8 +322,8 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                   fontSize: 16,
                   fontWeight: 700,
                   color: 'var(--text-primary, #F1E8D8)',
-                  fontFamily: 'Cinzel, serif',
-                  letterSpacing: '0.02em',
+                  fontFamily: 'var(--font-sans)',
+                  letterSpacing: '0.01em',
                   margin: 0,
                 }}
               >
@@ -495,7 +537,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                               {u.displayName}
                             </span>
                             {u.username && (
-                              <span style={{ fontSize: 11, color: '#C6A15B', background: 'rgba(198, 161, 91, 0.1)', padding: '1px 6px', borderRadius: 4, border: '1px solid rgba(198, 161, 91, 0.25)' }}>
+                              <span style={{ fontSize: 11, color: 'var(--antique-gold, #C6A15B)', background: 'rgba(198, 161, 91, 0.1)', padding: '1px 6px', borderRadius: 4, border: '1px solid rgba(198, 161, 91, 0.25)' }}>
                                 @{u.username}
                               </span>
                             )}
@@ -521,6 +563,28 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
 
                       {/* Right: Actions */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        {/* Edit Account Button with pre-filled saved data */}
+                        <button
+                          onClick={() => handleOpenEditUser(u)}
+                          title="Edit nama tampilan, email, dan nomor HP akun ini"
+                          style={{
+                            padding: '6px 9px',
+                            borderRadius: 6,
+                            background: 'rgba(198, 161, 91, 0.12)',
+                            border: '1px solid rgba(198, 161, 91, 0.3)',
+                            color: 'var(--antique-gold, #C6A15B)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            fontSize: 11.5,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <Edit3 size={13} />
+                          <span>Edit</span>
+                        </button>
+
                         {isStaticSuperadmin ? (
                           <span
                             style={{
@@ -569,7 +633,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                                 borderRadius: 6,
                                 background: 'rgba(198, 161, 91, 0.15)',
                                 border: '1px solid rgba(198, 161, 91, 0.3)',
-                                color: '#C6A15B',
+                                color: 'var(--antique-gold, #C6A15B)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 4,
@@ -823,7 +887,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                           style={{
                             background: 'transparent',
                             border: 'none',
-                            color: '#C6A15B',
+                            color: 'var(--antique-gold, #C6A15B)',
                             fontSize: 11,
                             fontWeight: 600,
                             cursor: 'pointer',
@@ -1012,7 +1076,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
               borderRadius: 14,
               width: '100%',
               maxWidth: 440,
-              boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
+              boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.5))',
               overflow: 'hidden',
             }}
           >
@@ -1028,7 +1092,7 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <KeyRound size={17} color="#C6A15B" />
-                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)', margin: 0, fontFamily: 'Cinzel, serif' }}>
+                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)', margin: 0, fontFamily: 'var(--font-sans)' }}>
                   Atur Ulang Kata Sandi
                 </h3>
               </div>
@@ -1123,6 +1187,172 @@ export function AccountManagementModal({ isOpen, onClose }: AccountManagementMod
                   style={{ padding: '8px 18px', fontSize: 12.5 }}
                 >
                   {isResetting ? 'Menyimpan...' : 'Simpan Sandi Baru'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Account Modal with pre-filled valuable data */}
+      {editingUser && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 1200,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setEditingUser(null);
+          }}
+        >
+          <div
+            style={{
+              background: 'var(--bg-elevated, #211D18)',
+              border: '1px solid var(--border-subtle, #393128)',
+              borderRadius: 14,
+              width: '100%',
+              maxWidth: 440,
+              boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.5))',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '14px 18px',
+                borderBottom: '1px solid var(--border-subtle, #393128)',
+                background: 'var(--bg-secondary, #191714)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Edit3 size={17} color="#C6A15B" />
+                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)', margin: 0, fontFamily: 'var(--font-sans)' }}>
+                  Edit Data Akun Pengguna
+                </h3>
+              </div>
+              <button
+                onClick={() => setEditingUser(null)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary, #A79D8D)', cursor: 'pointer' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditUser} style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <div style={{ fontSize: 13, color: 'var(--text-primary, #F1E8D8)', fontWeight: 600 }}>
+                  Username: <span style={{ color: '#C6A15B' }}>@{editingUser.username}</span>
+                </div>
+                <p style={{ fontSize: 11.5, color: 'var(--text-secondary, #A79D8D)', marginTop: 2, marginBottom: 0 }}>
+                  Kolom di bawah ini otomatis terisi dari data yang sudah tersimpan. Ubah hanya bagian yang ingin diperbarui.
+                </p>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4, fontWeight: 600 }}>
+                  Nama Lengkap / Tampilan <span style={{ color: '#D97970' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editDisplayName}
+                  onChange={(e) => setEditDisplayName(e.target.value)}
+                  placeholder="Nama Pengguna"
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: 8,
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
+                    fontSize: 13,
+                    outline: 'none',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4, fontWeight: 600 }}>
+                  Alamat Email
+                </label>
+                <input
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="contoh@email.com"
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: 8,
+                    background: 'var(--bg-secondary, #191714)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
+                    fontSize: 13,
+                    outline: 'none',
+                  }}
+                />
+              </div>
+
+              <div>
+                <PhoneCountryInput
+                  label="Nomor WhatsApp / Telepon"
+                  value={editPhone}
+                  onChange={(val) => setEditPhone(val)}
+                  placeholder="8123456789"
+                  showWhatsAppPreview={false}
+                />
+              </div>
+
+              {editingUser.username !== 'silsilah' && (
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 4, fontWeight: 600 }}>
+                    Peran / Hak Akses
+                  </label>
+                  <select
+                    value={editRole}
+                    onChange={(e) => setEditRole(e.target.value as UserRole)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      borderRadius: 8,
+                      background: 'var(--bg-secondary, #191714)',
+                      border: '1px solid var(--border-subtle, #393128)',
+                      color: 'var(--text-primary, #F1E8D8)',
+                      fontSize: 13,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <option value="client">Warga (Akses Baca / Chat)</option>
+                    <option value="admin">Admin (Akses Kelola Silsilah)</option>
+                  </select>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 4 }}>
+                <button
+                  type="button"
+                  onClick={() => setEditingUser(null)}
+                  className="btn-secondary"
+                  style={{ padding: '8px 14px', fontSize: 12.5 }}
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isEditingSaving}
+                  className="btn-primary"
+                  style={{ padding: '8px 18px', fontSize: 12.5 }}
+                >
+                  {isEditingSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </button>
               </div>
             </form>

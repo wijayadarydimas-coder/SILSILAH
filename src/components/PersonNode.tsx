@@ -4,7 +4,8 @@ import React, { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { PersonNodeData } from '@/lib/treeLayout';
 import { calculateAge } from '@/lib/familyLogic';
-import { Sparkles, Eye, ChevronDown, ChevronUp, ShieldCheck, Heart, User } from 'lucide-react';
+import { useFamilyStore } from '@/lib/store';
+import { Sparkles, Eye, ChevronDown, ChevronUp, ShieldCheck, Heart, User, Mail, Phone } from 'lucide-react';
 
 const PersonNodeComponent = ({ data }: NodeProps) => {
   const nodeData = data as unknown as PersonNodeData;
@@ -17,6 +18,12 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
     onSelectFocus,
     onOpenProfile,
   } = nodeData;
+
+  const { users } = useFamilyStore();
+  const linkedUser = person.linkedUserId ? users.find((u) => u.id === person.linkedUserId) : null;
+  const effectiveEmail = person.email || linkedUser?.email || '';
+  const effectivePhone = person.phone || linkedUser?.phone || '';
+  const effectiveInstagram = person.instagram || (linkedUser?.username ? `@${linkedUser.username}` : '');
 
   const isDeceased = person.isDeceased;
   const ageInfo = calculateAge(person.birthDate, person.deathDate, person.isDeceased);
@@ -31,14 +38,14 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
   const getRelativeBadgeStyle = () => {
     if (isFocus) {
       return {
-        background: 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
-        color: '#11100E',
+        background: 'var(--antique-gold, #C6A15B)',
+        color: '#121212',
         fontWeight: '700',
       };
     }
     switch (relativeInfo.category) {
       case 'parent':
-        return { background: 'rgba(198, 161, 91, 0.15)', color: '#C6A15B', border: '1px solid rgba(198, 161, 91, 0.35)' };
+        return { background: 'rgba(198, 161, 91, 0.15)', color: 'var(--antique-gold, #C6A15B)', border: '1px solid rgba(198, 161, 91, 0.35)' };
       case 'child':
         return { background: 'rgba(126, 170, 131, 0.15)', color: '#7EAA83', border: '1px solid rgba(126, 170, 131, 0.35)' };
       case 'spouse':
@@ -47,9 +54,9 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
         return { background: 'rgba(215, 164, 90, 0.15)', color: '#D7A45A', border: '1px solid rgba(215, 164, 90, 0.35)' };
       case 'grandparent':
       case 'grandchild':
-        return { background: 'rgba(198, 161, 91, 0.12)', color: '#F1E8D8', border: '1px solid rgba(198, 161, 91, 0.25)' };
+        return { background: 'rgba(198, 161, 91, 0.12)', color: 'var(--text-primary, #F1E8D8)', border: '1px solid rgba(198, 161, 91, 0.25)' };
       default:
-        return { background: 'rgba(167, 157, 141, 0.1)', color: '#A79D8D', border: '1px solid rgba(167, 157, 141, 0.2)' };
+        return { background: 'rgba(167, 157, 141, 0.1)', color: 'var(--text-secondary, #A79D8D)', border: '1px solid rgba(167, 157, 141, 0.2)' };
     }
   };
 
@@ -57,18 +64,19 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
     <div
       style={{
         position: 'relative',
-        width: 250,
-        borderRadius: 12,
+        width: 260,
+        borderRadius: 10,
         background: isFocus
-          ? 'var(--bg-card, #211D18)'
-          : 'var(--bg-card, #191714)',
+          ? 'var(--bg-card, #1c1b18)'
+          : 'var(--bg-card, #181818)',
         border: isFocus
-          ? '2px solid var(--antique-gold, #C6A15B)'
-          : `2px solid ${isDeceased ? '#8F6D35' : 'var(--border-subtle, #35322F)'}`,
+          ? '1.5px solid var(--antique-gold, #C6A15B)'
+          : `1px solid ${isDeceased ? 'rgba(197, 160, 89, 0.45)' : 'var(--border-subtle, #2c2b28)'}`,
         padding: '12px 14px',
-        transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'all 0.15s ease',
         cursor: 'default',
-        backdropFilter: 'blur(8px)',
+        boxShadow: 'var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.3))',
+        fontFamily: 'var(--font-sans)',
       }}
       onDragOver={(e) => {
         e.preventDefault();
@@ -257,7 +265,7 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           <div
             style={{
               fontSize: 10.5,
-              color: 'rgba(167, 157, 141, 0.7)',
+              color: 'var(--text-muted, #A79D8D)',
               marginTop: 3,
             }}
           >
@@ -265,6 +273,123 @@ const PersonNodeComponent = ({ data }: NodeProps) => {
           </div>
         </div>
       </div>
+
+      {/* Linked Account & Contact Quick Row */}
+      {(linkedUser || effectiveEmail || effectivePhone || effectiveInstagram) && (
+        <div
+          style={{
+            marginTop: 10,
+            paddingTop: 8,
+            borderTop: '1px solid var(--border-subtle, #2c2b28)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+          }}
+        >
+          {/* Linked User Account Pill */}
+          {linkedUser && (
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                background: 'rgba(197, 160, 89, 0.12)',
+                border: '1px solid rgba(197, 160, 89, 0.25)',
+                color: 'var(--antique-gold, #C6A15B)',
+                padding: '2px 7px',
+                borderRadius: 4,
+                fontSize: 10,
+                fontWeight: 600,
+                width: 'fit-content',
+                maxWidth: '100%',
+              }}
+              title={`Akun Pengguna Tertaut: ${linkedUser.displayName} (@${linkedUser.username})`}
+            >
+              <User size={10} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                @{linkedUser.username} {linkedUser.role !== 'client' ? `(${linkedUser.role.toUpperCase()})` : ''}
+              </span>
+            </div>
+          )}
+
+          {/* Email Chip */}
+          {effectiveEmail && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                fontSize: 10.5,
+                color: 'var(--text-secondary, #A79D8D)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+              title={`Email: ${effectiveEmail}`}
+            >
+              <Mail size={11} color="var(--antique-gold, #C6A15B)" style={{ flexShrink: 0 }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {effectiveEmail}
+              </span>
+            </div>
+          )}
+
+          {/* WhatsApp / Phone Chip */}
+          {effectivePhone && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                fontSize: 10.5,
+                color: 'var(--text-secondary, #A79D8D)',
+              }}
+              title={`WhatsApp: ${effectivePhone}`}
+            >
+              <Phone size={11} color="#7EAA83" style={{ flexShrink: 0 }} />
+              <a
+                href={`https://wa.me/${effectivePhone.replace(/[^0-9]/g, '')}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  color: 'var(--text-secondary, #A79D8D)',
+                  textDecoration: 'none',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#7EAA83')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-secondary, #A79D8D)')}
+              >
+                {effectivePhone}
+              </a>
+            </div>
+          )}
+
+          {/* Instagram / Sosmed Chip */}
+          {effectiveInstagram && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                fontSize: 10.5,
+                color: 'var(--text-secondary, #A79D8D)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+              title={`Sosmed: ${effectiveInstagram}`}
+            >
+              <span style={{ fontSize: 10, color: 'var(--antique-gold, #C6A15B)', fontWeight: 700, flexShrink: 0 }}>@</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {effectiveInstagram.replace(/^@+/, '')}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Action Footer: Focus, Profile, Collapse buttons */}
       <div

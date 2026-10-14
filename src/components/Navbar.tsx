@@ -40,7 +40,6 @@ interface NavbarProps {
   onOpenProfile: (id: string) => void;
   onOpenAuth: (mode: 'login' | 'change_password') => void;
   onOpenWorkspaceSettings?: () => void;
-  onOpenThemeCustomizer?: () => void;
   onToggleSidebarMembers?: () => void;
   onOpenResetAdmin?: () => void;
   onOpenUserProfile?: () => void;
@@ -58,7 +57,6 @@ export function Navbar({
   onOpenProfile,
   onOpenAuth,
   onOpenWorkspaceSettings,
-  onOpenThemeCustomizer,
   onToggleSidebarMembers,
   onOpenResetAdmin,
   onOpenUserProfile,
@@ -85,37 +83,39 @@ export function Navbar({
   const [isLightMode, setIsLightMode] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Sync theme mode on mount
+  // Sync theme mode on mount (Focus exclusively on Mode Gelap and Mode Terang)
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (
-          parsed.bgPrimary === '#F8FAFC' ||
-          parsed.bgPrimary === '#FFFFFF' ||
-          parsed.bgPrimary?.toLowerCase() === '#f8fafc'
-        ) {
-          setIsLightMode(true);
-        }
+      const saved = localStorage.getItem('silsilah_theme_mode') || localStorage.getItem('silsilah_custom_theme_v1');
+      const isLight = saved === 'light' || (typeof saved === 'string' && (saved.includes('#F8FAFC') || saved.includes('#FAF7F2') || saved.includes('#F8F7F4') || saved.includes('#f8f7f4')));
+      if (isLight) {
+        setIsLightMode(true);
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.body.classList.add('theme-light');
+      } else {
+        setIsLightMode(false);
+        document.documentElement.removeAttribute('data-theme');
+        document.body.classList.remove('theme-light');
       }
     } catch {}
   }, []);
 
   const toggleThemeMode = () => {
     if (isLightMode) {
-      const dark = PRESET_THEMES[0].colors;
-      applyThemeColors(dark);
       setIsLightMode(false);
+      document.documentElement.removeAttribute('data-theme');
+      document.body.classList.remove('theme-light');
       try {
-        localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(dark));
+        localStorage.setItem('silsilah_theme_mode', 'dark');
+        localStorage.removeItem('silsilah_custom_theme_v1');
       } catch {}
     } else {
-      const light = PRESET_THEMES[1].colors;
-      applyThemeColors(light);
       setIsLightMode(true);
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.body.classList.add('theme-light');
       try {
-        localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(light));
+        localStorage.setItem('silsilah_theme_mode', 'light');
+        localStorage.removeItem('silsilah_custom_theme_v1');
       } catch {}
     }
   };
@@ -193,7 +193,7 @@ export function Navbar({
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 17, fontWeight: 800, letterSpacing: '0.08em', color: 'var(--ivory, #F1E8D8)' }}>
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: 16, fontWeight: 800, letterSpacing: '0.04em', color: 'var(--ivory, #F1E8D8)' }}>
                 SILSILAH
               </span>
               <span
@@ -410,30 +410,7 @@ export function Navbar({
           </button>
         )}
 
-        {/* Theme Customizer RGB (Desktop) */}
-        {onOpenThemeCustomizer && (
-          <button
-            onClick={onOpenThemeCustomizer}
-            className="hide-on-tablet"
-            title="Kustom Tema Warna RGB Komponen"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '7px 12px',
-              borderRadius: 8,
-              background: 'var(--bg-menu, #191714)',
-              color: 'var(--antique-gold, #C6A15B)',
-              border: '1px solid var(--border-subtle, #393128)',
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            <Palette size={14} />
-            <span>Tema RGB</span>
-          </button>
-        )}
+
 
         {/* Audit Log Button (Desktop) */}
         <button
@@ -979,7 +956,7 @@ export function Navbar({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/assets/javanese-darkpro-mark.svg" alt="Logo" style={{ width: 28, height: 28 }} />
                 <div>
-                  <div style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 16, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.06em' }}>
+                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: 15, fontWeight: 800, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
                     SILSILAH
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>
@@ -1200,31 +1177,47 @@ export function Navbar({
                 <span>Chat Komunitas Trah</span>
               </button>
 
-              {onOpenThemeCustomizer && (
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    onOpenThemeCustomizer();
-                  }}
+              {/* Theme Mode Toggle (Mobile) */}
+              <button
+                onClick={() => {
+                  toggleThemeMode();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  background: 'var(--bg-card, #211D18)',
+                  border: '1px solid var(--border-subtle, #393128)',
+                  color: 'var(--text-primary, #F1E8D8)',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {isLightMode ? (
+                    <Sun size={16} color="var(--accent-gold, #C6A15B)" />
+                  ) : (
+                    <Moon size={16} color="var(--accent-gold, #C6A15B)" />
+                  )}
+                  <span>{isLightMode ? 'Mode Terang' : 'Mode Gelap'}</span>
+                </div>
+                <span
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                    padding: '10px 12px',
-                    borderRadius: 8,
-                    background: 'var(--bg-card, #211D18)',
+                    fontSize: 11,
+                    color: 'var(--text-muted, #A79D8D)',
+                    background: 'var(--bg-secondary, #191714)',
+                    padding: '2px 8px',
+                    borderRadius: 4,
                     border: '1px solid var(--border-subtle, #393128)',
-                    color: 'var(--ivory, #F1E8D8)',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    textAlign: 'left',
-                    cursor: 'pointer',
                   }}
                 >
-                  <Palette size={16} color="var(--antique-gold, #C6A15B)" />
-                  <span>Kustom Tema Warna RGB</span>
-                </button>
-              )}
+                  Ubah ke {isLightMode ? 'Gelap' : 'Terang'}
+                </span>
+              </button>
 
               <button
                 onClick={() => {

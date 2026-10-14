@@ -305,7 +305,7 @@ export function AIChatDrawer() {
                 />
               </div>
               <div>
-                <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 14, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
+                <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: 14, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.01em' }}>
                   {aiName}
                 </h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -315,7 +315,6 @@ export function AIChatDrawer() {
                       height: 7,
                       borderRadius: '50%',
                       background: isOverloaded ? 'var(--danger, #D97970)' : 'var(--success, #7EAA83)',
-                      boxShadow: isOverloaded ? '0 0 8px #D97970' : '0 0 8px #7EAA83',
                     }}
                   />
                   <span style={{ fontSize: 11, color: isOverloaded ? 'var(--danger, #D97970)' : 'var(--text-muted, #A79D8D)' }}>

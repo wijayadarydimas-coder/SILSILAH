@@ -134,7 +134,7 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
           borderRadius: 16,
           width: '100%',
           maxWidth: 'min(440px, 94vw)',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
+          boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.5))',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -158,8 +158,8 @@ export function AuthModal({ isOpen, initialMode = 'login', onClose }: AuthModalP
                 fontSize: 15,
                 fontWeight: 700,
                 color: 'var(--text-primary, #F1E8D8)',
-                fontFamily: 'Cinzel, serif',
-                letterSpacing: '0.02em',
+                fontFamily: 'var(--font-sans)',
+                letterSpacing: '0.01em',
                 margin: 0,
               }}
             >

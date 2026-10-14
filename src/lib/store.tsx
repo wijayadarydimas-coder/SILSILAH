@@ -58,6 +58,10 @@ interface FamilyStoreContextType {
   updateWorkspace: (name: string, description?: string) => Promise<{ success: boolean; error?: string }>;
   linkClientToPerson: (personId: string, userId: string) => Promise<{ success: boolean; error?: string }>;
   updateUserRole: (userId: string, role: UserRole) => Promise<{ success: boolean; error?: string }>;
+  updateUserDetails: (
+    targetUserId: string,
+    updates: { displayName?: string; email?: string; phone?: string; role?: UserRole }
+  ) => Promise<{ success: boolean; error?: string; user?: UserAccount }>;
   toggleUserStatus: (userId: string) => Promise<{ success: boolean; error?: string }>;
   createUser: (userData: {
     username: string;
@@ -264,6 +268,18 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
     if (currentRole === 'client') {
       return { success: false, error: 'Akses ditolak: Akun Client hanya memiliki hak baca (Read-only).' };
     }
+
+    // Strict 1-to-1: one user account can only be linked to one person node
+    if (data.linkedUserId) {
+      const alreadyLinked = people.find((p) => p.linkedUserId === data.linkedUserId);
+      if (alreadyLinked) {
+        return {
+          success: false,
+          error: `Akun pengguna ini sudah ditautkan ke anggota keluarga "${alreadyLinked.displayName || alreadyLinked.fullName}". Satu akun hanya boleh ditautkan ke satu anggota.`
+        };
+      }
+    }
+
     const newId = `p-${Date.now()}`;
     const newPerson: Person = {
       ...data,
@@ -288,6 +304,18 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
     }
     const existing = people.find((p) => p.id === id);
     if (!existing) return { success: false, error: 'Anggota tidak ditemukan.' };
+
+    // Strict 1-to-1: one user account can only be linked to one person node
+    if (data.linkedUserId) {
+      const alreadyLinked = people.find((p) => p.linkedUserId === data.linkedUserId && p.id !== id);
+      if (alreadyLinked) {
+        return {
+          success: false,
+          error: `Akun pengguna ini sudah ditautkan ke anggota keluarga "${alreadyLinked.displayName || alreadyLinked.fullName}". Satu akun hanya boleh ditautkan ke satu anggota.`
+        };
+      }
+    }
+
     const updatedPerson: Person = { ...existing, ...data };
     const log = logAction('UPDATE_PERSON', 'person', id, `Memperbarui data profil: ${updatedPerson.fullName}`);
     const syncRes = await syncBackendMutation('UPDATE_PERSON', updatedPerson, log);
@@ -586,6 +614,41 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
     }
   };
 
+  const updateUserDetails = async (
+    targetUserId: string,
+    updates: { displayName?: string; email?: string; phone?: string; role?: UserRole }
+  ) => {
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actorUserId: currentUser?.id || 'usr-superadmin',
+          targetUserId,
+          displayName: updates.displayName?.trim(),
+          email: updates.email !== undefined ? updates.email.trim() : undefined,
+          phone: updates.phone !== undefined ? updates.phone.trim() : undefined,
+          newRole: updates.role,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Gagal memperbarui data akun pengguna.' };
+      }
+
+      await refreshUsers();
+      if (currentUser?.id === targetUserId && data.user) {
+        setCurrentUser(data.user);
+      }
+
+      logAction('CHANGE_ROLE', 'user', targetUserId, `Memperbarui rincian akun pengguna: ${updates.displayName || targetUserId}`);
+      return { success: true, user: data.user };
+    } catch {
+      return { success: false, error: 'Koneksi ke server database gagal.' };
+    }
+  };
+
   const updateWorkspace = async (name: string, description?: string) => {
     if (currentRole !== 'superadmin') {
       return { success: false, error: 'Hanya Superadmin yang berwenang mengubah nama ruang keluarga.' };
@@ -605,6 +668,17 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
     const person = people.find((p) => p.id === personId);
     const user = users.find((u) => u.id === userId);
     if (!person) return { success: false, error: 'Anggota keluarga tidak ditemukan.' };
+
+    // Strict 1-to-1: if userId is provided, ensure no other person is already linked to this userId
+    if (userId) {
+      const alreadyLinked = people.find((p) => p.linkedUserId === userId && p.id !== personId);
+      if (alreadyLinked) {
+        return {
+          success: false,
+          error: `Akun pengguna ini sudah ditautkan ke anggota keluarga "${alreadyLinked.displayName || alreadyLinked.fullName}". Satu akun hanya boleh ditautkan ke satu anggota.`
+        };
+      }
+    }
 
     updatePerson(personId, { linkedUserId: userId || undefined });
 
@@ -696,6 +770,7 @@ export function FamilyStoreProvider({ children }: { children: React.ReactNode })
         updateWorkspace,
         linkClientToPerson,
         updateUserRole,
+        updateUserDetails,
         toggleUserStatus,
         createUser,
         resetUserPassword,

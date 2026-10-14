@@ -14,7 +14,6 @@ import { AuthModal } from '@/components/AuthModal';
 import { SidebarMembers } from '@/components/SidebarMembers';
 import { QuickConnectModal } from '@/components/QuickConnectModal';
 import { WorkspaceSettingsModal } from '@/components/WorkspaceSettingsModal';
-import { ThemeCustomizerModal, applyThemeColors } from '@/components/ThemeCustomizerModal';
 import { ResetPasswordModal } from '@/components/ResetPasswordModal';
 import { PasswordResetAdminModal } from '@/components/PasswordResetAdminModal';
 import { AIChatDrawer } from '@/components/AIChatDrawer';
@@ -160,7 +159,7 @@ function FullScreenAuthPortal() {
           backdropFilter: 'blur(20px)',
           border: '1px solid #393128',
           borderRadius: 20,
-          boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.88), 0 0 35px rgba(198, 161, 91, 0.08)',
+          boxShadow: 'var(--shadow-lg, 0 10px 30px rgba(0, 0, 0, 0.5))',
           padding: 'clamp(24px, 5vw, 36px) clamp(16px, 5vw, 30px)',
           position: 'relative',
           zIndex: 10,
@@ -180,7 +179,7 @@ function FullScreenAuthPortal() {
               alignItems: 'center',
               justifyContent: 'center',
               padding: 6,
-              boxShadow: '0 0 25px rgba(198, 161, 91, 0.25)',
+              boxShadow: 'var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.3))',
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -411,7 +410,6 @@ function SilsilahDashboard() {
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
   const [isCommunityChatOpen, setIsCommunityChatOpen] = useState(false);
   const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
-  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
 
   // Auth modal state (for changing password / switching account)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -466,7 +464,6 @@ function SilsilahDashboard() {
         onOpenProfile={(id) => setSelectedProfileId(id)}
         onOpenAuth={handleOpenAuth}
         onOpenWorkspaceSettings={() => setIsWorkspaceModalOpen(true)}
-        onOpenThemeCustomizer={() => setIsThemeModalOpen(true)}
         onToggleSidebarMembers={() => setIsSidebarOpen((prev) => !prev)}
         isSidebarOpen={isSidebarOpen}
         onLogout={logout}
@@ -638,12 +635,6 @@ function SilsilahDashboard() {
         onClose={() => setIsWorkspaceModalOpen(false)}
       />
 
-      {/* Theme Customizer Modal with RGB color pickers */}
-      <ThemeCustomizerModal
-        isOpen={isThemeModalOpen}
-        onClose={() => setIsThemeModalOpen(false)}
-      />
-
       {/* Authentication & Change Password Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
@@ -686,10 +677,12 @@ function SilsilahDashboard() {
 export default function HomePage() {
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('silsilah_custom_theme_v1');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        applyThemeColors(parsed);
+      const mode = localStorage.getItem('silsilah_theme_mode') || 'dark';
+      document.documentElement.setAttribute('data-theme', mode);
+      if (mode === 'light') {
+        document.documentElement.classList.add('theme-light');
+      } else {
+        document.documentElement.classList.remove('theme-light');
       }
     } catch {}
   }, []);

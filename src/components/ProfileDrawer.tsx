@@ -45,12 +45,18 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
     setFocusPersonId,
     currentRole,
     deletePerson,
+    users,
   } = useFamilyStore();
 
   if (!personId) return null;
 
   const person = people.find((p) => p.id === personId);
   if (!person) return null;
+
+  const linkedUser = person.linkedUserId ? users.find((u) => u.id === person.linkedUserId) : null;
+  const effectiveEmail = person.email || linkedUser?.email || '';
+  const effectivePhone = person.phone || linkedUser?.phone || '';
+  const effectiveInstagram = person.instagram || (linkedUser?.username ? `@${linkedUser.username}` : '');
 
   const peopleMap = new Map(people.map((p) => [p.id, p]));
   const isFocus = person.id === focusPersonId;
@@ -160,7 +166,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <User size={18} color="var(--antique-gold, #C6A15B)" />
-          <span style={{ fontFamily: 'Cinzel, Georgia, serif', fontWeight: 700, fontSize: 15, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
+          <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 15, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.01em' }}>
             Profil Trah Silsilah
           </span>
         </div>
@@ -373,7 +379,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               border: '1px solid var(--border-subtle, #393128)',
             }}
           >
-            <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', marginBottom: 6, letterSpacing: '0.04em' }}>
+            <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', marginBottom: 6, letterSpacing: '0.02em' }}>
               CATATAN BIOGRAFI &amp; SEJARAH
             </h3>
             <p style={{ fontSize: 13, color: 'var(--ivory, #F1E8D8)', lineHeight: 1.6 }}>
@@ -391,7 +397,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
             border: '1px solid var(--border-subtle, #393128)',
           }}
         >
-          <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', marginBottom: 10, letterSpacing: '0.04em' }}>
+          <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', marginBottom: 10, letterSpacing: '0.02em' }}>
             TANGGAL PENTING
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
@@ -442,14 +448,53 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               marginBottom: 12,
             }}
           >
-            <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.04em' }}>
+            <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.02em' }}>
               INFORMASI KONTAK &amp; ALAMAT
             </h3>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {/* WhatsApp & Telepon */}
-            {person.phone ? (
+            {/* Akun Pengguna Silsilah Tertaut Banner */}
+            {linkedUser && (
+              <div
+                style={{
+                  background: 'rgba(197, 160, 89, 0.1)',
+                  border: '1px solid rgba(197, 160, 89, 0.3)',
+                  borderRadius: 10,
+                  padding: '10px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <User size={16} color="var(--antique-gold, #C6A15B)" />
+                  <div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Akun Pengguna Tertaut</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)' }}>
+                      @{linkedUser.username} <span style={{ fontWeight: 400, color: 'var(--ivory, #F1E8D8)' }}>({linkedUser.displayName})</span>
+                    </div>
+                  </div>
+                </div>
+                <span
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: 4,
+                    background: 'rgba(197, 160, 89, 0.15)',
+                    color: 'var(--antique-gold, #C6A15B)',
+                    border: '1px solid rgba(197, 160, 89, 0.3)',
+                  }}
+                >
+                  {linkedUser.role.toUpperCase()}
+                </span>
+              </div>
+            )}
+
+            {/* WhatsApp & Telepon (dari data anggota atau akun tertaut) */}
+            {effectivePhone ? (
               <div
                 style={{
                   background: 'rgba(198, 161, 91, 0.08)',
@@ -467,14 +512,14 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>WhatsApp &amp; Telepon</div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ivory, #F1E8D8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {person.phone}
+                      {effectivePhone}
                     </div>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                   <a
-                    href={formatWhatsAppUrl(person.phone)}
+                    href={formatWhatsAppUrl(effectivePhone)}
                     target="_blank"
                     rel="noopener noreferrer"
                     title="Buka WhatsApp Langsung"
@@ -482,8 +527,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 4,
-                      background: 'linear-gradient(135deg, #C6A15B 0%, #8F6D35 100%)',
-                      color: '#11100E',
+                      background: 'var(--antique-gold, #C6A15B)',
+                      color: '#121212',
                       padding: '5px 10px',
                       borderRadius: 6,
                       fontSize: 11.5,
@@ -496,7 +541,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                     <ExternalLink size={11} />
                   </a>
                   <a
-                    href={`tel:${person.phone}`}
+                    href={`tel:${effectivePhone}`}
                     title="Panggil Nomor"
                     style={{
                       display: 'inline-flex',
@@ -515,8 +560,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               </div>
             ) : null}
 
-            {/* Instagram */}
-            {person.instagram ? (
+            {/* Instagram / Sosmed (dari data anggota atau akun tertaut) */}
+            {effectiveInstagram ? (
               <div
                 style={{
                   background: 'rgba(185, 111, 75, 0.08)',
@@ -532,15 +577,15 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                   <Share2 size={16} color="var(--terracotta, #B96F4B)" style={{ flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Instagram</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Instagram / Sosmed</div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ivory, #F1E8D8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {person.instagram.startsWith('@') ? person.instagram : `@${person.instagram}`}
+                      {effectiveInstagram.startsWith('@') ? effectiveInstagram : `@${effectiveInstagram}`}
                     </div>
                   </div>
                 </div>
 
                 <a
-                  href={formatInstagramUrl(person.instagram)}
+                  href={formatInstagramUrl(effectiveInstagram)}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -613,8 +658,8 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               </div>
             ) : null}
 
-            {/* Email */}
-            {person.email ? (
+            {/* Email (dari data anggota atau akun tertaut) */}
+            {effectiveEmail ? (
               <div
                 style={{
                   background: 'rgba(198, 161, 91, 0.08)',
@@ -632,13 +677,13 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: 11, color: 'var(--text-muted, #A79D8D)' }}>Email</div>
                     <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--ivory, #F1E8D8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {person.email}
+                      {effectiveEmail}
                     </div>
                   </div>
                 </div>
 
                 <a
-                  href={`mailto:${person.email}`}
+                  href={`mailto:${effectiveEmail}`}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -685,7 +730,7 @@ export function ProfileDrawer({ personId, onClose, onEdit, onAddRelation }: Prof
               marginBottom: 12,
             }}
           >
-            <h3 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.04em' }}>
+            <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.02em' }}>
               JARINGAN HUBUNGAN KELUARGA
             </h3>
             {canEdit && (

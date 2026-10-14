@@ -25,6 +25,16 @@ export function UserProfileModal({
   const [success, setSuccess] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Auto pre-fill saved valuable data whenever currentUser changes or modal is opened
+  React.useEffect(() => {
+    setDisplayName(currentUser.displayName || '');
+    setEmail(currentUser.email || '');
+    setPhone(currentUser.phone || '');
+    setAvatarUrl(currentUser.avatarUrl || '');
+    setError(null);
+    setSuccess(null);
+  }, [currentUser]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -113,7 +123,7 @@ export function UserProfileModal({
           background: 'var(--bg-elevated, #211D18)',
           border: '1px solid var(--border-subtle, #393128)',
           borderRadius: 16,
-          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)',
+          boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.5))',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -153,8 +163,8 @@ export function UserProfileModal({
                   fontSize: 15,
                   fontWeight: 700,
                   color: 'var(--text-primary, #F1E8D8)',
-                  fontFamily: 'Cinzel, serif',
-                  letterSpacing: '0.02em',
+                  fontFamily: 'var(--font-sans)',
+                  letterSpacing: '0.01em',
                 }}
               >
                 Edit Profil &amp; Foto Akun

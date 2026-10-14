@@ -116,7 +116,7 @@ export function SidebarMembers({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Users size={18} color="var(--antique-gold, #C6A15B)" />
-            <h2 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 13.5, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
+            <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.01em' }}>
               Daftar Trah Keluarga
             </h2>
           </div>

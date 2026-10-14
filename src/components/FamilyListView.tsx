@@ -94,7 +94,7 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
               <img src="/assets/icon-family-tree.svg" alt="Trah" width={24} height={24} />
             </div>
             <div>
-              <h1 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 20, fontWeight: 700, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.04em' }}>
+              <h1 style={{ fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 800, color: 'var(--ivory, #F1E8D8)', letterSpacing: '0.01em' }}>
                 Direktori Trah Silsilah Keluarga
               </h1>
               <p style={{ fontSize: 13, color: 'var(--text-muted, #A79D8D)', marginTop: 2 }}>
@@ -155,7 +155,7 @@ export function FamilyListView({ onOpenProfile }: FamilyListViewProps) {
                     alignItems: 'center',
                   }}
                 >
-                  <h2 style={{ fontFamily: 'Cinzel, Georgia, serif', fontSize: 14, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.03em' }}>
+                  <h2 style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 700, color: 'var(--antique-gold, #C6A15B)', letterSpacing: '0.02em' }}>
                     Generasi ke-{genNum}
                   </h2>
                   <span style={{ fontSize: 11.5, color: 'var(--text-muted, #A79D8D)', background: 'rgba(198, 161, 91, 0.1)', padding: '2px 8px', borderRadius: 999, border: '1px solid rgba(198, 161, 91, 0.2)' }}>

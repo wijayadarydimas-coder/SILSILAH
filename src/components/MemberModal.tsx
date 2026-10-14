@@ -70,6 +70,17 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isEditing = Boolean(editPersonId);
 
+  // Strict 1-to-1 mapping: find which users are already linked to other people
+  const alreadyLinkedUserMap = React.useMemo(() => {
+    const map = new Map<string, string>();
+    people.forEach((p) => {
+      if (p.linkedUserId && p.id !== editPersonId) {
+        map.set(p.linkedUserId, p.displayName || p.fullName);
+      }
+    });
+    return map;
+  }, [people, editPersonId]);
+
   useEffect(() => {
     if (editPersonId) {
       const p = people.find((item) => item.id === editPersonId);
@@ -114,8 +125,31 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
         setCountryCode(foundCode);
         setPhoneNumber(restPhone);
 
-        setEmail(p.email || '');
-        setInstagram(p.instagram || '');
+        let initialEmail = p.email || '';
+        let initialPhone = rawPhone;
+        let initialInstagram = p.instagram || '';
+        let initialPhoto = p.photoUrl || '';
+
+        // Auto-fill from linked user if person fields are empty
+        if (p.linkedUserId) {
+          const matchedUser = users.find((u) => u.id === p.linkedUserId);
+          if (matchedUser) {
+            if (!initialEmail && matchedUser.email) initialEmail = matchedUser.email;
+            if (!initialPhone && matchedUser.phone) {
+              initialPhone = matchedUser.phone;
+              setPhone(matchedUser.phone);
+              setPhoneNumber(matchedUser.phone);
+            }
+            if (!initialInstagram && matchedUser.username) initialInstagram = `@${matchedUser.username}`;
+            if (!initialPhoto && matchedUser.avatarUrl) {
+              initialPhoto = matchedUser.avatarUrl;
+              setPhotoUrl(matchedUser.avatarUrl);
+            }
+          }
+        }
+
+        setEmail(initialEmail);
+        setInstagram(initialInstagram);
         setVerificationStatus(p.verificationStatus);
       }
     } else {
@@ -143,7 +177,51 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
       setVerificationStatus('verified');
     }
     setErrorMsg('');
-  }, [editPersonId, isOpen, people]);
+  }, [editPersonId, isOpen, people, users]);
+
+  const handleSelectLinkedUser = (val: string) => {
+    setLinkedUserId(val);
+    if (!val) return;
+    const selectedUser = users.find((u) => u.id === val);
+    if (!selectedUser) return;
+
+    // Automatically fill fields with existing valuable data from the linked account
+    if (!email && selectedUser.email) setEmail(selectedUser.email);
+    if (!phone && selectedUser.phone) {
+      setPhone(selectedUser.phone);
+      setPhoneNumber(selectedUser.phone);
+    }
+    if (!displayName && selectedUser.displayName) setDisplayName(selectedUser.displayName);
+    if (!fullName && selectedUser.displayName) setFullName(selectedUser.displayName);
+    if (!instagram && selectedUser.username) setInstagram(`@${selectedUser.username}`);
+    if (!photoUrl && selectedUser.avatarUrl) {
+      setPhotoUrl(selectedUser.avatarUrl);
+      setPhotoZoom(1);
+      setPhotoOffsetX(0);
+      setPhotoOffsetY(0);
+    }
+  };
+
+  const handleSyncFromLinkedUser = () => {
+    if (!linkedUserId) return;
+    const selectedUser = users.find((u) => u.id === linkedUserId);
+    if (!selectedUser) return;
+
+    if (selectedUser.email) setEmail(selectedUser.email);
+    if (selectedUser.phone) {
+      setPhone(selectedUser.phone);
+      setPhoneNumber(selectedUser.phone);
+    }
+    if (selectedUser.displayName && !displayName) {
+      setDisplayName(selectedUser.displayName);
+    }
+    if (selectedUser.username) {
+      setInstagram(`@${selectedUser.username}`);
+    }
+    if (selectedUser.avatarUrl) {
+      setPhotoUrl(selectedUser.avatarUrl);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -216,6 +294,17 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
     if (!fullName.trim()) {
       setErrorMsg('Nama lengkap wajib diisi.');
       return;
+    }
+
+    // Strict 1-to-1 account link validation
+    if (linkedUserId) {
+      const alreadyLinked = people.find((p) => p.linkedUserId === linkedUserId && p.id !== editPersonId);
+      if (alreadyLinked) {
+        setErrorMsg(
+          `Akun pengguna ini sudah ditautkan ke anggota keluarga "${alreadyLinked.displayName || alreadyLinked.fullName}". Satu akun hanya boleh ditautkan ke satu anggota.`
+        );
+        return;
+      }
     }
 
     if (isDeceased && birthDate && deathDate && deathDate < birthDate) {
@@ -301,7 +390,7 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
           maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.85)',
+          boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.5))',
           overflow: 'hidden',
         }}
       >
@@ -323,8 +412,8 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                 fontSize: 16,
                 fontWeight: 700,
                 color: 'var(--text-primary, #F1E8D8)',
-                fontFamily: 'Cinzel, serif',
-                letterSpacing: '0.02em',
+                fontFamily: 'var(--font-sans)',
+                letterSpacing: '0.01em',
                 margin: 0,
               }}
             >
@@ -620,39 +709,6 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
               </div>
             </div>
 
-            {/* TAUTKAN DENGAN AKUN PENGGUNA */}
-            <div style={{ background: 'var(--bg-secondary, #191714)', padding: 14, borderRadius: 10, border: '1px solid var(--border-subtle, #393128)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Link size={15} color="#C6A15B" />
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)' }}>
-                  TAUTKAN KE AKUN PENGGUNA (WARGA)
-                </span>
-              </div>
-              <p style={{ fontSize: 11.5, color: 'var(--text-secondary, #A79D8D)', marginBottom: 8 }}>
-                Pilih akun pengguna yang merupakan representasi dari anggota keluarga ini.
-              </p>
-              <select
-                value={linkedUserId}
-                onChange={(e) => setLinkedUserId(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  borderRadius: 8,
-                  background: 'var(--bg-elevated, #211D18)',
-                  border: '1px solid var(--border-subtle, #393128)',
-                  color: 'var(--text-primary, #F1E8D8)',
-                  fontSize: 13,
-                }}
-              >
-                <option value="">-- Tidak ditautkan ke akun pengguna --</option>
-                {users.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.displayName} ({u.username || u.email}) - Role: {u.role === 'client' ? 'WARGA' : u.role.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* Tanggal Lahir & Wafat */}
             <div style={{ background: 'var(--bg-secondary, #191714)', padding: 14, borderRadius: 10, border: '1px solid var(--border-subtle, #393128)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -687,7 +743,6 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                       border: '1px solid var(--border-subtle, #393128)',
                       color: 'var(--text-primary, #F1E8D8)',
                       fontSize: 13,
-                      colorScheme: 'dark',
                     }}
                   />
                 </div>
@@ -709,7 +764,6 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
                         border: '1px solid var(--border-subtle, #393128)',
                         color: 'var(--text-primary, #F1E8D8)',
                         fontSize: 13,
-                        colorScheme: 'dark',
                       }}
                     />
                   </div>
@@ -740,11 +794,76 @@ export function MemberModal({ isOpen, editPersonId, onClose, onSuccess }: Member
               />
             </div>
 
-            {/* Kontak & Domisili */}
+            {/* Kontak, Domisili & Tautan Akun Pengguna */}
             <div style={{ background: 'var(--bg-secondary, #191714)', padding: 14, borderRadius: 10, border: '1px solid var(--border-subtle, #393128)' }}>
-              <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-secondary, #A79D8D)', display: 'block', marginBottom: 12 }}>
-                KONTAK &amp; DOMISILI
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary, #F1E8D8)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Link size={14} color="#C6A15B" />
+                  TAUTKAN AKUN USER &amp; KONTAK
+                </span>
+                {linkedUserId && (
+                  <button
+                    type="button"
+                    onClick={handleSyncFromLinkedUser}
+                    style={{
+                      background: 'rgba(198, 161, 91, 0.12)',
+                      border: '1px solid rgba(198, 161, 91, 0.35)',
+                      color: 'var(--antique-gold, #C6A15B)',
+                      padding: '4px 10px',
+                      borderRadius: 6,
+                      fontSize: 11.5,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                    title="Salin ulang email, telepon/WhatsApp, dan foto dari akun pengguna tertaut"
+                  >
+                    ⚡ Salin Data dari Akun
+                  </button>
+                )}
+              </div>
+
+              {/* Pilihan Akun Pengguna Terdaftar */}
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ display: 'block', fontSize: 12, color: 'var(--text-secondary, #A79D8D)', marginBottom: 5 }}>
+                  Akun Pengguna Terdaftar (Opsional)
+                </label>
+                <select
+                  value={linkedUserId}
+                  onChange={(e) => handleSelectLinkedUser(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: 8,
+                    background: 'var(--bg-elevated, #211D18)',
+                    border: '1px solid var(--border-subtle, #393128)',
+                    color: 'var(--text-primary, #F1E8D8)',
+                    fontSize: 12.5,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <option value="">-- Tidak Ditautkan (Hanya Entitas Silsilah Keluarga) --</option>
+                  {users.map((u) => {
+                    const linkedPersonName = alreadyLinkedUserMap.get(u.id);
+                    const isAlreadyLinkedOther = Boolean(linkedPersonName && linkedUserId !== u.id);
+                    return (
+                      <option
+                        key={u.id}
+                        value={u.id}
+                        disabled={isAlreadyLinkedOther}
+                      >
+                        @{u.username} — {u.displayName} ({u.role.toUpperCase()}) {u.email ? `• ${u.email}` : ''}
+                        {isAlreadyLinkedOther ? ` [Sudah Ditautkan: ${linkedPersonName}]` : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+                <p style={{ margin: '4px 0 0 0', fontSize: 11, color: 'var(--text-muted, #787267)' }}>
+                  Menautkan akun otomatis mengisi email, WhatsApp, dan sosmed ke kartu anggota tanpa perlu mengetik ulang manual.
+                </p>
+              </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {/* Domisili / Alamat dengan Rekomendasi Hierarki Otomatis */}
